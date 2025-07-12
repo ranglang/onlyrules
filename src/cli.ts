@@ -80,15 +80,15 @@ async function main() {
     
     // Special handling for init command with output option
     if (rawArgs[0] === 'init') {
-      if (rawArgs.length < 2) {
-        console.error(chalk.red('Error: Template name is required for init command'));
-        console.log(chalk.yellow('Usage: onlyrules init <template-name> [-o output-file] [--force]'));
-        process.exit(1);
-      }
-      
-      const templateName = rawArgs[1];
-      let outputPath = './rulesync.md'; // Default
+      // Use 'basic' as default template if no template name is provided
+      let templateName = 'basic'; // Default to basic template
+      let outputPath = './rulesync.md'; // Default output path
       let force = false;
+      
+      // If template name is provided, use it instead of the default
+      if (rawArgs.length >= 2 && !rawArgs[1].startsWith('-')) {
+        templateName = rawArgs[1];
+      }
       
       // Parse command line arguments
       for (let i = 2; i < rawArgs.length; i++) {
@@ -223,9 +223,9 @@ async function handleTemplateCommand(args: any) {
  * Handle the init command
  */
 async function handleInitCommand(args: any) {
+  // Use 'basic' as default template if no template name is provided
   if (!args.templateName) {
-    console.error(chalk.red('Error: Template name is required'));
-    process.exit(1);
+    args.templateName = 'basic';
   }
   
   // Set default output path if not provided
