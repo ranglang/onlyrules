@@ -1,0 +1,37 @@
+{
+  "name": "onlyrules",
+  "module": "src/index.ts",
+  "version": "0.0.1",
+  "type": "module",
+  "files": ["dist", "templates"],
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  },
+  "bin": {
+    "onlyrules": "./dist/cli.js"
+  },
+  "scripts": {
+    "format": "biome format --write .",
+    "test": "vitest run",
+    "build": "bun build ./src/cli.ts --outdir ./dist --target node",
+    "test:watch": "vitest",
+    "dev": "bun run src/cli.ts",
+    "lint:fix": "biome check --apply .",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome check ."
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "vitest": "^1.2.2",
+    "@biomejs/biome": "1.5.3",
+    "@types/bun": "latest",
+    "typescript": "^5.3.3",
+    "@types/node": "^20.11.24"
+  }
+}
