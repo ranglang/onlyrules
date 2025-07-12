@@ -15,9 +15,9 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
   if (options.rulesContent) {
     rulesContent = options.rulesContent;
   } else {
-    // Validate options for file/URL source
+    // Use default file if neither url nor file is provided
     if (!options.url && !options.file) {
-      throw new Error('Either url, file, or rulesContent must be provided');
+      options.file = './rulesync.md';
     }
 
     // Get rules content from file or URL

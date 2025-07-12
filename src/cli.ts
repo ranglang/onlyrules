@@ -49,11 +49,15 @@ async function main() {
         }
       }
       
-      // Validate arguments
+      // If neither url nor file is provided, use rulesync.md as default
       if (!url && !file) {
-        console.error(chalk.red('Error: Either --url or --file must be provided'));
-        console.log(chalk.yellow('Usage: onlyrules generate --url <url> | --file <path> [--output <dir>] [--verbose] [--force]'));
-        process.exit(1);
+        file = './rulesync.md';
+        // Check if rulesync.md exists
+        if (!existsSync(file)) {
+          console.log(chalk.yellow(`Default file 'rulesync.md' not found. You can create it with 'onlyrules init <template-name>'`));
+          console.log(chalk.yellow('Usage: onlyrules generate --url <url> | --file <path> [--output <dir>] [--verbose] [--force]'));
+          process.exit(1);
+        }
       }
       
       if (url && file) {
@@ -140,6 +144,17 @@ async function main() {
  * Handle the generate command
  */
 async function handleGenerateCommand(args: any) {
+  // If neither url nor file is provided in args, use rulesync.md as default
+  if (!args.url && !args.file) {
+    args.file = './rulesync.md';
+    // Check if rulesync.md exists
+    if (!existsSync(args.file)) {
+      console.log(chalk.yellow(`Default file 'rulesync.md' not found. You can create it with 'onlyrules init <template-name>'`));
+      console.log(chalk.yellow('Usage: onlyrules generate --url <url> | --file <path> [--output <dir>] [--verbose] [--force]'));
+      process.exit(1);
+    }
+  }
+  
   // Show source information
   if (args.url) {
     console.log(chalk.blue(`Fetching rules from URL: ${args.url}`));
