@@ -19,7 +19,7 @@ export enum RuleFormat {
 /**
  * CLI command types
  */
-export type CliCommand = 'generate' | 'templates' | 'template' | 'init' | 'lingma';
+export type CliCommand = 'generate' | 'templates' | 'template' | 'init' | 'lingma' | 'gitignore';
 
 /**
  * Base CLI arguments interface
@@ -77,9 +77,16 @@ export interface LingmaCliArgs extends BaseCliArgs {
 }
 
 /**
+ * Gitignore command arguments
+ */
+export interface GitignoreCliArgs extends BaseCliArgs {
+  command: 'gitignore';
+}
+
+/**
  * Combined CLI arguments type
  */
-export type CliArgs = GenerateCliArgs | TemplateCliArgs | TemplatesCliArgs | InitCliArgs | LingmaCliArgs;
+export type CliArgs = GenerateCliArgs | TemplateCliArgs | TemplatesCliArgs | InitCliArgs | LingmaCliArgs | GitignoreCliArgs;
 
 /**
  * Rule generation options

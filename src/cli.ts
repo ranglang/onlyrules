@@ -110,6 +110,12 @@ async function main() {
       return;
     }
     
+    // Special handling for gitignore command
+    if (rawArgs[0] === 'gitignore') {
+      await handleGitignoreCommand();
+      return;
+    }
+    
     // Parse command line arguments for other commands
     const args = parseArgs(rawArgs);
     
@@ -129,6 +135,9 @@ async function main() {
         break;
       case 'lingma':
         await handleLingmaCommand(args);
+        break;
+      case 'gitignore':
+        await handleGitignoreCommand();
         break;
       default:
         console.error(chalk.red('Unknown command'));
@@ -369,6 +378,61 @@ async function handleLingmaCommand(args: LingmaCliArgs): Promise<void> {
   } else {
     console.error(chalk.red(`Unknown Lingma action: ${action}`));
     console.log(chalk.yellow('Available actions: init, generate'));
+    process.exit(1);
+  }
+}
+
+/**
+ * Handle the gitignore command
+ * Creates or updates a .gitignore file to ignore all AI Coderules except rulessync.md
+ */
+async function handleGitignoreCommand(): Promise<void> {
+  const gitignorePath = './.gitignore';
+  const spinner = ora('Creating/updating .gitignore file...').start();
+  
+  try {
+    // Read existing .gitignore content if it exists
+    let existingContent = '';
+    try {
+      existingContent = await import('fs/promises').then(fs => fs.readFile(gitignorePath, 'utf8'));
+    } catch (err) {
+      // File doesn't exist yet, which is fine
+    }
+    
+    // Create the AI rules ignore section
+    const aiRulesSection = `
+# AI Coderules (managed by onlyrules)
+.cursorrules
+CLAUDE.md
+.github/copilot-instructions.md
+GEMINI.md
+AGENTS.md
+.clinerules/project.md
+.junie/guidelines.md
+.windsurfrules
+.trae/rules.md
+.augment-guidelines
+.augment/rules/always.md
+.lingma/rules
+# Keep only rulessync.md
+!rulessync.md
+`;
+    
+    // Check if the AI rules section already exists in the .gitignore
+    if (existingContent.includes('# AI Coderules (managed by onlyrules)')) {
+      // Replace the existing section
+      const regex = /\n# AI Coderules \(managed by onlyrules\)[\s\S]*?(?=\n[^#]|$)/;
+      const updatedContent = existingContent.replace(regex, aiRulesSection);
+      await writeFile(gitignorePath, updatedContent);
+    } else {
+      // Append the AI rules section to the existing content
+      await writeFile(gitignorePath, existingContent + aiRulesSection);
+    }
+    
+    spinner.succeed('.gitignore file updated successfully');
+    console.log(chalk.green('All AI Coderules are now ignored except for rulessync.md'));
+  } catch (error) {
+    spinner.fail(`Failed to update .gitignore file: ${(error as Error).message}`);
     process.exit(1);
   }
 }

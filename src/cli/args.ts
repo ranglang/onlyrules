@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { CliArgs, GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs, LingmaCliArgs } from '../types';
+import { CliArgs, GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs, LingmaCliArgs, GitignoreCliArgs } from '../types';
 
 /**
  * Parse command line arguments
@@ -192,6 +192,16 @@ export function parseArgs(argv: string[]): CliArgs {
       } as InitCliArgs;
     });
     
+  // Gitignore command to ignore all AI Coderules except rulessync.md
+  program
+    .command('gitignore')
+    .description('Create/update .gitignore to ignore all AI Coderules except rulessync.md')
+    .action(() => {
+      parsedCommand = {
+        command: 'gitignore'
+      } as GitignoreCliArgs;
+    });
+
   // Lingma project-specific rules commands
   program
     .command('lingma')

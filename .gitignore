@@ -185,3 +185,19 @@ output
 AGENTS.md
 CLAUDE.md
 GEMINI.md
+
+# AI Coderules (managed by onlyrules)
+.cursorrules
+CLAUDE.md
+.github/copilot-instructions.md
+GEMINI.md
+AGENTS.md
+.clinerules/project.md
+.junie/guidelines.md
+.windsurfrules
+.trae/rules.md
+.augment-guidelines
+.augment/rules/always.md
+.lingma/rules
+# Keep only rulessync.md
+!rulessync.md
