@@ -222,9 +222,11 @@ async function handleInitCommand(args: any) {
     const template = await getTemplateByName(templatesDir, args.templateName);
     
     // Check if output file already exists
+    let fileExists = false;
     try {
       const stat = await import('fs/promises').then(fs => fs.stat(outputPath));
-      if (stat.isFile() && !args.force) {
+      fileExists = stat.isFile();
+      if (fileExists && !args.force) {
         spinner.fail(`File ${outputPath} already exists. Use --force to overwrite.`);
         process.exit(1);
       }
@@ -239,8 +241,27 @@ async function handleInitCommand(args: any) {
     await writeFile(outputPath, template.content);
     
     spinner.succeed(`Created new rules file at ${outputPath}`);
-    console.log(chalk.blue('\nTo generate AI assistant rule files from this file: ') + 
-      chalk.green(`onlyrules generate -f ${outputPath}`));
+    
+    // Automatically run generate command after creating the file
+    spinner.text = 'Generating rule files from the newly created file...';
+    spinner.start();
+    
+    try {
+      await generateRules({
+        file: outputPath,
+        output: './',
+        verbose: true,
+        force: args.force
+      });
+      
+      spinner.succeed('Rule files generated successfully');
+      console.log(chalk.green('\nYou can edit ') + chalk.bold(outputPath) + chalk.green(' and then run ') + 
+        chalk.bold('onlyrules generate -f ' + outputPath) + chalk.green(' to sync all rules.'));
+    } catch (genError) {
+      spinner.fail(`Failed to generate rule files: ${(genError as Error).message}`);
+      console.log(chalk.yellow('\nYou can manually generate rules by running: ') + 
+        chalk.bold(`onlyrules generate -f ${outputPath}`));
+    }
   } catch (error) {
     spinner.fail(`Failed to create rules file: ${(error as Error).message}`);
     process.exit(1);

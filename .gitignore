@@ -174,3 +174,14 @@ dist
 # Finder (MacOS) folder config
 .DS_Store
 output
+.augment-guidelines
+.clinerules
+.cursorrules
+.github
+.junie
+.lingma
+.trae
+.windsurfrules
+AGENTS.md
+CLAUDE.md
+GEMINI.md
