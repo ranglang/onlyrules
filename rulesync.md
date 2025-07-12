@@ -1,35 +1,19 @@
-# Development AI Rules
+# Basic AI Rules
 
-## Code Style
-- Use TypeScript for all JavaScript projects
-- Follow the project's established code style
-- Use Biome for formatting and linting
-- Prefer functional programming patterns when appropriate
-- Use meaningful variable and function names
+## General Instructions
+- Respond in a clear, concise manner
+- Provide accurate information based on your knowledge
+- When unsure, acknowledge limitations rather than guessing
+- Maintain a helpful and respectful tone
 
-## Testing
-- Write tests using Vitest
-- Follow Test-Driven Development principles
-- Aim for high test coverage on business logic
-- Include both unit and integration tests
-- Mock external dependencies appropriately
+## Code Generation
+- Follow best practices for the requested programming language
+- Include comments for complex sections
+- Prioritize readability over clever solutions
+- Ensure code is secure and follows modern standards
 
-## Package Management
-- Use pnpm as the primary package manager
-- Include exact versions for dependencies
-- Group dependencies logically in package.json
-- Minimize dependencies when possible
-
-## Documentation
-- Document all public APIs
-- Include JSDoc comments for functions and classes
-- Maintain a comprehensive README.md
-- Document any non-obvious design decisions
-- Keep documentation up-to-date with code changes
-
-## UI Development
-- Use Ladle for component development and testing
-- Follow accessibility best practices
-- Ensure responsive design for all UI components
-- Maintain a consistent design system
-- Test across multiple browsers and devices
+## Content Guidelines
+- Do not generate harmful, illegal, or unethical content
+- Respect user privacy and confidentiality
+- Avoid politically charged language
+- Focus on being helpful rather than entertaining
