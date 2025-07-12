@@ -10,13 +10,13 @@ import { RuleTemplate } from '../types';
 export async function getAvailableTemplates(templatesDir: string): Promise<RuleTemplate[]> {
   try {
     const files = await readdir(templatesDir);
-    const templateFiles = files.filter(file => file.endsWith('.md'));
+    const templateFiles = files.filter(file => file.endsWith('.md') || file.endsWith('.mdc'));
     
     const templates: RuleTemplate[] = [];
     
     for (const file of templateFiles) {
       const content = await readFile(join(templatesDir, file), 'utf-8');
-      const name = file.replace('.md', '');
+      const name = file.replace(/\.(md|mdc)$/, '');
       
       // Extract first line as title/description
       const firstLine = content.split('\n')[0].replace('# ', '');
