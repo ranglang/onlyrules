@@ -8,23 +8,30 @@ import chalk from 'chalk';
  * @param options Rule generation options
  */
 export async function generateRules(options: RuleGenerationOptions): Promise<void> {
-  // Validate options
-  if (!options.url && !options.file) {
-    throw new Error('Either url or file must be provided');
-  }
-
   // Get rules content
   let rulesContent: string;
-  try {
-    if (options.url) {
-      rulesContent = await readRulesFromUrl(options.url);
-    } else if (options.file) {
-      rulesContent = await readRulesFromFile(options.file);
-    } else {
-      throw new Error('Invalid options');
+  
+  // If direct rulesContent is provided, use it
+  if (options.rulesContent) {
+    rulesContent = options.rulesContent;
+  } else {
+    // Validate options for file/URL source
+    if (!options.url && !options.file) {
+      throw new Error('Either url, file, or rulesContent must be provided');
     }
-  } catch (error) {
-    throw new Error(`Failed to read rules: ${(error as Error).message}`);
+
+    // Get rules content from file or URL
+    try {
+      if (options.url) {
+        rulesContent = await readRulesFromUrl(options.url);
+      } else if (options.file) {
+        rulesContent = await readRulesFromFile(options.file);
+      } else {
+        throw new Error('Invalid options');
+      }
+    } catch (error) {
+      throw new Error(`Failed to read rules: ${(error as Error).message}`);
+    }
   }
 
   // Validate rules content

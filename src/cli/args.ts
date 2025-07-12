@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { CliArgs, GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs } from '../types';
+import { CliArgs, GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs, LingmaCliArgs } from '../types';
 
 /**
  * Parse command line arguments
@@ -182,12 +182,37 @@ export function parseArgs(argv: string[]): CliArgs {
     .command('init <name>')
     .description('Initialize a new rules file from a template')
     .option('-o, --output <file>', 'Output file path')
+    .option('--force', 'Force overwrite of existing files')
     .action((name, options) => {
       parsedCommand = {
         command: 'init',
         templateName: name,
-        output: options.output || './rulesync.md'
+        output: options.output || './rulesync.md',
+        force: !!options.force
       } as InitCliArgs;
+    });
+    
+  // Lingma project-specific rules commands
+  program
+    .command('lingma')
+    .description('Manage Lingma project-specific rules')
+    .argument('<action>', 'Action to perform (init, generate)')
+    .option('-n, --name <name>', 'Rule name (for init action)')
+    .option('-o, --output <directory>', 'Output directory for generated rule files', './')
+    .option('--force', 'Force overwrite of existing files')
+    .action((action, options) => {
+      // Validate action
+      if (action !== 'init' && action !== 'generate') {
+        throw new Error('Invalid action. Use either "init" or "generate"');
+      }
+      
+      parsedCommand = {
+        command: 'lingma',
+        action: action as 'init' | 'generate',
+        ruleName: options.name,
+        output: options.output,
+        force: !!options.force
+      } as LingmaCliArgs;
     });
 
   // For backward compatibility, support direct options without subcommand

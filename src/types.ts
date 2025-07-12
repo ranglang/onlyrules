@@ -9,13 +9,17 @@ export enum RuleFormat {
   AGENTS = 'AGENTS.md',
   CLINE = '.clinerules/project.md',
   JUNIE = '.junie/guidelines.md',
-  WINDSURF = '.windsurfrules'
+  WINDSURF = '.windsurfrules',
+  TRAE = '.trae/rules.md',
+  AUGMENT = '.augment-guidelines',
+  AUGMENT_ALWAYS = '.augment/rules/always.md',
+  LINGMA_PROJECT = '.lingma/rules'
 }
 
 /**
  * CLI command types
  */
-export type CliCommand = 'generate' | 'templates' | 'template' | 'init';
+export type CliCommand = 'generate' | 'templates' | 'template' | 'init' | 'lingma';
 
 /**
  * Base CLI arguments interface
@@ -58,12 +62,24 @@ export interface InitCliArgs extends BaseCliArgs {
   command: 'init';
   templateName: string;
   output: string;
+  force?: boolean;
+}
+
+/**
+ * Lingma command arguments
+ */
+export interface LingmaCliArgs extends BaseCliArgs {
+  command: 'lingma';
+  action: 'init' | 'generate';
+  ruleName?: string;
+  output?: string;
+  force?: boolean;
 }
 
 /**
  * Combined CLI arguments type
  */
-export type CliArgs = GenerateCliArgs | TemplateCliArgs | TemplatesCliArgs | InitCliArgs;
+export type CliArgs = GenerateCliArgs | TemplateCliArgs | TemplatesCliArgs | InitCliArgs | LingmaCliArgs;
 
 /**
  * Rule generation options
@@ -75,6 +91,7 @@ export interface RuleGenerationOptions {
   formats?: RuleFormat[];
   verbose?: boolean;
   force?: boolean;
+  rulesContent?: string; // Direct rules content to use instead of reading from file or URL
 }
 
 /**

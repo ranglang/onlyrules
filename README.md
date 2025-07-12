@@ -20,6 +20,8 @@ A CLI tool to easily sync all of your favorite AI assistant instruction files fr
 - Cline → `.clinerules/project.md`
 - Junie → `.junie/guidelines.md`
 - Windsurf → `.windsurfrules`
+- Trae → `.trae/rules.md`
+- Lingma → `.lingma/rules`
 
 ## Installation
 
@@ -39,6 +41,22 @@ bun install -g onlyrules
 ```bash
 bun install onlyrules
 ```
+
+## Getting Started
+
+The quickest way to get started with OnlyRules is to initialize a new project:
+
+```bash
+npx rulesync init
+```
+
+This will create a basic configuration and template files in your current directory. After initialization, you can:
+
+1. Edit the generated rule template files in the `.augment/rules` directory
+2. Generate AI assistant-specific rule files using the `generate` command
+3. Customize your setup using the available templates
+
+For more advanced usage, see the sections below.
 
 ## Usage
 
@@ -86,6 +104,40 @@ Create a new rules file from a template:
 
 ```bash
 onlyrules init development -o ./my-rules.md
+```
+
+### Working with Lingma Project-Specific Rules
+
+Lingma project rules are stored in the `.lingma/rules` directory and only apply to the current project. These rules help the model better understand your project's specific coding preferences and structure.
+
+Initialize a new Lingma project rules directory:
+
+```bash
+onlyrules lingma init
+```
+
+Create a named rule file:
+
+```bash
+onlyrules lingma init -n coding-style
+```
+
+Generate AI assistant rule files from Lingma project rules:
+
+```bash
+onlyrules lingma generate
+```
+
+Specify an output directory:
+
+```bash
+onlyrules lingma generate -o ./output
+```
+
+Force overwrite existing files:
+
+```bash
+onlyrules lingma generate --force
 ```
 
 ## Templates
