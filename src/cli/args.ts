@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { CliArgs, GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs, LingmaCliArgs } from '../types';
+import { CliArgs, GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs, LingmaCliArgs, GitignoreCliArgs, PrungeCliArgs } from '../types';
 
 /**
  * Parse command line arguments
@@ -62,7 +62,7 @@ export function parseArgs(argv: string[]): CliArgs {
       // Init command test
       const args: Record<string, string> = {
         templateName: argv[1],
-        output: './rulesync.md' // Default
+        output: './rulesync.mdc' // Default
       };
 
       for (let i = 2; i < argv.length; i++) {
@@ -187,11 +187,31 @@ export function parseArgs(argv: string[]): CliArgs {
       parsedCommand = {
         command: 'init',
         templateName: name,
-        output: options.output || './rulesync.md',
+        output: options.output || './rulesync.mdc',
         force: !!options.force
       } as InitCliArgs;
     });
     
+  // Gitignore command to ignore all AI Coderules except rulessync.md
+  program
+    .command('gitignore')
+    .description('Create/update .gitignore to ignore all AI Coderules except rulessync.md')
+    .action(() => {
+      parsedCommand = {
+        command: 'gitignore'
+      } as GitignoreCliArgs;
+    });
+    
+  // Prunge command to remove all IDE rules
+  program
+    .command('prunge')
+    .description('Remove all IDE rules from the project')
+    .action(() => {
+      parsedCommand = {
+        command: 'prunge'
+      } as PrungeCliArgs;
+    });
+
   // Lingma project-specific rules commands
   program
     .command('lingma')

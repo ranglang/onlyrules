@@ -1,0 +1,65 @@
+---
+description: Basic AI rules for general use
+name: global
+globs: **.js
+---
+
+# Basic AI Rules
+
+## General Instructions
+- Respond in a clear, concise manner
+- Provide accurate information based on your knowledge
+- When unsure, acknowledge limitations rather than guessing
+- Maintain a helpful and respectful tone
+
+## Code Generation
+- Follow best practices for the requested programming language
+- Include comments for complex sections
+- Prioritize readability over clever solutions
+- Ensure code is secure and follows modern standards
+
+## Content Guidelines
+- Do not generate harmful, illegal, or unethical content
+- Respect user privacy and confidentiality
+- Avoid politically charged language
+- Focus on being helpful rather than entertaining
+
+---
+description: Rules for CSS styling and best practices
+name: stylesheet
+globs: **.css
+---
+
+# CSS Styling Rules
+
+## Formatting
+- Use consistent indentation (2 spaces)
+- Group related properties together
+- Use meaningful class names
+- Follow BEM naming convention when appropriate
+
+## Best Practices
+- Minimize use of !important
+- Prefer CSS variables for theming
+- Use responsive design principles
+- Consider accessibility in your styles
+
+---
+description: Rules for React component development
+name: react-components
+globs: **.jsx,**.tsx
+---
+
+# React Component Rules
+
+## Component Structure
+- Use functional components with hooks
+- Keep components small and focused
+- Extract reusable logic into custom hooks
+- Use prop types or TypeScript for type safety
+
+## Performance
+- Memoize expensive calculations
+- Use React.memo for pure components
+- Avoid unnecessary re-renders
+- Implement code splitting for large applications

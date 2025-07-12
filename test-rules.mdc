@@ -1,0 +1,57 @@
+---
+name: root
+---
+
+# Global Project Rules
+
+## General Instructions
+- Respond in a clear, concise manner
+- Provide accurate information based on your knowledge
+- When unsure, acknowledge limitations rather than guessing
+- Maintain a helpful and respectful tone
+
+## Code Generation
+- Follow best practices for the requested programming language
+- Include comments for complex sections
+- Prioritize readability over clever solutions
+- Ensure code is secure and follows modern standards
+
+---
+name: css
+---
+
+# CSS Styling Guidelines
+
+## Formatting
+- Use consistent indentation (2 spaces)
+- Place each property on a new line
+- Add a space after the colon in property declarations
+- Use lowercase for selectors and property names
+- Use meaningful class names that describe purpose
+
+## Best Practices
+- Avoid inline styles
+- Prefer classes over IDs for styling
+- Use CSS variables for consistent theming
+- Implement responsive design with media queries
+- Minimize specificity conflicts
+
+---
+name: javascript
+---
+
+# JavaScript Coding Standards
+
+## Syntax
+- Use ES6+ features when appropriate
+- Prefer const over let, avoid var
+- Use arrow functions for callbacks
+- Add semicolons at the end of statements
+- Use template literals for string interpolation
+
+## Organization
+- Keep functions small and focused
+- Document complex logic with comments
+- Use meaningful variable and function names
+- Implement proper error handling
+- Write unit tests for critical functionality

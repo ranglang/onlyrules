@@ -49,8 +49,15 @@ describe('Rules Generator', () => {
     expect(writeRulesToFile).toHaveBeenCalledTimes(Object.keys(RuleFormat).length);
   });
 
-  it('should throw error if neither url nor file is provided', async () => {
-    await expect(generateRules({ output: './' })).rejects.toThrow();
+  it('should use default file if neither url nor file is provided', async () => {
+    // Setup
+    const output = './output';
+    
+    // Execute
+    await generateRules({ output });
+    
+    // Verify - should use the default file path
+    expect(readRulesFromFile).toHaveBeenCalledWith('./rulesync.mdc');
   });
 
   it('should handle empty rules content', async () => {

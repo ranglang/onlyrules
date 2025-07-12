@@ -2,6 +2,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { existsSync } from 'node:fs';
 import fetch from 'node-fetch';
+import { parseRuleFile } from './templates';
 
 /**
  * Read rules content from a URL

@@ -2,12 +2,31 @@
  * Supported AI assistant rule formats
  */
 export enum RuleFormat {
-  CURSOR = '.cursorrules',
-  CLAUDE = 'CLAUDE.md',
-  COPILOT = '.github/copilot-instructions.md',
-  GEMINI = 'GEMINI.md',
+  // GitHub Copilot - Front Matter + Markdown format
+  COPILOT = '.github/instructions',
+  
+  // Cursor - MDC format (YAML header + Markdown)
+  // Different rule types: always, specificFiles, intelligently, manual (default)
+  CURSOR = '.cursor/rules',
+  
+  // Cline - Plain Markdown format
+  CLINE = '.clinerules',
+  
+  // Claude Code - Plain Markdown format
+  // Root level goes to CLAUDE.md, non-root to separate memory files
+  CLAUDE_ROOT = 'CLAUDE.md',
+  CLAUDE_MEMORIES = '.claude/memories',
+  
+  // Roo Code - Plain Markdown with description header
+  ROO = '.roo/rules',
+  
+  // Gemini CLI - Plain Markdown format
+  // Root level goes to GEMINI.md, non-root to separate memory files
+  GEMINI_ROOT = 'GEMINI.md',
+  GEMINI_MEMORIES = '.gemini/memories',
+  
+  // Legacy formats (keeping for backward compatibility)
   AGENTS = 'AGENTS.md',
-  CLINE = '.clinerules/project.md',
   JUNIE = '.junie/guidelines.md',
   WINDSURF = '.windsurfrules',
   TRAE = '.trae/rules.md',
@@ -19,7 +38,7 @@ export enum RuleFormat {
 /**
  * CLI command types
  */
-export type CliCommand = 'generate' | 'templates' | 'template' | 'init' | 'lingma';
+export type CliCommand = 'generate' | 'templates' | 'template' | 'init' | 'lingma' | 'gitignore' | 'prunge';
 
 /**
  * Base CLI arguments interface
@@ -77,9 +96,23 @@ export interface LingmaCliArgs extends BaseCliArgs {
 }
 
 /**
+ * Gitignore command arguments
+ */
+export interface GitignoreCliArgs extends BaseCliArgs {
+  command: 'gitignore';
+}
+
+/**
+ * Prunge command arguments
+ */
+export interface PrungeCliArgs extends BaseCliArgs {
+  command: 'prunge';
+}
+
+/**
  * Combined CLI arguments type
  */
-export type CliArgs = GenerateCliArgs | TemplateCliArgs | TemplatesCliArgs | InitCliArgs | LingmaCliArgs;
+export type CliArgs = GenerateCliArgs | TemplateCliArgs | TemplatesCliArgs | InitCliArgs | LingmaCliArgs | GitignoreCliArgs | PrungeCliArgs;
 
 /**
  * Rule generation options
@@ -92,6 +125,9 @@ export interface RuleGenerationOptions {
   verbose?: boolean;
   force?: boolean;
   rulesContent?: string; // Direct rules content to use instead of reading from file or URL
+  ideStyle?: boolean; // Whether to use IDE-style rule organization (default: true)
+  ideFolder?: string; // Custom folder name for IDE-style rules (default: '.rules')
+  generateTraditional?: boolean; // Whether to also generate traditional format files
 }
 
 /**

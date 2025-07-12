@@ -84,7 +84,7 @@ describe('CLI Arguments Parser', () => {
     const args = parseArgs(['init', 'basic']) as InitCliArgs;
     expect(args.command).toBe('init');
     expect(args.templateName).toBe('basic');
-    expect(args.output).toBe('./rulesync.md');
+    expect(args.output).toBe('./rulesync.mdc');
   });
 });
 

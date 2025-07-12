@@ -1,0 +1,15 @@
+---
+description: First rule description
+name: rule1
+globs: **.js
+---
+# Rule 1 Content
+Some content here
+
+---
+description: Second rule description
+name: rule2
+globs: **.css
+---
+# Rule 2 Content
+More content here

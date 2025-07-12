@@ -30,6 +30,9 @@ async function main() {
       let output = './';
       let verbose = false;
       let force = false;
+      let ideStyle = true; // Default to IDE-style
+      let ideFolder: string | undefined;
+      let generateTraditional = false;
       
       // Parse command line arguments
       for (let i = 1; i < rawArgs.length; i++) {
@@ -42,23 +45,34 @@ async function main() {
         } else if ((rawArgs[i] === '-o' || rawArgs[i] === '--output') && i + 1 < rawArgs.length) {
           output = rawArgs[i + 1];
           i++; // Skip the next argument
+        } else if ((rawArgs[i] === '--ide-folder') && i + 1 < rawArgs.length) {
+          ideFolder = rawArgs[i + 1];
+          i++; // Skip the next argument
         } else if (rawArgs[i] === '-v' || rawArgs[i] === '--verbose') {
           verbose = true;
         } else if (rawArgs[i] === '--force') {
           force = true;
+        } else if (rawArgs[i] === '--no-ide-style') {
+          ideStyle = false;
+        } else if (rawArgs[i] === '--traditional') {
+          generateTraditional = true;
         }
       }
       
-      // Validate arguments
+      // If neither url nor file is provided, use rulesync.md as default
       if (!url && !file) {
-        console.error(chalk.red('Error: Either --url or --file must be provided'));
-        console.log(chalk.yellow('Usage: onlyrules generate --url <url> | --file <path> [--output <dir>] [--verbose] [--force]'));
-        process.exit(1);
+        file = './rulesync.mdc';
+        // Check if rulesync.md exists
+        if (!existsSync(file)) {
+          console.log(chalk.yellow(`Default file 'rulesync.mdc' not found. You can create it with 'onlyrules init <template-name>'`));
+          console.log(chalk.yellow('Usage: onlyrules generate --url <url> | --file <path> [--output <dir>] [--verbose] [--force] [--no-ide-style] [--ide-folder <name>] [--traditional]'));
+          process.exit(1);
+        }
       }
       
       if (url && file) {
         console.error(chalk.red('Error: Only one of --url or --file can be provided'));
-        console.log(chalk.yellow('Usage: onlyrules generate --url <url> | --file <path> [--output <dir>] [--verbose] [--force]'));
+        console.log(chalk.yellow('Usage: onlyrules generate --url <url> | --file <path> [--output <dir>] [--verbose] [--force] [--no-ide-style] [--ide-folder <name>] [--traditional]'));
         process.exit(1);
       }
       
@@ -69,22 +83,25 @@ async function main() {
         file,
         output,
         verbose,
-        force
+        force,
+        ideStyle,
+        ideFolder,
+        generateTraditional
       });
       return;
     }
     
     // Special handling for init command with output option
     if (rawArgs[0] === 'init') {
-      if (rawArgs.length < 2) {
-        console.error(chalk.red('Error: Template name is required for init command'));
-        console.log(chalk.yellow('Usage: onlyrules init <template-name> [-o output-file] [--force]'));
-        process.exit(1);
-      }
-      
-      const templateName = rawArgs[1];
-      let outputPath = './rulesync.md'; // Default
+      // Use 'basic' as default template if no template name is provided
+      let templateName = 'basic'; // Default to basic template
+      let outputPath = './rulesync.mdc'; // Default output path
       let force = false;
+      
+      // If template name is provided, use it instead of the default
+      if (rawArgs.length >= 2 && !rawArgs[1].startsWith('-')) {
+        templateName = rawArgs[1];
+      }
       
       // Parse command line arguments
       for (let i = 2; i < rawArgs.length; i++) {
@@ -103,6 +120,12 @@ async function main() {
         output: outputPath,
         force
       });
+      return;
+    }
+    
+    // Special handling for gitignore command
+    if (rawArgs[0] === 'gitignore') {
+      await handleGitignoreCommand();
       return;
     }
     
@@ -126,6 +149,12 @@ async function main() {
       case 'lingma':
         await handleLingmaCommand(args);
         break;
+      case 'gitignore':
+        await handleGitignoreCommand();
+        break;
+      case 'prunge':
+        await handlePrungeCommand();
+        break;
       default:
         console.error(chalk.red('Unknown command'));
         process.exit(1);
@@ -140,6 +169,17 @@ async function main() {
  * Handle the generate command
  */
 async function handleGenerateCommand(args: any) {
+  // If neither url nor file is provided in args, use rulesync.md as default
+  if (!args.url && !args.file) {
+    args.file = './rulesync.mdc';
+    // Check if rulesync.md exists
+    if (!existsSync(args.file)) {
+      console.log(chalk.yellow(`Default file 'rulesync.mdc' not found. You can create it with 'onlyrules init <template-name>'`));
+      console.log(chalk.yellow('Usage: onlyrules generate --url <url> | --file <path> [--output <dir>] [--verbose] [--force] [--no-ide-style] [--ide-folder <name>] [--traditional]'));
+      process.exit(1);
+    }
+  }
+  
   // Show source information
   if (args.url) {
     console.log(chalk.blue(`Fetching rules from URL: ${args.url}`));
@@ -208,13 +248,13 @@ async function handleTemplateCommand(args: any) {
  * Handle the init command
  */
 async function handleInitCommand(args: any) {
+  // Use 'basic' as default template if no template name is provided
   if (!args.templateName) {
-    console.error(chalk.red('Error: Template name is required'));
-    process.exit(1);
+    args.templateName = 'basic';
   }
   
   // Set default output path if not provided
-  const outputPath = args.output || './rulesync.md';
+  const outputPath = args.output || './rulesync.mdc';
   const spinner = ora(`Creating new rules file from template '${args.templateName}'...`).start();
   
   try {
@@ -354,6 +394,151 @@ async function handleLingmaCommand(args: LingmaCliArgs): Promise<void> {
   } else {
     console.error(chalk.red(`Unknown Lingma action: ${action}`));
     console.log(chalk.yellow('Available actions: init, generate'));
+    process.exit(1);
+  }
+}
+
+/**
+ * Handle the gitignore command
+ * Creates or updates a .gitignore file to ignore all AI Coderules except rulessync.md
+ */
+async function handleGitignoreCommand(): Promise<void> {
+  const gitignorePath = './.gitignore';
+  const spinner = ora('Creating/updating .gitignore file...').start();
+  
+  try {
+    // Read existing .gitignore content if it exists
+    let existingContent = '';
+    try {
+      existingContent = await import('fs/promises').then(fs => fs.readFile(gitignorePath, 'utf8'));
+    } catch (err) {
+      // File doesn't exist yet, which is fine
+    }
+    
+    // Define all AI rule paths to ignore
+    const aiRulePaths = [
+      '.cursorrules',
+      '.cursor',
+      'CLAUDE.md',
+      '.claude',
+      '.github/copilot-instructions.md',
+      'GEMINI.md',
+      '.gemini',
+      'AGENTS.md',
+      '.clinerules',
+      '.junie',
+      '.windsurfrules',
+      '.trae',
+      '.augment-guidelines',
+      '.augment/rules',
+      '.lingma/rules',
+      '.roo',
+      '.rules'
+    ];
+    
+    // Create the AI rules ignore section with both files and directories
+    let aiRulesSection = `
+# AI Coderules (managed by onlyrules)
+`;
+    
+    // Add each path to the section
+    aiRulePaths.forEach(path => {
+      aiRulesSection += `${path}${path.endsWith('/') ? '' : '\n'}`;
+    });
+    
+    // Add the exception for rulessync.md
+    aiRulesSection += `# Keep only rulessync.md
+!rulessync.md
+`;
+    
+    // Remove any existing AI Coderules sections
+    // This handles multiple occurrences of the section header
+    let updatedContent = existingContent;
+    
+    // First, check if there are any AI Coderules sections
+    const sectionRegex = /\n# AI Coderules \(managed by onlyrules\)[\s\S]*?(?=\n(?:# [^A]|[^#])|$)/g;
+    const matches = existingContent.match(sectionRegex);
+    
+    if (matches && matches.length > 0) {
+      // Remove all existing AI Coderules sections
+      updatedContent = existingContent.replace(sectionRegex, '');
+      
+      // Add the new section
+      updatedContent += aiRulesSection;
+    } else {
+      // No existing sections found, just append
+      updatedContent = existingContent + aiRulesSection;
+    }
+    
+    // Write the updated content back to the file
+    await writeFile(gitignorePath, updatedContent);
+    
+    spinner.succeed('.gitignore file updated successfully');
+    console.log(chalk.green('All AI Coderules are now ignored except for rulessync.md'));
+  } catch (error) {
+    spinner.fail(`Failed to update .gitignore file: ${(error as Error).message}`);
+    process.exit(1);
+  }
+}
+
+/**
+ * Handle the prunge command
+ * Removes all IDE rules from the project
+ */
+async function handlePrungeCommand(): Promise<void> {
+  const spinner = ora('Removing all IDE rules...').start();
+  
+  try {
+    // Define paths to IDE rule directories/files to remove
+    const idePaths = [
+      './.cursorrules',
+      './.cursor',
+      './.github/copilot-instructions.md',
+      './.github/instructions',
+      './.clinerules',
+      './.junie',
+      './.windsurfrules',
+      './.trae',
+      './.augment',
+      './.augment-guidelines',
+      './.lingma/rules',
+      './.gemini',
+      './.claude',
+      './.roo',
+      './CLAUDE.md',
+      './GEMINI.md',
+      './AGENTS.md'
+    ];
+    
+    // Import fs modules
+    const { rm } = await import('fs/promises');
+    
+    // Track removed paths
+    const removedPaths: string[] = [];
+    
+    // Remove each IDE path if it exists
+    for (const path of idePaths) {
+      try {
+        if (existsSync(path)) {
+          await rm(path, { recursive: true, force: true });
+          removedPaths.push(path);
+        }
+      } catch (err) {
+        console.warn(chalk.yellow(`Warning: Could not remove ${path}: ${(err as Error).message}`));
+      }
+    }
+    
+    if (removedPaths.length > 0) {
+      spinner.succeed(`Successfully removed ${removedPaths.length} IDE rule paths`);
+      console.log(chalk.green('The following paths were removed:'));
+      removedPaths.forEach(path => {
+        console.log(chalk.green(`- ${path}`));
+      });
+    } else {
+      spinner.info('No IDE rules were found to remove');
+    }
+  } catch (error) {
+    spinner.fail(`Failed to remove IDE rules: ${(error as Error).message}`);
     process.exit(1);
   }
 }
