@@ -4,6 +4,11 @@
   "version": "0.0.1",
   "type": "module",
   "files": ["dist", "templates"],
+  "author": "ranglang",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ranglang/onlyrules"
+  },
   "engines": {
     "node": ">=18.0.0",
     "bun": ">=1.0.0"
