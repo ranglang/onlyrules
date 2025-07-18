@@ -15,10 +15,11 @@ vi.mock('../src/utils/writer', () => ({
 }));
 
 describe('Rules Generator', () => {
-  const mockRules = '# AI Rules\n\nFollow these rules when generating content.';
+  const mockRules = '---\nname: test-rule\n---\n# Test Rule\nThis is a test rule.';
   
   beforeEach(() => {
-    vi.clearAllMocks();
+        vi.clearAllMocks();
+    process.env.ONLYRULES_USE_LEGACY = 'true';
   });
 
   it('should generate rules from URL', async () => {

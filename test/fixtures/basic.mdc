@@ -1,0 +1,21 @@
+---
+description: CSS file rules
+name: global
+globs: **.css
+---
+
+# Basic AI Rules
+
+## General Instructions
+- Respond in a clear, concise manner
+- Provide accurate information based on your knowledge
+
+---
+description: JavaScript rules
+name: javascript
+globs: **.js
+---
+
+## Code Generation
+- Follow best practices for JavaScript
+- Include comments for complex sections

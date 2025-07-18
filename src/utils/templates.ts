@@ -117,13 +117,13 @@ function parseMdcContent(content: string, defaultName: string): Array<{name: str
   const rules: Array<{name: string, content: string}> = [];
   
   // Split the content by rule sections using regex
-  const pattern = /---(([\s\S]*?)---(([\s\S]*?)(?=---|$)))/g;
+    const pattern = /---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*?)(?=\r?\n---|\s*$)/g;
   
   let match;
   let index = 0;
   while ((match = pattern.exec(content)) !== null) {
-    const frontmatterText = match[2].trim();
-    const contentText = match[3].trim();
+    const frontmatterText = match[1].trim();
+    const contentText = match[2].trim();
     
     // Parse frontmatter into key-value pairs
     const frontmatterObj: Record<string, string> = {};

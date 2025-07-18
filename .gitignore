@@ -1,3 +1,5 @@
+!.github/
+
 # Based on https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore
 
 # Logs
@@ -186,19 +188,6 @@ AGENTS.md
 CLAUDE.md
 GEMINI.md
 
-# AI Coderules (managed by onlyrules)
-.cursorrules
-CLAUDE.md
-.github/copilot-instructions.md
-GEMINI.md
-AGENTS.md
-.clinerules/project.md
-.junie/guidelines.md
-.windsurfrules
-.trae/rules.md
-.augment-guidelines
-.augment/rules/always.md
-.lingma/rules
 # Keep only rulessync.md
 !rulessync.md
 
@@ -222,3 +211,35 @@ AGENTS.md
 
 # Keep only rulessync.md
 !rulessync.md
+
+# Keep only rulessync.md
+!rulessync.md
+
+# Keep only rulessync.md
+!rulessync.md
+
+# Keep only rulessync.md
+!rulessync.md
+
+# Keep only rulessync.md
+!rulessync.md
+
+# AI Coderules (managed by onlyrules)
+.cursorrules
+.cursor
+CLAUDE.md
+.claude
+.github/copilot-instructions.md
+GEMINI.md
+.gemini
+AGENTS.md
+.clinerules
+.junie
+.windsurfrules
+.trae
+.github/instructions
+.augment-guidelines
+.augment/rules
+.lingma/rules
+.roo
+.rules
