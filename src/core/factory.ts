@@ -9,6 +9,7 @@ import { ClaudeMemoriesFormatter } from '../formatters/claude-memories';
 import { GeminiRootFormatter } from '../formatters/gemini-root';
 import { GeminiMemoriesFormatter } from '../formatters/gemini-memories';
 import { RooFormatter } from '../formatters/roo';
+import { KiroFormatter } from '../formatters/kiro';
 
 // Legacy formatters
 import { AgentsFormatter } from '../formatters/legacy/agents';
@@ -87,6 +88,7 @@ export class DefaultRuleFormatterFactory implements RuleFormatterFactory {
     this.registerFormatter(new GeminiRootFormatter());
     this.registerFormatter(new GeminiMemoriesFormatter());
     this.registerFormatter(new RooFormatter());
+    this.registerFormatter(new KiroFormatter());
     
     // Legacy formatters
     this.registerFormatter(new AgentsFormatter());
