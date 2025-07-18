@@ -20,6 +20,9 @@ export enum RuleFormat {
   // Roo Code - Plain Markdown with description header
   ROO = '.roo/rules',
   
+  // Kiro AI - Markdown with YAML frontmatter for inclusion modes
+  KIRO = '.kiro/steering',
+  
   // Gemini CLI - Plain Markdown format
   // Root level goes to GEMINI.md, non-root to separate memory files
   GEMINI_ROOT = 'GEMINI.md',

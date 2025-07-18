@@ -22,6 +22,7 @@ A CLI tool to easily sync all of your favorite AI assistant instruction files fr
 - Windsurf → `.windsurfrules`
 - Trae → `.trae/rules.md`
 - Lingma → `.lingma/rules`
+- Kiro → `.kiro/steering`
 
 ## Installation
 
@@ -147,6 +148,37 @@ OnlyRules comes with several built-in templates to help you get started:
 - `basic`: Simple rules for general AI assistant behavior
 - `development`: Rules focused on software development practices
 - `multi-step`: A structured approach to creating comprehensive rules
+
+## Kiro AI Support
+
+OnlyRules now supports [Kiro AI](https://kiro.dev)'s steering file system. Kiro uses markdown files in `.kiro/steering/` to provide persistent project knowledge.
+
+### Kiro Steering Features
+
+- **Automatic Inclusion Modes**: Files can be configured to load always, conditionally based on file patterns, or manually
+- **Default Steering Files**: Automatically maps common rules to Kiro's default files (product.md, tech.md, structure.md)
+- **Smart File Pattern Detection**: Automatically configures file patterns for component, API, and test-specific rules
+
+### Kiro Example
+
+Use the Kiro example template to get started:
+
+```bash
+onlyrules init kiro-example
+```
+
+This creates a comprehensive set of steering files demonstrating:
+- Always-included core project documentation
+- File-pattern-based rules for components and APIs
+- Manual inclusion for specialized guidelines
+
+### Kiro Inclusion Modes
+
+When generating rules for Kiro, OnlyRules automatically configures appropriate inclusion modes:
+
+1. **Always** (default for root rules): Loaded in every Kiro interaction
+2. **FileMatch**: Automatically included when working with matching files
+3. **Manual**: Available on-demand by referencing with #steering-file-name
 
 ## Development
 

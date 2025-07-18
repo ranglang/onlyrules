@@ -1,0 +1,232 @@
+# Kiro Steering Example
+
+This template demonstrates how to create steering files for Kiro AI with different inclusion modes.
+
+---
+
+## Rule: Product Overview
+### Description: Core product documentation for Kiro
+### Tags: product, overview, always
+### Metadata:
+inclusion: always
+
+# Product Overview
+
+Our project is a modern web application built with React and TypeScript. It provides a comprehensive platform for managing AI-powered code generation rules across multiple development environments.
+
+## Key Features
+- Multi-IDE support
+- Customizable rule templates
+- Automated rule synchronization
+- Version control integration
+
+## Target Users
+- Development teams using AI assistants
+- Individual developers seeking consistency
+- Open source project maintainers
+
+---
+
+## Rule: Technology Stack
+### Description: Technical stack and dependencies
+### Tags: tech, stack, always
+### Metadata:
+inclusion: always
+
+# Technology Stack
+
+## Frontend
+- React 18+
+- TypeScript 5.0+
+- Tailwind CSS for styling
+- Vite for build tooling
+
+## Backend
+- Node.js 18+
+- Express.js
+- PostgreSQL database
+- Redis for caching
+
+## Development Tools
+- ESLint & Prettier
+- Vitest for testing
+- Docker for containerization
+
+---
+
+## Rule: Project Structure
+### Description: File organization and architecture patterns
+### Tags: structure, architecture, always
+### Metadata:
+inclusion: always
+
+# Project Structure
+
+```
+src/
+├── components/      # React components
+├── hooks/          # Custom React hooks
+├── services/       # API and business logic
+├── utils/          # Utility functions
+├── types/          # TypeScript definitions
+└── styles/         # Global styles
+```
+
+## Architecture Principles
+- Feature-based organization
+- Separation of concerns
+- Dependency injection
+- Clean architecture patterns
+
+---
+
+## Rule: Component Standards
+### Description: React component development guidelines
+### Tags: component, react, frontend
+### Metadata:
+inclusion: fileMatch
+fileMatchPattern: "components/**/*.{tsx,jsx}"
+
+# Component Standards
+
+## Component Structure
+- Use functional components with hooks
+- Implement proper TypeScript typing
+- Follow naming conventions (PascalCase)
+- Keep components focused and single-purpose
+
+## Best Practices
+```typescript
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
+}
+
+export const Button: React.FC<ButtonProps> = ({ label, onClick, variant = 'primary' }) => {
+  return (
+    <button className={`btn-${variant}`} onClick={onClick}>
+      {label}
+    </button>
+  );
+};
+```
+
+---
+
+## Rule: API Design Standards
+### Description: REST API design and implementation guidelines
+### Tags: api, backend, rest
+### Metadata:
+inclusion: fileMatch
+fileMatchPattern: "app/api/**/*"
+
+# API Design Standards
+
+## REST Conventions
+- Use proper HTTP methods (GET, POST, PUT, DELETE)
+- Follow RESTful naming conventions
+- Implement consistent error handling
+- Version APIs appropriately
+
+## Response Format
+```json
+{
+  "success": true,
+  "data": {},
+  "meta": {
+    "timestamp": "2024-01-01T00:00:00Z",
+    "version": "1.0"
+  }
+}
+```
+
+---
+
+## Rule: Testing Guidelines
+### Description: Unit and integration testing standards
+### Tags: testing, quality
+### Metadata:
+inclusion: fileMatch
+fileMatchPattern: "**/*.{test,spec}.{ts,tsx,js,jsx}"
+
+# Testing Guidelines
+
+## Test Structure
+- Arrange, Act, Assert pattern
+- Descriptive test names
+- Comprehensive coverage
+- Mock external dependencies
+
+## Example Test
+```typescript
+describe('UserService', () => {
+  it('should create a new user with valid data', async () => {
+    // Arrange
+    const userData = { name: 'John', email: 'john@example.com' };
+    
+    // Act
+    const user = await userService.create(userData);
+    
+    // Assert
+    expect(user).toHaveProperty('id');
+    expect(user.name).toBe(userData.name);
+  });
+});
+```
+
+---
+
+## Rule: Security Best Practices
+### Description: Security guidelines and vulnerability prevention
+### Tags: security, best-practices
+### Metadata:
+inclusion: manual
+
+# Security Best Practices
+
+## Authentication & Authorization
+- Implement JWT tokens with proper expiration
+- Use bcrypt for password hashing
+- Validate all user inputs
+- Implement rate limiting
+
+## Data Protection
+- Encrypt sensitive data at rest
+- Use HTTPS for all communications
+- Implement CORS properly
+- Regular security audits
+
+## Code Security
+- No hardcoded secrets
+- Use environment variables
+- Implement proper error handling
+- Sanitize all inputs
+
+---
+
+## Rule: Performance Optimization
+### Description: Performance guidelines and optimization strategies
+### Tags: performance, optimization
+### Metadata:
+inclusion: manual
+
+# Performance Optimization
+
+## Frontend Performance
+- Lazy load components and routes
+- Optimize bundle sizes
+- Implement proper caching strategies
+- Use React.memo for expensive components
+
+## Backend Performance
+- Database query optimization
+- Implement caching layers
+- Use pagination for large datasets
+- Monitor and profile regularly
+
+## Best Practices
+- Measure before optimizing
+- Focus on critical paths
+- Use performance budgets
+- Regular performance testing

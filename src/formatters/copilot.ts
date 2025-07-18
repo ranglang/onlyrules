@@ -98,7 +98,7 @@ export class CopilotFormatter extends BaseRuleFormatter {
   private createFrontmatter(rule: ParsedRule): string {
     const title = rule.metadata?.title || this.extractTitleFromContent(rule.content) || 'AI Rules';
     
-    const metadata = {
+    const metadata: any = {
       name: title,
       ...rule.metadata
     };

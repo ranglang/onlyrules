@@ -76,6 +76,7 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
     RuleFormat.CURSOR,
     RuleFormat.CLINE,
     RuleFormat.ROO,
+    RuleFormat.KIRO,
     
     // Root file formats
     RuleFormat.CLAUDE_ROOT,
