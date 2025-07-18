@@ -7,11 +7,29 @@ import path from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 
+// Import the new generator
+import { generateRules as generateRulesV2 } from './generator-v2';
+
 /**
  * Generate rule files for different AI assistants
  * @param options Rule generation options
  */
 export async function generateRules(options: RuleGenerationOptions): Promise<void> {
+  // Use the new plugin-based architecture by default
+  // Fall back to legacy implementation if needed
+  const useNewArchitecture = process.env.ONLYRULES_USE_LEGACY !== 'true';
+  
+  if (useNewArchitecture) {
+    try {
+      return await generateRulesV2(options);
+    } catch (error) {
+      console.warn(chalk.yellow('⚠ New architecture failed, falling back to legacy implementation'));
+      console.warn(chalk.gray(`Error: ${(error as Error).message}`));
+      // Fall through to legacy implementation
+    }
+  }
+
+  // Legacy implementation
   // Get rules content
   let rulesContent: string;
   let filePath = '';
