@@ -3,6 +3,7 @@ import { parseArgs } from './cli/args';
 import { generateRules } from './core/generator';
 import { getAvailableTemplates, getTemplateByName } from './utils/templates';
 import { writeFile, mkdir } from 'node:fs/promises';
+import { updateAICoderulesSection } from './utils/file-utils';
 import { dirname, join } from 'node:path';
 import chalk from 'chalk';
 import ora from 'ora';
@@ -429,6 +430,7 @@ async function handleGitignoreCommand(): Promise<void> {
       '.junie',
       '.windsurfrules',
       '.trae',
+      '.github/instructions',
       '.augment-guidelines',
       '.augment/rules',
       '.lingma/rules',
@@ -446,29 +448,11 @@ async function handleGitignoreCommand(): Promise<void> {
       aiRulesSection += `${path}${path.endsWith('/') ? '' : '\n'}`;
     });
     
-    // Add the exception for rulessync.md
-    aiRulesSection += `# Keep only rulessync.md
-!rulessync.md
-`;
-    
     // Remove any existing AI Coderules sections
     // This handles multiple occurrences of the section header
     let updatedContent = existingContent;
     
-    // First, check if there are any AI Coderules sections
-    const sectionRegex = /\n# AI Coderules \(managed by onlyrules\)[\s\S]*?(?=\n(?:# [^A]|[^#])|$)/g;
-    const matches = existingContent.match(sectionRegex);
-    
-    if (matches && matches.length > 0) {
-      // Remove all existing AI Coderules sections
-      updatedContent = existingContent.replace(sectionRegex, '');
-      
-      // Add the new section
-      updatedContent += aiRulesSection;
-    } else {
-      // No existing sections found, just append
-      updatedContent = existingContent + aiRulesSection;
-    }
+    updatedContent = updateAICoderulesSection(existingContent, aiRulesSection);
     
     // Write the updated content back to the file
     await writeFile(gitignorePath, updatedContent);
