@@ -23,6 +23,7 @@ A CLI tool to easily sync all of your favorite AI assistant instruction files fr
 - Trae → `.trae/rules.md`
 - Lingma → `.lingma/rules`
 - Kiro → `.kiro/steering`
+- Tencent Cloud CodeBuddy → `.codebuddy/rules/{name}.md`
 
 ## Installation
 

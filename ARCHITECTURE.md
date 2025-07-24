@@ -266,6 +266,35 @@ If you have custom extensions to the old system:
 5. **Testable**: Each formatter can be tested independently
 6. **Maintainable**: Clear structure makes maintenance easier
 
+## Supported Formatters
+
+The system includes formatters for various AI assistants:
+
+### Directory-Based Formatters
+- **cursor**: Cursor IDE (`.cursor/rules/{name}.mdc`)
+- **copilot**: GitHub Copilot (`.github/copilot-instructions.md`)
+- **cline**: Cline (`.clinerules/project.md`)
+- **roo**: Roo (`.roo/rules/{name}.md`)
+- **kiro**: Kiro (`.kiro/steering`)
+- **codebuddy**: Tencent Cloud CodeBuddy (`.codebuddy/rules/{name}.md`)
+
+### Root File Formatters
+- **claude-root**: Claude (`CLAUDE.md`)
+- **gemini-root**: Gemini (`GEMINI.md`)
+
+### Memory-Based Formatters
+- **claude-memories**: Claude Memories (`claude_memories/{category}/{name}.md`)
+- **gemini-memories**: Gemini Memories (`gemini_memories/{category}/{name}.md`)
+
+### Legacy Formatters
+- **agents**: OpenAI Codex (`AGENTS.md`)
+- **junie**: Junie (`.junie/guidelines.md`)
+- **windsurf**: Windsurf (`.windsurfrules`)
+- **trae**: Trae (`.trae/rules.md`)
+- **augment**: Augment (`.augment/rules/manual/{name}.md`)
+- **augment-always**: Augment Always (`.augment/rules/always/{name}.md`)
+- **lingma-project**: Lingma (`.lingma/rules`)
+
 ## Testing
 
 Each formatter should be tested independently:
