@@ -32,7 +32,7 @@ describe('KiroFormatter', () => {
       expect(formatter.spec).toEqual({
         id: 'kiro',
         name: 'Kiro AI',
-        category: 'DIRECTORY_BASED',
+        category: 'directory',
         extension: '.md',
         supportsMultipleRules: true,
         requiresMetadata: true,
