@@ -1,7 +1,7 @@
 {
   "name": "onlyrules",
   "module": "src/index.ts",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "type": "module",
   "files": [
     "dist",
