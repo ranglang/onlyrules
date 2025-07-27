@@ -41,7 +41,7 @@ export enum RuleFormat {
 /**
  * CLI command types
  */
-export type CliCommand = 'generate' | 'templates' | 'template' | 'init' | 'lingma' | 'gitignore' | 'prunge';
+export type CliCommand = 'generate' | 'templates' | 'template' | 'init' | 'gitignore' | 'prunge';
 
 /**
  * Base CLI arguments interface
@@ -86,16 +86,6 @@ export interface InitCliArgs extends BaseCliArgs {
   force?: boolean;
 }
 
-/**
- * Lingma command arguments
- */
-export interface LingmaCliArgs extends BaseCliArgs {
-  command: 'lingma';
-  action: 'init' | 'generate';
-  ruleName?: string;
-  output?: string;
-  force?: boolean;
-}
 
 /**
  * Gitignore command arguments
@@ -114,7 +104,7 @@ export interface PrungeCliArgs extends BaseCliArgs {
 /**
  * Combined CLI arguments type
  */
-export type CliArgs = GenerateCliArgs | TemplateCliArgs | TemplatesCliArgs | InitCliArgs | LingmaCliArgs | GitignoreCliArgs | PrungeCliArgs;
+export type CliArgs = GenerateCliArgs | TemplateCliArgs | TemplatesCliArgs | InitCliArgs | GitignoreCliArgs | PrungeCliArgs;
 
 /**
  * Rule generation options

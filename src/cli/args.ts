@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { CliArgs, GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs, LingmaCliArgs, GitignoreCliArgs, PrungeCliArgs } from '../types';
+import { CliArgs, GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs, GitignoreCliArgs, PrungeCliArgs } from '../types';
 
 /**
  * Parse command line arguments
@@ -190,28 +190,7 @@ export function parseArgs(argv: string[]): CliArgs {
       } as PrungeCliArgs;
     });
 
-  // Lingma project-specific rules commands
-  program
-    .command('lingma')
-    .description('Manage Lingma project-specific rules')
-    .argument('<action>', 'Action to perform (init, generate)')
-    .option('-n, --name <name>', 'Rule name (for init action)')
-    .option('-o, --output <directory>', 'Output directory for generated rule files', './')
-    .option('--force', 'Force overwrite of existing files')
-    .action((action, options) => {
-      // Validate action
-      if (action !== 'init' && action !== 'generate') {
-        throw new Error('Invalid action. Use either "init" or "generate"');
-      }
-      
-      parsedCommand = {
-        command: 'lingma',
-        action: action as 'init' | 'generate',
-        ruleName: options.name,
-        output: options.output,
-        force: !!options.force
-      } as LingmaCliArgs;
-    });
+
 
   // For backward compatibility, support direct options without subcommand
   program

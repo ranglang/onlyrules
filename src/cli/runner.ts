@@ -6,7 +6,6 @@ import {
   InitCommand,
   TemplatesCommand,
   TemplateCommand,
-  LingmaCommand,
   GitignoreCommand,
   PrungeCommand
 } from './commands';
@@ -23,7 +22,7 @@ export class CLIRunner {
     this.commands.set('init', new InitCommand());
     this.commands.set('templates', new TemplatesCommand());
     this.commands.set('template', new TemplateCommand());
-    this.commands.set('lingma', new LingmaCommand());
+
     this.commands.set('gitignore', new GitignoreCommand());
     this.commands.set('prunge', new PrungeCommand());
   }
