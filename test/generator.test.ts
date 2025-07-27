@@ -1,8 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { generateRules } from '../src/core/generator';
-import { readRulesFromUrl, readRulesFromFile } from '../src/utils/reader';
-import { writeRulesToFile } from '../src/utils/writer';
-import { RuleFormat } from '../src/types';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 // Mock dependencies
 vi.mock('../src/utils/reader', () => ({
@@ -13,6 +9,11 @@ vi.mock('../src/utils/reader', () => ({
 vi.mock('../src/utils/writer', () => ({
   writeRulesToFile: vi.fn()
 }));
+
+import { generateRules } from '../src/core/generator';
+import { readRulesFromUrl, readRulesFromFile } from '../src/utils/reader';
+import { writeRulesToFile } from '../src/utils/writer';
+import { RuleFormat } from '../src/types';
 
 describe('Rules Generator', () => {
   const mockRules = '---\nname: test-rule\n---\n# Test Rule\nThis is a test rule.';

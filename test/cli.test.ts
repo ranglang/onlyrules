@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+// Mock the generator module
+vi.mock('../src/core/generator', () => ({
+  generateRules: vi.fn()
+}));
+
 import { parseArgs } from '../src/cli/args';
 import { generateRules } from '../src/core/generator';
 import { GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs } from '../src/types';
 
 // Set test environment
 process.env.VITEST = 'true';
-
-// Mock the generator module
-vi.mock('../src/core/generator', () => ({
-  generateRules: vi.fn()
-}));
 
 describe('CLI Arguments Parser', () => {
   beforeEach(() => {
