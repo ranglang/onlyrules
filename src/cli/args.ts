@@ -14,10 +14,7 @@ export function parseArgs(argv: string[]): CliArgs {
       // Generate command tests
       const args: Record<string, string | boolean> = {};
       for (let i = 1; i < argv.length; i++) {
-        if (argv[i] === '-u' || argv[i] === '--url') {
-          args.url = argv[i + 1];
-          i++;
-        } else if (argv[i] === '-f' || argv[i] === '--file') {
+        if (argv[i] === '-f' || argv[i] === '--file') {
           args.file = argv[i + 1];
           i++;
         } else if (argv[i] === '-o' || argv[i] === '--output') {
@@ -31,17 +28,12 @@ export function parseArgs(argv: string[]): CliArgs {
       }
 
       // Validate arguments
-      if (args.url && args.file) {
-        throw new Error('Only one of --url or --file can be provided');
-      }
-
-      if (!args.url && !args.file) {
-        throw new Error('Either --url or --file must be provided');
+      if (!args.file) {
+        throw new Error('--file must be provided');
       }
 
       return {
         command: 'generate',
-        url: args.url as string | undefined,
         file: args.file as string | undefined,
         output: args.output as string || './',
         verbose: !!args.verbose,
@@ -84,10 +76,7 @@ export function parseArgs(argv: string[]): CliArgs {
     // Handle direct options for backward compatibility
     const args: Record<string, string | boolean> = {};
     for (let i = 0; i < argv.length; i++) {
-      if (argv[i] === '-u' || argv[i] === '--url') {
-        args.url = argv[i + 1];
-        i++;
-      } else if (argv[i] === '-f' || argv[i] === '--file') {
+      if (argv[i] === '-f' || argv[i] === '--file') {
         args.file = argv[i + 1];
         i++;
       } else if (argv[i] === '-o' || argv[i] === '--output') {
@@ -101,17 +90,12 @@ export function parseArgs(argv: string[]): CliArgs {
     }
 
     // Validate arguments
-    if (args.url && args.file) {
-      throw new Error('Only one of --url or --file can be provided');
-    }
-
-    if (!args.url && !args.file) {
+    if (!args.file) {
       throw new Error('No command or options provided');
     }
 
     return {
       command: 'generate',
-      url: args.url as string | undefined,
       file: args.file as string | undefined,
       output: args.output as string || './',
       verbose: !!args.verbose,
@@ -133,24 +117,18 @@ export function parseArgs(argv: string[]): CliArgs {
   program
     .command('generate')
     .description('Generate AI assistant rule files')
-    .option('-u, --url <url>', 'URL to fetch rules from')
-    .option('-f, --file <path>', 'Local file path to read rules from')
+    .option('-f, --file <path>', 'Local file path or URL to read rules from')
     .option('-o, --output <directory>', 'Output directory for generated rule files', './')
     .option('-v, --verbose', 'Enable verbose output')
     .option('--force', 'Force overwrite of existing files')
     .action((options) => {
       // Validate arguments
-      if (!options.url && !options.file) {
-        throw new Error('Either --url or --file must be provided');
-      }
-
-      if (options.url && options.file) {
-        throw new Error('Only one of --url or --file can be provided');
+      if (!options.file) {
+        throw new Error('--file must be provided');
       }
 
       parsedCommand = {
         command: 'generate',
-        url: options.url,
         file: options.file,
         output: options.output || './',
         verbose: !!options.verbose,
@@ -237,8 +215,7 @@ export function parseArgs(argv: string[]): CliArgs {
 
   // For backward compatibility, support direct options without subcommand
   program
-    .option('-u, --url <url>', 'URL to fetch rules from')
-    .option('-f, --file <path>', 'Local file path to read rules from')
+    .option('-f, --file <path>', 'Local file path or URL to read rules from')
     .option('-o, --output <directory>', 'Output directory for generated rule files', './')
     .option('-v, --verbose', 'Enable verbose output')
     .option('--force', 'Force overwrite of existing files');
@@ -257,19 +234,14 @@ export function parseArgs(argv: string[]): CliArgs {
 
   // Handle direct options (backward compatibility)
   const parsed = program.opts();
-  if (parsed.url || parsed.file) {
+  if (parsed.file) {
     // Validate arguments
-    if (!parsed.url && !parsed.file) {
-      throw new Error('Either --url or --file must be provided');
-    }
-
-    if (parsed.url && parsed.file) {
-      throw new Error('Only one of --url or --file can be provided');
+    if (!parsed.file) {
+      throw new Error('--file must be provided');
     }
 
     return {
       command: 'generate',
-      url: parsed.url,
       file: parsed.file,
       output: parsed.output || './',
       verbose: !!parsed.verbose,

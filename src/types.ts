@@ -55,8 +55,7 @@ export interface BaseCliArgs {
  */
 export interface GenerateCliArgs extends BaseCliArgs {
   command: 'generate';
-  url?: string;
-  file?: string;
+  file?: string; // Can be either a local file path or URL
   output: string;
   verbose?: boolean;
   force?: boolean;
@@ -121,8 +120,7 @@ export type CliArgs = GenerateCliArgs | TemplateCliArgs | TemplatesCliArgs | Ini
  * Rule generation options
  */
 export interface RuleGenerationOptions {
-  url?: string;
-  file?: string;
+  file?: string; // Can be either a local file path or URL
   output: string;
   formats?: RuleFormat[];
   verbose?: boolean;

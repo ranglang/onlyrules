@@ -1,0 +1,81 @@
+version: '3'
+
+vars:
+  BUN_CMD: bun
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  install:
+    desc: Install dependencies using Bun
+    cmds:
+      - "{{.BUN_CMD}} install"
+
+  dev:
+    desc: Run development server
+    cmds:
+      - "{{.BUN_CMD}} run src/cli.ts"
+
+  build:
+    desc: Build the project
+    cmds:
+      - "{{.BUN_CMD}} build ./src/cli.ts --outdir ./dist --target node"
+
+  test:
+    desc: Run tests
+    cmds:
+      - "{{.BUN_CMD}} run vitest run"
+
+  test:watch:
+    desc: Run tests in watch mode
+    cmds:
+      - "{{.BUN_CMD}} run vitest"
+
+  test:coverage:
+    desc: Run tests with coverage
+    cmds:
+      - "{{.BUN_CMD}} run vitest run --coverage"
+
+  format:
+    desc: Format code using Biome
+    cmds:
+      - "{{.BUN_CMD}} run biome format --write ."
+
+  lint:
+    desc: Lint code using Biome
+    cmds:
+      - "{{.BUN_CMD}} run biome check ."
+
+  lint:fix:
+    desc: Lint and fix code using Biome
+    cmds:
+      - "{{.BUN_CMD}} run biome check --apply ."
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf dist
+      - rm -rf node_modules/.cache
+
+  fresh:
+    desc: Fresh install - remove node_modules and reinstall
+    cmds:
+      - rm -rf node_modules
+      - "{{.BUN_CMD}} install"
+
+  check:
+    desc: Run all checks (lint, format, test)
+    cmds:
+      - task: lint
+      - task: format
+      - task: test
+
+  release:
+    desc: Build and prepare for release
+    deps: [clean]
+    cmds:
+      - task: check
+      - task: build

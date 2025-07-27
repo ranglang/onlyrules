@@ -1,4 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+// Mock the generator module
+vi.mock('../src/core/generator', () => ({
+  generateRules: vi.fn()
+}));
+
 import { parseArgs } from '../src/cli/args';
 import { generateRules } from '../src/core/generator';
 import { GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs } from '../src/types';
@@ -6,40 +11,33 @@ import { GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs } from 
 // Set test environment
 process.env.VITEST = 'true';
 
-// Mock the generator module
-vi.mock('../src/core/generator', () => ({
-  generateRules: vi.fn()
-}));
-
 describe('CLI Arguments Parser', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should parse URL argument correctly', () => {
-    const args = parseArgs(['generate', '-u', 'http://example.com/rules.md']) as GenerateCliArgs;
-    expect(args.command).toBe('generate');
-    expect(args.url).toBe('http://example.com/rules.md');
-    expect(args.file).toBeUndefined();
-  });
-
-  it('should parse file argument correctly', () => {
+  it('should parse file argument with local path correctly', () => {
     const args = parseArgs(['generate', '-f', './rules.md']) as GenerateCliArgs;
     expect(args.command).toBe('generate');
     expect(args.file).toBe('./rules.md');
-    expect(args.url).toBeUndefined();
   });
 
-  it('should handle --url long option', () => {
-    const args = parseArgs(['generate', '--url', 'http://example.com/rules.md']) as GenerateCliArgs;
+  it('should parse file argument with URL correctly', () => {
+    const args = parseArgs(['generate', '-f', 'https://example.com/rules.md']) as GenerateCliArgs;
     expect(args.command).toBe('generate');
-    expect(args.url).toBe('http://example.com/rules.md');
+    expect(args.file).toBe('https://example.com/rules.md');
   });
 
-  it('should handle --file long option', () => {
+  it('should handle --file long option with local path', () => {
     const args = parseArgs(['generate', '--file', './rules.md']) as GenerateCliArgs;
     expect(args.command).toBe('generate');
     expect(args.file).toBe('./rules.md');
+  });
+
+  it('should handle --file long option with URL', () => {
+    const args = parseArgs(['generate', '--file', 'https://example.com/rules.md']) as GenerateCliArgs;
+    expect(args.command).toBe('generate');
+    expect(args.file).toBe('https://example.com/rules.md');
   });
 
   it('should set default output directory if not specified', () => {
@@ -54,12 +52,8 @@ describe('CLI Arguments Parser', () => {
     expect(args.output).toBe('./output');
   });
 
-  it('should throw error if neither url nor file is provided', () => {
-    expect(() => parseArgs(['generate'])).toThrow();
-  });
-
-  it('should throw error if both url and file are provided', () => {
-    expect(() => parseArgs(['generate', '-u', 'http://example.com/rules.md', '-f', './rules.md'])).toThrow();
+  it('should throw error if file is not provided', () => {
+    expect(() => parseArgs(['generate'])).toThrow('--file must be provided');
   });
 
   it('should parse templates command correctly', () => {
@@ -93,13 +87,13 @@ describe('Rules Generator', () => {
     vi.clearAllMocks();
   });
 
-  it('should call generateRules with URL when URL is provided', async () => {
-    const args = { command: 'generate', url: 'http://example.com/rules.md', output: './' } as GenerateCliArgs;
+  it('should call generateRules with URL when URL is provided via file parameter', async () => {
+    const args = { command: 'generate', file: 'https://example.com/rules.md', output: './' } as GenerateCliArgs;
     await generateRules(args);
     expect(generateRules).toHaveBeenCalledWith(args);
   });
 
-  it('should call generateRules with file path when file is provided', async () => {
+  it('should call generateRules with file path when local file is provided', async () => {
     const args = { command: 'generate', file: './rules.md', output: './' } as GenerateCliArgs;
     await generateRules(args);
     expect(generateRules).toHaveBeenCalledWith(args);

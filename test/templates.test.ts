@@ -95,10 +95,10 @@ globs: **.js
     });
     
     it('should handle non-existent files gracefully', async () => {
-      await expect(async () => {
+      await expect((async () => {
         const content = await fs.readFile(path.join(testDir, 'nonexistent.md'), 'utf8');
         return parseRuleFile(content, path.join(testDir, 'nonexistent.md'));
-      }).rejects.toThrow();
+      })()).rejects.toThrow();
     });
   });
 });
