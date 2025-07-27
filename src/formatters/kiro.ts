@@ -96,7 +96,7 @@ export class KiroFormatter extends BaseRuleFormatter {
   }
 
   /**
-   * Get appropriate filename based on rule name and type
+   * Get filename for the rule
    */
   private getFileName(rule: ParsedRule): string {
     // Use standardized names for common rule types
@@ -111,11 +111,8 @@ export class KiroFormatter extends BaseRuleFormatter {
       return 'structure.md';
     }
     
-    // For other rules, use descriptive filenames
-    const filename = rule.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
+    // For other rules, use standardized snake_case conversion
+    const filename = this.sanitizeFileName(rule.name);
     
     return `${filename}${this.spec.extension}`;
   }

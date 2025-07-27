@@ -129,6 +129,26 @@ export abstract class BaseRuleFormatter {
     const { writeFile } = await import('node:fs/promises');
     await writeFile(filePath, content);
   }
+
+  /**
+   * Sanitize rule name for file naming (convert to snake_case)
+   */
+  protected sanitizeFileName(name: string): string {
+    return name
+      .trim()
+      // Replace spaces, hyphens, and underscores with a single hyphen
+      .replace(/[\s_]+/g, '-')
+      // Convert camelCase to kebab-case
+      .replace(/([a-z])([A-Z])/g, '$1-$2')
+      // Convert to lowercase
+      .toLowerCase()
+      // Remove any non-alphanumeric characters except hyphens
+      .replace(/[^a-z0-9-]/g, '')
+      // Remove leading/trailing hyphens
+      .replace(/^-+|-+$/g, '')
+      // Replace multiple consecutive hyphens with single hyphen
+      .replace(/-+/g, '-');
+  }
 }
 
 /**

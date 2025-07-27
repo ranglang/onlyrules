@@ -73,7 +73,9 @@ export class ClaudeRootFormatter extends BaseRuleFormatter {
    * Get output file path for the rule
    */
   getOutputPath(rule: ParsedRule, context: RuleGenerationContext): string {
-    return join(context.outputDir, this.spec.defaultPath);
+    const sanitizedName = this.sanitizeFileName(rule.name || 'default');
+    const filename = `${sanitizedName}${this.spec.extension}`;
+    return join(context.outputDir, this.spec.defaultPath, filename);
   }
 
   /**
