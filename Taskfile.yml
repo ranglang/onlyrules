@@ -73,7 +73,7 @@ tasks:
       - task: format
       - task: test
 
-  release:
+  prepare:release:
     desc: Build and prepare for release
     deps: [clean]
     cmds:
