@@ -4,6 +4,7 @@ import { writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import chalk from 'chalk';
 import ora from 'ora';
+import { updateConfigTargets, getConfigTargets, configExists } from '../../utils/config';
 
 export class GenerateCommand implements Command {
   async execute(args: any): Promise<void> {
@@ -52,7 +53,28 @@ export class GenerateCommand implements Command {
     if (args.target) {
       const targetArray = args.target.split(',').map((t: string) => t.trim().toLowerCase());
       args.target = targetArray;
+      
+      // Update onlyrules.json with the target preferences
+      try {
+        const configAction = configExists() ? 'Updated' : 'Created';
+        await updateConfigTargets(targetArray);
+        console.log(chalk.green(`${configAction} onlyrules.json with targets: ${targetArray.join(', ')}`));
+      } catch (error) {
+        console.warn(chalk.yellow(`Warning: Failed to update onlyrules.json: ${(error as Error).message}`));
+      }
+      
       console.log(chalk.blue(`Generating rules for targets: ${targetArray.join(', ')}`));
+    } else {
+      // If no target specified, try to load from config
+      try {
+        const configTargets = await getConfigTargets();
+        if (configTargets.length > 0) {
+          args.target = configTargets;
+          console.log(chalk.blue(`Using targets from onlyrules.json: ${configTargets.join(', ')}`));
+        }
+      } catch (error) {
+        // Silently ignore config reading errors
+      }
     }
     
     // Show spinner during generation
