@@ -48,6 +48,13 @@ export class GenerateCommand implements Command {
     // Show source information
     console.log(chalk.blue(`Reading rules from file: ${args.file}`));
     
+    // Process target option if provided
+    if (args.target) {
+      const targetArray = args.target.split(',').map((t: string) => t.trim().toLowerCase());
+      args.target = targetArray;
+      console.log(chalk.blue(`Generating rules for targets: ${targetArray.join(', ')}`));
+    }
+    
     // Show spinner during generation
     const spinner = ora('Generating rule files...').start();
     

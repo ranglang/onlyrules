@@ -72,6 +72,7 @@ export class CLIRunner {
     let ideStyle = true;
     let ideFolder: string | undefined;
     let generateTraditional = false;
+    let target: string | undefined;
 
     // Parse command line arguments
     for (let i = 1; i < rawArgs.length; i++) {
@@ -83,6 +84,9 @@ export class CLIRunner {
         i++;
       } else if ((rawArgs[i] === '--ide-folder') && i + 1 < rawArgs.length) {
         ideFolder = rawArgs[i + 1];
+        i++;
+      } else if ((rawArgs[i] === '--target') && i + 1 < rawArgs.length) {
+        target = rawArgs[i + 1];
         i++;
       } else if (rawArgs[i] === '-v' || rawArgs[i] === '--verbose') {
         verbose = true;
@@ -103,7 +107,8 @@ export class CLIRunner {
       force,
       ideStyle,
       ideFolder,
-      generateTraditional
+      generateTraditional,
+      target
     };
   }
 

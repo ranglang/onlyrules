@@ -76,6 +76,7 @@ From a URL:
 onlyrules generate -f "https://onlyrules.codes/api/rules/raw?id=cmd9nww9z0007l5040oegtmb1"
 ```
 
+
 Specify an output directory:
 
 ```bash
@@ -87,6 +88,18 @@ Force overwrite existing files:
 ```bash
 onlyrules generate -f ./rules.md --force
 ```
+
+Generate rules for specific AI assistants only:
+
+```bash
+onlyrules generate -f ./rules.md --target cursor,windsurf
+```
+
+```bash
+onlyrules generate -f ./rules.md --target kiro,cursor,codebuddy
+```
+
+Available targets include: `cursor`, `copilot`, `cline`, `claude`, `gemini`, `roo`, `kiro`, `codebuddy`, `windsurf`, `agents`, `junie`, `trae`, `augment`, `lingma`
 
 ### Working with Templates
 

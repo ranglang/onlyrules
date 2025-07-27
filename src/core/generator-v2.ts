@@ -29,6 +29,41 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
 }
 
 /**
+ * Map target names to formatter IDs
+ */
+function mapTargetsToFormatterIds(targets: string[]): string[] {
+  const targetMap: Record<string, string> = {
+    // Modern formatters
+    'cursor': 'cursor',
+    'copilot': 'copilot', 
+    'cline': 'cline',
+    'claude': 'claude-root',
+    'claude-root': 'claude-root',
+    'claude-memories': 'claude-memories',
+    'gemini': 'gemini-root',
+    'gemini-root': 'gemini-root', 
+    'gemini-memories': 'gemini-memories',
+    'roo': 'roo',
+    'kiro': 'kiro',
+    'codebuddy': 'codebuddy',
+    
+    // Legacy formatters
+    'agents': 'agents',
+    'junie': 'junie',
+    'windsurf': 'windsurf',
+    'trae': 'trae',
+    'augment': 'augment',
+    'augment-always': 'augment-always',
+    'lingma': 'lingma-project',
+    'lingma-project': 'lingma-project'
+  };
+
+  return targets
+    .map(target => targetMap[target.toLowerCase()])
+    .filter(Boolean); // Remove undefined values
+}
+
+/**
  * Convert legacy RuleGenerationOptions to new pipeline options
  */
 function convertLegacyOptions(options: RuleGenerationOptions): RuleGenerationPipelineOptions {
@@ -38,9 +73,6 @@ function convertLegacyOptions(options: RuleGenerationOptions): RuleGenerationPip
   if (options.rulesContent) {
     // Direct content provided
     input = { content: options.rulesContent };
-  } else if (options.url) {
-    // URL provided
-    input = options.url;
   } else if (options.file) {
     // File path provided
     input = options.file;
@@ -49,8 +81,18 @@ function convertLegacyOptions(options: RuleGenerationOptions): RuleGenerationPip
     input = './rulesync.mdc';
   }
 
-  // Convert legacy format names to new format IDs
-  const formats = options.formats?.map(convertLegacyFormatToId);
+  // Handle target filtering
+  let formats: string[] | undefined;
+  if (options.target && options.target.length > 0) {
+    // Map target names to formatter IDs
+    formats = mapTargetsToFormatterIds(options.target);
+    if (formats.length === 0) {
+      console.warn(chalk.yellow(`⚠ No valid formatters found for targets: ${options.target.join(', ')}`));
+    }
+  } else if (options.formats) {
+    // Convert legacy format names to new format IDs
+    formats = options.formats.map(convertLegacyFormatToId);
+  }
 
   return {
     input,

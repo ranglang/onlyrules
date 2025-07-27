@@ -59,6 +59,7 @@ export interface GenerateCliArgs extends BaseCliArgs {
   output: string;
   verbose?: boolean;
   force?: boolean;
+  target?: string; // Comma-separated list of target formats to generate (e.g., "cursor,windsurf,kiro")
 }
 
 /**
@@ -119,6 +120,7 @@ export interface RuleGenerationOptions {
   ideStyle?: boolean; // Whether to use IDE-style rule organization (default: true)
   ideFolder?: string; // Custom folder name for IDE-style rules (default: '.rules')
   generateTraditional?: boolean; // Whether to also generate traditional format files
+  target?: string[]; // Array of target format names to generate (e.g., ["cursor", "windsurf", "kiro"])
 }
 
 /**
