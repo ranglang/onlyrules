@@ -24,6 +24,7 @@ export class CLIRunner {
     this.commands.set('templates', new TemplatesCommand());
     this.commands.set('template', new TemplateCommand());
     this.commands.set('add', new AddCommand());
+    this.commands.set('append', new AddCommand());
 
     this.commands.set('gitignore', new GitignoreCommand());
     this.commands.set('prunge', new PrungeCommand());
@@ -53,6 +54,9 @@ export class CLIRunner {
         const args = this.parseInitArgs(rawArgs);
         await command.execute(args);
       } else if (commandName === 'add') {
+        const args = this.parseAddArgs(rawArgs);
+        await command.execute(args);
+      } else if (commandName === 'append') {
         const args = this.parseAddArgs(rawArgs);
         await command.execute(args);
       } else if (commandName === 'gitignore' || commandName === 'prunge') {
