@@ -91,11 +91,43 @@ export function parseRuleFile(content: string, filePath: string): Array<{name: s
  * @param {string} content - Markdown content
  * @returns {string} - Extracted title or default description
  */
+/**
+ * Convert a string to snake-case and make it suitable for file names
+ * @param {string} str - Input string
+ * @returns {string} - Snake-case string safe for file names
+ */
+function toSnakeCaseFileName(str: string): string {
+  return str
+    // Remove or replace invalid file name characters
+    .replace(/[<>:"/\\|?*]/g, '')
+    // Replace spaces and other separators with hyphens
+    .replace(/[\s_]+/g, '-')
+    // Convert to lowercase
+    .toLowerCase()
+    // Replace multiple consecutive hyphens with single hyphen
+    .replace(/-+/g, '-')
+    // Remove leading/trailing hyphens
+    .replace(/^-+|-+$/g, '')
+    // Ensure it's not empty
+    || 'unnamed-rule';
+}
+
 export function extractTitleFromMarkdown(content: string): string {
-  // Try to find the first heading
-  const titleMatch = content.match(/^#\s+(.+)$/m);
-  if (titleMatch && titleMatch[1]) {
-    return titleMatch[1].trim();
+  // First, try to extract title from frontmatter metadata
+  const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
+  if (frontmatterMatch && frontmatterMatch[1]) {
+    const frontmatter = frontmatterMatch[1];
+    // Look for title field in frontmatter (supports both quoted and unquoted values)
+    const titleMatch = frontmatter.match(/^\s*title:\s*["']?([^"'\n]+)["']?\s*$/m);
+    if (titleMatch && titleMatch[1]) {
+      return titleMatch[1].trim();
+    }
+  }
+  
+  // Fallback: Try to find the first heading
+  const headingMatch = content.match(/^#\s+(.+)$/m);
+  if (headingMatch && headingMatch[1]) {
+    return headingMatch[1].trim();
   }
   
   // If no heading found, use the first non-empty line
@@ -136,8 +168,35 @@ function parseMdcContent(content: string, defaultName: string): Array<{name: str
       }
     });
     
-    // Get rule name from frontmatter or generate one
-    const name = frontmatterObj.name || `${defaultName}-${index + 1}`;
+    // Get rule name with priority: frontmatter > extracted title > fallback
+    let name = frontmatterObj.name;
+    
+    if (!name) {
+      // Try to extract title from markdown content
+      const extractedTitle = extractTitleFromMarkdown(contentText);
+      if (extractedTitle && extractedTitle !== 'AI Rules') {
+        name = extractedTitle;
+      }
+    }
+    
+    // Convert to snake-case and make file-system safe
+    if (!name) {
+      name = toSnakeCaseFileName(`${defaultName}-${index + 1}`);
+    } else {
+      name = toSnakeCaseFileName(name);
+      
+      // Check if this name already exists in our rules
+      const existingNames = rules.map(rule => rule.name);
+      let uniqueName = name;
+      let counter = 1;
+      
+      while (existingNames.includes(uniqueName)) {
+        uniqueName = toSnakeCaseFileName(`${name}-${counter}`);
+        counter++;
+      }
+      
+      name = uniqueName;
+    }
     
     // Add the rule to our collection
     rules.push({
