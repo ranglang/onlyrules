@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { isUrl, readRulesFromInput, readRulesFromUrl, readRulesFromFile } from '../src/utils/reader';
 
 // Mock node-fetch
 vi.mock('node-fetch', () => ({
@@ -11,6 +10,7 @@ vi.mock('node:fs/promises', () => ({
   readFile: vi.fn(),
 }));
 
+import { isUrl, readRulesFromInput, readRulesFromUrl, readRulesFromFile } from '../src/utils/reader';
 import fetch from 'node-fetch';
 
 describe('reader utilities', () => {

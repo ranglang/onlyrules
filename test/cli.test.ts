@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
 // Mock the generator module
 vi.mock('../src/core/generator', () => ({
   generateRules: vi.fn()
@@ -88,14 +89,14 @@ describe('Rules Generator', () => {
   });
 
   it('should call generateRules with URL when URL is provided via file parameter', async () => {
-    const args = { command: 'generate', file: 'https://example.com/rules.md', output: './' } as GenerateCliArgs;
-    await generateRules(args);
-    expect(generateRules).toHaveBeenCalledWith(args);
+    const options = { file: 'https://example.com/rules.md', output: './' };
+    await generateRules(options);
+    expect(generateRules).toHaveBeenCalledWith(options);
   });
 
   it('should call generateRules with file path when local file is provided', async () => {
-    const args = { command: 'generate', file: './rules.md', output: './' } as GenerateCliArgs;
-    await generateRules(args);
-    expect(generateRules).toHaveBeenCalledWith(args);
+    const options = { file: './rules.md', output: './' };
+    await generateRules(options);
+    expect(generateRules).toHaveBeenCalledWith(options);
   });
 });

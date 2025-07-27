@@ -21,12 +21,12 @@
   },
   "scripts": {
     "format": "biome format --write .",
-    "test": "vitest run",
+    "test": "npx vitest run",
     "build": "bun build ./src/cli.ts --outdir ./dist --target node",
-    "test:watch": "vitest",
+    "test:watch": "npx vitest",
     "dev": "bun run src/cli.ts",
     "lint:fix": "biome check --apply .",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "npx vitest run --coverage",
     "lint": "biome check ."
   },
   "dependencies": {
