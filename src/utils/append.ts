@@ -26,19 +26,28 @@ export async function appendRulesToFile(sourceFile: string, targetFile = './rule
       const existingContent = await readFile(targetFile, 'utf-8');
       
       if (existingContent.trim()) {
-        // Append with section separator that includes proper frontmatter
-        // Generate a section name based on content frontmatter or fallback to source-based name
-        const sectionName = generateSectionName(sourceFile, newRulesContent);
         const cleanExistingContent = existingContent.trimEnd();
-        const frontmatter = `---
+        
+        // Check if the new content already has frontmatter
+        if (hasFrontmatter(newRulesContent)) {
+          // Content has frontmatter, append directly with just a separator
+          finalContent = `${cleanExistingContent}
+
+${newRulesContent.trim()}
+`;
+        } else {
+          // Content doesn't have frontmatter, add section separator with proper frontmatter
+          const sectionName = generateSectionName(sourceFile, newRulesContent);
+          const frontmatter = `---
 name: ${sectionName}
 ---`;
-        finalContent = `${cleanExistingContent}
+          finalContent = `${cleanExistingContent}
 
 ${frontmatter}
 
 ${newRulesContent.trim()}
 `;
+        }
       } else {
         // Target file exists but is empty, just add new content
         finalContent = `${newRulesContent.trim()}\n`;
@@ -58,6 +67,15 @@ ${newRulesContent.trim()}
 }
 
 /**
+ * Check if content has frontmatter at the beginning
+ * @param content The content to check
+ * @returns True if content starts with frontmatter
+ */
+function hasFrontmatter(content: string): boolean {
+  return /^---\s*\n[\s\S]*?\n---/.test(content.trim());
+}
+
+/**
  * Extract section name from frontmatter if available
  * @param content The content to parse for frontmatter
  * @returns The name from frontmatter or null if not found
@@ -71,7 +89,7 @@ function extractNameFromFrontmatter(content: string): string | null {
 
   const frontmatterContent = frontmatterMatch[1];
   // Look for name field in frontmatter
-  const nameMatch = frontmatterContent.match(/^name:\s*(.+)$/m);
+  const nameMatch = frontmatterContent.match(/^title:\s*(.+)$/m);
   if (nameMatch) {
     return nameMatch[1].trim();
   }
