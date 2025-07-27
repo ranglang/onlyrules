@@ -5,6 +5,33 @@ import fetch from 'node-fetch';
 import { parseRuleFile } from './templates';
 
 /**
+ * Check if a string is a valid URL
+ * @param input String to check
+ * @returns True if the input is a URL
+ */
+export function isUrl(input: string): boolean {
+  try {
+    const url = new URL(input);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Read rules content from either a URL or local file
+ * @param input URL or file path
+ * @returns Rules content as string
+ */
+export async function readRulesFromInput(input: string): Promise<string> {
+  if (isUrl(input)) {
+    return readRulesFromUrl(input);
+  } else {
+    return readRulesFromFile(input);
+  }
+}
+
+/**
  * Read rules content from a URL
  * @param url URL to fetch rules from
  * @returns Rules content as string

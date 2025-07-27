@@ -26,7 +26,6 @@ async function main() {
     
     // Special handling for generate command
     if (rawArgs[0] === 'generate') {
-      let url: string | undefined;
       let file: string | undefined;
       let output = './';
       let verbose = false;
@@ -37,10 +36,7 @@ async function main() {
       
       // Parse command line arguments
       for (let i = 1; i < rawArgs.length; i++) {
-        if ((rawArgs[i] === '-u' || rawArgs[i] === '--url') && i + 1 < rawArgs.length) {
-          url = rawArgs[i + 1];
-          i++; // Skip the next argument
-        } else if ((rawArgs[i] === '-f' || rawArgs[i] === '--file') && i + 1 < rawArgs.length) {
+        if ((rawArgs[i] === '-f' || rawArgs[i] === '--file') && i + 1 < rawArgs.length) {
           file = rawArgs[i + 1];
           i++; // Skip the next argument
         } else if ((rawArgs[i] === '-o' || rawArgs[i] === '--output') && i + 1 < rawArgs.length) {
@@ -60,27 +56,20 @@ async function main() {
         }
       }
       
-      // If neither url nor file is provided, use rulesync.md as default
-      if (!url && !file) {
+      // If file is not provided, use rulesync.mdc as default
+      if (!file) {
         file = './rulesync.mdc';
-        // Check if rulesync.md exists
+        // Check if rulesync.mdc exists
         if (!existsSync(file)) {
           console.log(chalk.yellow(`Default file 'rulesync.mdc' not found. You can create it with 'onlyrules init <template-name>'`));
-          console.log(chalk.yellow('Usage: onlyrules generate --url <url> | --file <path> [--output <dir>] [--verbose] [--force] [--no-ide-style] [--ide-folder <name>] [--traditional]'));
+          console.log(chalk.yellow('Usage: onlyrules generate --file <path_or_url> [--output <dir>] [--verbose] [--force] [--no-ide-style] [--ide-folder <name>] [--traditional]'));
           process.exit(1);
         }
-      }
-      
-      if (url && file) {
-        console.error(chalk.red('Error: Only one of --url or --file can be provided'));
-        console.log(chalk.yellow('Usage: onlyrules generate --url <url> | --file <path> [--output <dir>] [--verbose] [--force] [--no-ide-style] [--ide-folder <name>] [--traditional]'));
-        process.exit(1);
       }
       
       // Handle generate command directly
       await handleGenerateCommand({
         command: 'generate',
-        url,
         file,
         output,
         verbose,
@@ -170,21 +159,24 @@ async function main() {
  * Handle the generate command
  */
 async function handleGenerateCommand(args: any) {
-  // If neither url nor file is provided in args, use rulesync.md as default
-  if (!args.url && !args.file) {
+  // If file is not provided in args, use rulesync.mdc as default
+  if (!args.file) {
     args.file = './rulesync.mdc';
-    // Check if rulesync.md exists
+    // Check if rulesync.mdc exists
     if (!existsSync(args.file)) {
       console.log(chalk.yellow(`Default file 'rulesync.mdc' not found. You can create it with 'onlyrules init <template-name>'`));
-      console.log(chalk.yellow('Usage: onlyrules generate --url <url> | --file <path> [--output <dir>] [--verbose] [--force] [--no-ide-style] [--ide-folder <name>] [--traditional]'));
+      console.log(chalk.yellow('Usage: onlyrules generate --file <path_or_url> [--output <dir>] [--verbose] [--force] [--no-ide-style] [--ide-folder <name>] [--traditional]'));
       process.exit(1);
     }
   }
   
+  // Import the URL detection function
+  const { isUrl } = await import('./utils/reader');
+  
   // Show source information
-  if (args.url) {
-    console.log(chalk.blue(`Fetching rules from URL: ${args.url}`));
-  } else if (args.file) {
+  if (isUrl(args.file)) {
+    console.log(chalk.blue(`Fetching rules from URL: ${args.file}`));
+  } else {
     console.log(chalk.blue(`Reading rules from file: ${args.file}`));
   }
   
@@ -380,7 +372,6 @@ async function handleLingmaCommand(args: LingmaCliArgs): Promise<void> {
       await generateRules({
         output: output || './',
         file: undefined,
-        url: undefined,
         force: force || false,
         verbose: true,
         // Use the combined rules content directly

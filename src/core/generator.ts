@@ -1,4 +1,4 @@
-import { readRulesFromUrl, readRulesFromFile } from '../utils/reader';
+import { readRulesFromInput } from '../utils/reader';
 import { writeRulesToFile } from '../utils/writer';
 import { RuleFormat, RuleGenerationOptions } from '../types';
 import chalk from 'chalk';
@@ -38,24 +38,15 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
   if (options.rulesContent) {
     rulesContent = options.rulesContent;
   } else {
-    // Use default file if neither url nor file is provided
-    if (!options.url && !options.file) {
+    // Use default file if not provided
+    if (!options.file) {
       options.file = './rulesync.mdc';
     }
 
     // Get rules content from file or URL
     try {
-      if (options.url) {
-        rulesContent = await readRulesFromUrl(options.url);
-        // Use the last part of the URL as the file name
-        const urlParts = options.url.split('/');
-        filePath = urlParts[urlParts.length - 1];
-      } else if (options.file) {
-        rulesContent = await readRulesFromFile(options.file);
-        filePath = options.file;
-      } else {
-        throw new Error('Invalid options');
-      }
+      rulesContent = await readRulesFromInput(options.file);
+      filePath = options.file;
     } catch (error) {
       throw new Error(`Failed to read rules: ${(error as Error).message}`);
     }

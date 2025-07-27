@@ -64,16 +64,16 @@ For more advanced usage, see the sections below.
 
 ### Generate Rule Files
 
-From a URL:
-
-```bash
-onlyrules generate -u https://example.com/rules.md
-```
-
 From a local file:
 
 ```bash
 onlyrules generate -f ./rules.md
+```
+
+From a URL:
+
+```bash
+onlyrules generate -f "https://onlyrules.codes/api/rules/raw?id=cmd9nww9z0007l5040oegtmb1"
 ```
 
 Specify an output directory:
