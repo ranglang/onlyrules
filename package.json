@@ -10,14 +10,14 @@
   "author": "ranglang",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ranglang/onlyrules"
+    "url": "git+https://github.com/ranglang/onlyrules.git"
   },
   "engines": {
     "node": ">=18.0.0",
     "bun": ">=1.0.0"
   },
   "bin": {
-    "onlyrules": "./dist/cli.js"
+    "onlyrules": "dist/cli.js"
   },
   "scripts": {
     "format": "biome format --write .",
