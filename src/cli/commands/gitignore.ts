@@ -3,6 +3,7 @@ import { updateAICoderulesSection } from '../../utils/file-utils';
 import { writeFile } from 'node:fs/promises';
 import chalk from 'chalk';
 import ora from 'ora';
+import { IDE_RULE_PATHS_FOR_GITIGNORE } from '../../utils/ide-paths';
 
 export class GitignoreCommand implements Command {
   async execute(args: any): Promise<void> {
@@ -18,29 +19,8 @@ export class GitignoreCommand implements Command {
         // File doesn't exist yet, which is fine
       }
       
-      // Define all AI rule paths to ignore
-      const aiRulePaths = [
-        '.cursorrules',
-        '.cursor',
-        'CLAUDE.md',
-        '.claude',
-        '.github/copilot-instructions.md',
-        'GEMINI.md',
-        '.gemini',
-        'AGENTS.md',
-        '.clinerules',
-        '.junie',
-        '.windsurfrules',
-        '.trae',
-        '.github/instructions',
-        '.augment-guidelines',
-        '.augment/rules',
-        '.lingma/rules',
-        '.roo',
-        '.kiro/steering',
-        '.codebuddy/rules',
-        '.rules'
-      ];
+      // Use shared AI rule paths for gitignore
+      const aiRulePaths = IDE_RULE_PATHS_FOR_GITIGNORE;
       
       // Create the AI rules ignore section with both files and directories
       let aiRulesSection = `

@@ -2,32 +2,15 @@ import { Command } from './base';
 import { existsSync } from 'node:fs';
 import chalk from 'chalk';
 import ora from 'ora';
+import { IDE_RULE_PATHS_FOR_REMOVAL } from '../../utils/ide-paths';
 
 export class PrungeCommand implements Command {
   async execute(args: any): Promise<void> {
     const spinner = ora('Removing all IDE rules...').start();
     
     try {
-      // Define paths to IDE rule directories/files to remove
-      const idePaths = [
-        './.cursorrules',
-        './.cursor',
-        './.github/copilot-instructions.md',
-        './.github/instructions',
-        './.clinerules',
-        './.junie',
-        './.windsurfrules',
-        './.trae',
-        './.augment',
-        './.augment-guidelines',
-        './.lingma/rules',
-        './.gemini',
-        './.claude',
-        './.roo',
-        './CLAUDE.md',
-        './GEMINI.md',
-        './AGENTS.md'
-      ];
+      // Use shared IDE paths for removal
+      const idePaths = IDE_RULE_PATHS_FOR_REMOVAL;
       
       // Import fs modules
       const { rm } = await import('fs/promises');
