@@ -29,9 +29,44 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
 }
 
 /**
+ * Get all valid target names
+ */
+function getValidTargets(): string[] {
+  return [
+    // Modern formatters
+    'cursor', 'copilot', 'cline', 'claude', 'claude-root', 'claude-memories',
+    'gemini', 'gemini-root', 'gemini-memories', 'roo', 'kiro', 'codebuddy',
+    // Legacy formatters
+    'agents', 'junie', 'windsurf', 'trae', 'augment', 'augment-always',
+    'lingma', 'lingma-project'
+  ];
+}
+
+/**
+ * Validate target names and throw error if any are invalid
+ */
+function validateTargets(targets: string[]): void {
+  const validTargets = getValidTargets();
+  const invalidTargets = targets
+    .map(t => t.toLowerCase())
+    .filter(target => !validTargets.includes(target));
+  
+  if (invalidTargets.length > 0) {
+    const availableTargets = validTargets.join(', ');
+    throw new Error(
+      `Invalid target(s): ${invalidTargets.join(', ')}\n` +
+      `Available targets: ${availableTargets}`
+    );
+  }
+}
+
+/**
  * Map target names to formatter IDs
  */
 function mapTargetsToFormatterIds(targets: string[]): string[] {
+  // First validate all targets
+  validateTargets(targets);
+  
   const targetMap: Record<string, string> = {
     // Modern formatters
     'cursor': 'cursor',
@@ -60,7 +95,7 @@ function mapTargetsToFormatterIds(targets: string[]): string[] {
 
   return targets
     .map(target => targetMap[target.toLowerCase()])
-    .filter(Boolean); // Remove undefined values
+    .filter(Boolean); // This should never filter anything now due to validation
 }
 
 /**
@@ -162,6 +197,9 @@ function logLegacyCompatibleResults(results: RuleGenerationResult[], verbose?: b
     )
   );
 }
+
+// Export validation functions for CLI use
+export { validateTargets, getValidTargets };
 
 /**
  * Get available format specifications for CLI help

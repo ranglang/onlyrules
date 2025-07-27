@@ -52,6 +52,16 @@ export class GenerateCommand implements Command {
     // Process target option if provided
     if (args.target) {
       const targetArray = args.target.split(',').map((t: string) => t.trim().toLowerCase());
+      
+      // Validate targets
+      const { validateTargets } = await import('../../core/generator-v2');
+      try {
+        validateTargets(targetArray);
+      } catch (error) {
+        console.error(chalk.red(`Error: ${(error as Error).message}`));
+        process.exit(1);
+      }
+      
       args.target = targetArray;
       
       // Update onlyrules.json with the target preferences

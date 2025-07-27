@@ -119,6 +119,11 @@ export function parseArgs(argv: string[]): CliArgs {
     .description('Generate AI assistant rule files')
     .option('-f, --file <path>', 'Local file path or URL to read rules from')
     .option('-o, --output <directory>', 'Output directory for generated rule files', './')
+    .option('-t, --target <targets>', 'Comma-separated list of AI assistants to generate rules for.\n' +
+      '                                Available targets:\n' +
+      '                                Modern: cursor, copilot, cline, claude, gemini, roo, kiro, codebuddy\n' +
+      '                                Legacy: agents, junie, windsurf, trae, augment, augment-always, lingma\n' +
+      '                                Example: --target cursor,windsurf,claude')
     .option('-v, --verbose', 'Enable verbose output')
     .option('--force', 'Force overwrite of existing files')
     .action((options) => {
@@ -127,10 +132,23 @@ export function parseArgs(argv: string[]): CliArgs {
         throw new Error('--file must be provided');
       }
 
+      // Validate targets if provided
+      if (options.target) {
+        const { validateTargets } = require('../core/generator-v2');
+        const targetArray = options.target.split(',').map((t: string) => t.trim());
+        try {
+          validateTargets(targetArray);
+        } catch (error) {
+          console.error(`Error: ${(error as Error).message}`);
+          process.exit(1);
+        }
+      }
+
       parsedCommand = {
         command: 'generate',
         file: options.file,
         output: options.output || './',
+        target: options.target,
         verbose: !!options.verbose,
         force: !!options.force
       } as GenerateCliArgs;
