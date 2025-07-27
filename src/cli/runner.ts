@@ -6,6 +6,7 @@ import {
   InitCommand,
   TemplatesCommand,
   TemplateCommand,
+  AddCommand,
   GitignoreCommand,
   PrungeCommand
 } from './commands';
@@ -22,6 +23,7 @@ export class CLIRunner {
     this.commands.set('init', new InitCommand());
     this.commands.set('templates', new TemplatesCommand());
     this.commands.set('template', new TemplateCommand());
+    this.commands.set('add', new AddCommand());
 
     this.commands.set('gitignore', new GitignoreCommand());
     this.commands.set('prunge', new PrungeCommand());
@@ -49,6 +51,9 @@ export class CLIRunner {
         await command.execute(args);
       } else if (commandName === 'init') {
         const args = this.parseInitArgs(rawArgs);
+        await command.execute(args);
+      } else if (commandName === 'add') {
+        const args = this.parseAddArgs(rawArgs);
         await command.execute(args);
       } else if (commandName === 'gitignore' || commandName === 'prunge') {
         // These commands don't need arguments
@@ -137,6 +142,28 @@ export class CLIRunner {
       templateName,
       output: outputPath,
       force
+    };
+  }
+
+  private parseAddArgs(rawArgs: string[]): any {
+    let file: string | undefined;
+    let output: string | undefined;
+
+    // Parse command line arguments
+    for (let i = 1; i < rawArgs.length; i++) {
+      if ((rawArgs[i] === '-f' || rawArgs[i] === '--file') && i + 1 < rawArgs.length) {
+        file = rawArgs[i + 1];
+        i++;
+      } else if ((rawArgs[i] === '-o' || rawArgs[i] === '--output') && i + 1 < rawArgs.length) {
+        output = rawArgs[i + 1];
+        i++;
+      }
+    }
+
+    return {
+      command: 'add',
+      file,
+      output
     };
   }
 }

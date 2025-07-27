@@ -83,6 +83,28 @@ export class DefaultRuleParser implements RuleParser {
   }
 
   /**
+   * Extract section name from frontmatter if available
+   * @param content The content to parse for frontmatter
+   * @returns The name from frontmatter or null if not found
+   */
+  private extractNameFromFrontmatter(content: string): string | null {
+    // Look for frontmatter at the beginning of content
+    const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
+    if (!frontmatterMatch) {
+      return null;
+    }
+
+    const frontmatterContent = frontmatterMatch[1];
+    // Look for name field in frontmatter
+    const nameMatch = frontmatterContent.match(/^name:\s*(.+)$/m);
+    if (nameMatch) {
+      return nameMatch[1].trim();
+    }
+
+    return null;
+  }
+
+  /**
    * Parse MDC content with multiple rule sections
    */
   private parseMdcContent(content: string, defaultName: string): ParsedRule[] {
@@ -95,8 +117,9 @@ export class DefaultRuleParser implements RuleParser {
       const section = sections[i];
       const metadata = this.extractMetadata(section);
       
-      // Get rule name from metadata or generate one
-      const name = metadata.name || `${defaultName}-${i + 1}`;
+      // Get rule name from frontmatter using dedicated function, fallback to metadata or generate one
+      const nameFromFrontmatter = this.extractNameFromFrontmatter(section);
+      const name = nameFromFrontmatter || metadata.name || `${defaultName}-${i + 1}`;
       
       // Remove frontmatter from content
       const contentWithoutFrontmatter = section.replace(/^---\n[\s\S]*?\n---\n?/, '').trim();

@@ -101,6 +101,36 @@ onlyrules generate -f ./rules.md --target kiro,cursor,codebuddy
 
 Available targets include: `cursor`, `copilot`, `cline`, `claude`, `gemini`, `roo`, `kiro`, `codebuddy`, `windsurf`, `agents`, `junie`, `trae`, `augment`, `lingma`
 
+
+
+### Add rules to the rulesync.mdc
+
+```bash
+onlyrules add -f ./rules-new.mdc
+```
+
+The add command appends new rules to the rulesync.mdc file. When appending:
+- New rules are automatically separated from existing content with a section divider (`---`)
+- Supports both local files and remote URLs as source
+- Creates rulesync.mdc if it doesn't exist
+- Preserves existing content while adding new rules
+
+**Options:**
+- `-f, --file <path>`: Source file or URL containing rules to append (required)
+- `-o, --output <path>`: Target file to append to (default: `./rulesync.mdc`)
+
+**Examples:**
+```bash
+# Append from local file
+onlyrules add -f ./new-rules.mdc
+
+# Append from remote URL
+onlyrules add -f https://example.com/rules.mdc
+
+# Append to custom target file
+onlyrules add -f ./rules.mdc -o ./custom-rules.mdc
+```
+
 ### Working with Templates
 
 List available templates:

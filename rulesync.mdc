@@ -38,3 +38,15 @@ name: stylesheet
 - Respect user privacy and confidentiality
 - Avoid politically charged language
 - Focus on being helpful rather than entertaining
+
+---
+
+# Demo New Rules
+
+These are some new rules to demonstrate the append functionality.
+
+## Rule 1
+Always use TypeScript for new projects.
+
+## Rule 2
+Prefer functional programming patterns when possible.

@@ -19,6 +19,121 @@ fs.mkdirSync(outputDir, { recursive: true });
 
 console.log('Testing multiple rule generation from rulesync.mdc...');
 
+// Test end-to-end workflow: init -> append -> generate for Cursor
+async function testEndToEndWorkflow() {
+  const workflowDir = path.join(outputDir, 'end-to-end');
+  fs.mkdirSync(workflowDir, { recursive: true });
+  
+  const originalCwd = process.cwd();
+  process.chdir(workflowDir);
+  
+  try {
+    // Step 1: Initialize a rulesync.mdc file using the basic template
+    console.log('  📝 Step 1: Initialize rulesync.mdc with basic template');
+    execSync(`node ${path.join(originalCwd, 'dist/cli.js')} init basic`, {
+      stdio: 'inherit'
+    });
+    
+    // Verify rulesync.mdc was created
+    assert(fs.existsSync('./rulesync.mdc'), 'rulesync.mdc should be created by init command');
+    
+    const initialContent = fs.readFileSync('./rulesync.mdc', 'utf8');
+    console.log('  ✅ Initial rulesync.mdc created successfully');
+    
+    // Step 2: Create additional rules to append
+    console.log('  📝 Step 2: Create additional rules file');
+    const additionalRules = `---
+description: TypeScript specific rules
+name: typescript
+globs: "**/*.ts,**/*.tsx"
+---
+
+# TypeScript Rules
+
+## Type Safety
+- Always use strict TypeScript configuration
+- Prefer explicit types over 'any'
+- Use union types for better type safety
+
+## Code Organization
+- Use interfaces for object shapes
+- Prefer const assertions for immutable data
+- Use enums for related constants`;
+    
+    fs.writeFileSync('./additional-rules.mdc', additionalRules);
+    console.log('  ✅ Additional rules file created');
+    
+    // Step 3: Append the additional rules to rulesync.mdc
+    console.log('  📝 Step 3: Append additional rules to rulesync.mdc');
+    execSync(`node ${path.join(originalCwd, 'dist/cli.js')} add -f ./additional-rules.mdc`, {
+      stdio: 'inherit'
+    });
+    
+    // Verify the content was appended with section separator
+    const appendedContent = fs.readFileSync('./rulesync.mdc', 'utf8');
+    assert(appendedContent.includes('---\n\n# TypeScript Rules'), 
+      'Additional rules should be appended with section separator');
+    assert(appendedContent.length > initialContent.length, 
+      'rulesync.mdc should be longer after appending');
+    console.log('  ✅ Rules appended successfully with section separator');
+    
+    // Step 4: Generate multiple rule files for Cursor
+    console.log('  📝 Step 4: Generate multiple rule files for Cursor');
+    execSync(`node ${path.join(originalCwd, 'dist/cli.js')} generate -f ./rulesync.mdc --target cursor`, {
+      stdio: 'inherit'
+    });
+    
+    // Verify Cursor rule files were generated
+    const cursorDir = path.join('.', '.cursorrules');
+    assert(fs.existsSync(cursorDir), 'Cursor rules directory should be created');
+    
+    const cursorFiles = fs.readdirSync(cursorDir);
+    console.log('  📁 Generated Cursor files:', cursorFiles);
+    
+    // Check for expected rule files
+    const expectedFiles = ['global.mdc', 'typescript.mdc'];
+    expectedFiles.forEach(fileName => {
+      const filePath = path.join(cursorDir, fileName);
+      assert(fs.existsSync(filePath), `${fileName} should exist in Cursor rules directory`);
+      
+      const fileContent = fs.readFileSync(filePath, 'utf8');
+      assert(fileContent.includes('cursorRuleType:'), 
+        `${fileName} should contain Cursor-specific frontmatter`);
+      
+      if (fileName === 'global.mdc') {
+        assert(fileContent.includes('Basic AI Rules') || fileContent.includes('General Instructions'), 
+          'global.mdc should contain basic rules content');
+      } else if (fileName === 'typescript.mdc') {
+        assert(fileContent.includes('TypeScript Rules') && fileContent.includes('Type Safety'), 
+          'typescript.mdc should contain TypeScript-specific rules');
+      }
+    });
+    
+    console.log('  ✅ Cursor rule files generated successfully');
+    
+    // Step 5: Verify the complete workflow integrity
+    console.log('  📝 Step 5: Verify workflow integrity');
+    
+    // Check that original rulesync.mdc still exists and contains all content
+    assert(fs.existsSync('./rulesync.mdc'), 'rulesync.mdc should still exist after generation');
+    const finalContent = fs.readFileSync('./rulesync.mdc', 'utf8');
+    assert(finalContent.includes('Basic AI Rules'), 'Should contain initial template content');
+    assert(finalContent.includes('TypeScript Rules'), 'Should contain appended content');
+    assert(finalContent.includes('---\n\n# TypeScript Rules'), 'Should maintain section separators');
+    
+    console.log('  ✅ Workflow integrity verified');
+    
+    // Clean up additional files
+    fs.unlinkSync('./additional-rules.mdc');
+    
+    console.log('✅ End-to-end workflow test passed!');
+    
+  } finally {
+    // Always restore original working directory
+    process.chdir(originalCwd);
+  }
+}
+
 // Test both traditional and IDE-style rule organization
 async function runTests() {
   try {
@@ -29,6 +144,10 @@ async function runTests() {
     // Test 2: IDE-style (single directory with multiple files)
     console.log('\n🧪 Test 2: IDE-style organization (single directory with multiple files)');
     await testIdeStyle();
+    
+    // Test 3: End-to-end workflow (init -> append -> generate)
+    console.log('\n🧪 Test 3: End-to-end workflow (init -> append -> generate for Cursor)');
+    await testEndToEndWorkflow();
     
     console.log('\n✅ All tests passed!');
   } catch (error) {
