@@ -85,6 +85,7 @@ export interface InitCliArgs extends BaseCliArgs {
   templateName: string;
   output: string;
   force?: boolean;
+  target?: string;
 }
 
 

@@ -1,4 +1,26 @@
 /**
+ * Convert a string to snake_case for file naming
+ * @param str The string to convert
+ * @returns The string converted to snake_case
+ */
+export function toSnakeCase(str: string): string {
+  return str
+    .trim()
+    // Replace spaces, hyphens, and underscores with a single hyphen
+    .replace(/[\s_]+/g, '-')
+    // Convert camelCase to kebab-case
+    .replace(/([a-z])([A-Z])/g, '$1-$2')
+    // Convert to lowercase
+    .toLowerCase()
+    // Remove any non-alphanumeric characters except hyphens
+    .replace(/[^a-z0-9-]/g, '')
+    // Remove leading/trailing hyphens
+    .replace(/^-+|-+$/g, '')
+    // Replace multiple consecutive hyphens with single hyphen
+    .replace(/-+/g, '-');
+}
+
+/**
  * Updates or adds an AI Coderules section in a file content
  * @param existingContent The existing content of the file
  * @param aiRulesSection The new AI Coderules section to add

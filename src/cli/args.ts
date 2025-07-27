@@ -179,12 +179,30 @@ export function parseArgs(argv: string[]): CliArgs {
     .description('Initialize a new rules file from a template')
     .option('-o, --output <file>', 'Output file path')
     .option('--force', 'Force overwrite of existing files')
+    .option('-t, --target <targets>', 'Comma-separated list of AI assistants to generate rules for.\n' +
+      '                                Available targets:\n' +
+      '                                Modern: cursor, copilot, cline, claude, claude-root, claude-memories, gemini, gemini-root, gemini-memories, roo, kiro, codebuddy\n' +
+      '                                Legacy: agents, junie, windsurf, trae, augment, augment-always, lingma, lingma-project\n' +
+      '                                Example: --target cursor,windsurf,claude')
     .action((name, options) => {
+      // Validate targets if provided
+      if (options.target) {
+        const { validateTargets } = require('../core/generator-v2');
+        const targetArray = options.target.split(',').map((t: string) => t.trim());
+        try {
+          validateTargets(targetArray);
+        } catch (error) {
+          console.error(`Error: ${(error as Error).message}`);
+          process.exit(1);
+        }
+      }
+
       parsedCommand = {
         command: 'init',
         templateName: name,
         output: options.output || './rulesync.mdc',
-        force: !!options.force
+        force: !!options.force,
+        target: options.target
       } as InitCliArgs;
     });
     

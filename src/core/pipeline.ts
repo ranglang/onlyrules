@@ -15,6 +15,7 @@ import {
 import { DefaultRuleParser } from './parser';
 import { DefaultRuleFormatterFactory } from './factory';
 import { readRulesFromUrl, readRulesFromFile } from '../utils/reader';
+import { toSnakeCase } from '../utils/file-utils';
 
 /**
  * Main rule generation pipeline implementation
@@ -189,7 +190,9 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
     for (const rule of rules) {
       if (!rule.name) continue; // Skip rules without names
 
-      const ruleFilePath = join(ideOutputDir, `${rule.name}.mdc`);
+      // Convert rule name to snake_case for file naming
+      const fileName = toSnakeCase(rule.name);
+      const ruleFilePath = join(ideOutputDir, `${fileName}.mdc`);
 
       try {
         // Check if file exists and we're not forcing overwrite

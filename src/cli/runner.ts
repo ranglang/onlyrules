@@ -125,6 +125,7 @@ export class CLIRunner {
     let templateName = 'basic';
     let outputPath = './rulesync.mdc';
     let force = false;
+    let target: string | undefined;
 
     // If template name is provided, use it instead of the default
     if (rawArgs.length >= 2 && !rawArgs[1].startsWith('-')) {
@@ -138,6 +139,9 @@ export class CLIRunner {
         i++;
       } else if (rawArgs[i] === '--force') {
         force = true;
+      } else if ((rawArgs[i] === '-t' || rawArgs[i] === '--target') && i + 1 < rawArgs.length) {
+        target = rawArgs[i + 1];
+        i++;
       }
     }
 
@@ -145,7 +149,8 @@ export class CLIRunner {
       command: 'init',
       templateName,
       output: outputPath,
-      force
+      force,
+      target
     };
   }
 
