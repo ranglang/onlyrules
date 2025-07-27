@@ -209,21 +209,6 @@ AGENTS.md
 .rules/
 .cursor/
 
-# Keep only rulessync.md
-!rulessync.md
-
-# Keep only rulessync.md
-!rulessync.md
-
-# Keep only rulessync.md
-!rulessync.md
-
-# Keep only rulessync.md
-!rulessync.md
-
-# Keep only rulessync.md
-!rulessync.md
-
 # AI Coderules (managed by onlyrules)
 .cursorrules
 .cursor
