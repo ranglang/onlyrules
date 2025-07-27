@@ -108,39 +108,6 @@ Create a new rules file from a template:
 onlyrules init development -o ./my-rules.md
 ```
 
-### Working with Lingma Project-Specific Rules
-
-Lingma project rules are stored in the `.lingma/rules` directory and only apply to the current project. These rules help the model better understand your project's specific coding preferences and structure.
-
-Initialize a new Lingma project rules directory:
-
-```bash
-onlyrules lingma init
-```
-
-Create a named rule file:
-
-```bash
-onlyrules lingma init -n coding-style
-```
-
-Generate AI assistant rule files from Lingma project rules:
-
-```bash
-onlyrules lingma generate
-```
-
-Specify an output directory:
-
-```bash
-onlyrules lingma generate -o ./output
-```
-
-Force overwrite existing files:
-
-```bash
-onlyrules lingma generate --force
-```
 
 ## Templates
 
