@@ -114,21 +114,21 @@ name: typescript-conventions
 
     // Verify file contents
     const generalGuidelinesContent = readFileSync(join(rulesDir, 'general-guidelines.md'), 'utf-8');
-    expect(generalGuidelinesContent).toContain('type: "always"');
-    expect(generalGuidelinesContent).toContain('description:');
+    expect(generalGuidelinesContent).toContain('type: "always_apply"');
+    expect(generalGuidelinesContent).toContain('description: "Write clean, readable code"');
     expect(generalGuidelinesContent).toContain('# General Coding Guidelines');
     expect(generalGuidelinesContent).toContain('Write clean, readable code');
     expect(generalGuidelinesContent).toContain('---'); // Should contain new frontmatter
 
     const reactContent = readFileSync(join(rulesDir, 'react-best-practices.md'), 'utf-8');
-    expect(reactContent).toContain('type: "auto"');
+    expect(reactContent).toContain('type: "agent_requested"');
     expect(reactContent).toContain('description:');
     expect(reactContent).toContain('# React Best Practices');
     expect(reactContent).toContain('Use functional components with hooks');
     expect(reactContent).toContain('---'); // Should contain new frontmatter
 
     const typescriptContent = readFileSync(join(rulesDir, 'typescript-conventions.md'), 'utf-8');
-    expect(typescriptContent).toContain('type: "auto"'); // TypeScript is detected as framework
+    expect(typescriptContent).toContain('type: "agent_requested"');
     expect(typescriptContent).toContain('description:');
     expect(typescriptContent).toContain('# TypeScript Conventions');
     expect(typescriptContent).toContain('Enable strict mode in tsconfig.json');
@@ -202,15 +202,15 @@ name: typescript-conventions
     const rulesDir = join(testDir, '.augment/rules');
     
     const alwaysContent = readFileSync(join(rulesDir, 'always-included.md'), 'utf-8');
-    expect(alwaysContent).toContain('type: "always"');
+    expect(alwaysContent).toContain('type: "always_apply"');
     expect(alwaysContent).toContain('description:');
 
     const autoContent = readFileSync(join(rulesDir, 'react-framework.md'), 'utf-8');
-    expect(autoContent).toContain('type: "auto"');
+    expect(autoContent).toContain('type: "agent_requested"');
     expect(autoContent).toContain('description:');
 
     const agentRequestedContent = readFileSync(join(rulesDir, 'specific-task.md'), 'utf-8');
-    expect(agentRequestedContent).toContain('type: "agent_requested"');
+    expect(agentRequestedContent).toContain('type: "manual"');
     expect(agentRequestedContent).toContain('description:');
   });
 
@@ -230,7 +230,7 @@ name: typescript-conventions
     expect(existsSync(filePath)).toBe(true);
 
     const fileContent = readFileSync(filePath, 'utf-8');
-    expect(fileContent).toContain('type: "agent_requested"');
+    expect(fileContent).toContain('type: "manual"');
     expect(fileContent).toContain('description:');
     expect(fileContent).toContain('---'); // Should contain frontmatter
   });
