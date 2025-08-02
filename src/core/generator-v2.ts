@@ -36,8 +36,9 @@ function getValidTargets(): string[] {
     // Modern formatters
     'cursor', 'copilot', 'cline', 'claude', 'claude-root', 'claude-memories',
     'gemini', 'gemini-root', 'gemini-memories', 'roo', 'kiro', 'codebuddy',
+    'augmentcode',
     // Legacy formatters
-    'agents', 'junie', 'windsurf', 'trae', 'augment', 'augment-always',
+    'agents', 'junie', 'windsurf', 'trae',
     'lingma', 'lingma-project'
   ];
 }
@@ -87,8 +88,7 @@ function mapTargetsToFormatterIds(targets: string[]): string[] {
     'junie': 'junie',
     'windsurf': 'windsurf',
     'trae': 'trae',
-    'augment': 'augment',
-    'augment-always': 'augment-always',
+    'augmentcode': 'augmentcode',
     'lingma': 'lingma-project',
     'lingma-project': 'lingma-project'
   };
@@ -158,8 +158,7 @@ function convertLegacyFormatToId(legacyFormat: any): string {
     '.junie/guidelines.md': 'junie',
     '.windsurfrules': 'windsurf',
     '.trae/rules.md': 'trae',
-    '.augment-guidelines': 'augment',
-    '.augment/rules/always.md': 'augment-always',
+    '.augment/rules': 'augmentcode',
     '.lingma/rules': 'lingma-project'
   };
 

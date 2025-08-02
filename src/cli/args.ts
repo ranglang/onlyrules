@@ -121,8 +121,8 @@ export function parseArgs(argv: string[]): CliArgs {
     .option('-o, --output <directory>', 'Output directory for generated rule files', './')
     .option('-t, --target <targets>', 'Comma-separated list of AI assistants to generate rules for.\n' +
       '                                Available targets:\n' +
-      '                                Modern: cursor, copilot, cline, claude, gemini, roo, kiro, codebuddy\n' +
-      '                                Legacy: agents, junie, windsurf, trae, augment, augment-always, lingma\n' +
+      '                                Modern: cursor, copilot, cline, claude, gemini, roo, kiro, codebuddy, augmentcode\n' +
+      '                                Legacy: agents, junie, windsurf, trae, lingma\n' +
       '                                Example: --target cursor,windsurf,claude')
     .option('-v, --verbose', 'Enable verbose output')
     .option('--force', 'Force overwrite of existing files')
@@ -181,8 +181,8 @@ export function parseArgs(argv: string[]): CliArgs {
     .option('--force', 'Force overwrite of existing files')
     .option('-t, --target <targets>', 'Comma-separated list of AI assistants to generate rules for.\n' +
       '                                Available targets:\n' +
-      '                                Modern: cursor, copilot, cline, claude, claude-root, claude-memories, gemini, gemini-root, gemini-memories, roo, kiro, codebuddy\n' +
-      '                                Legacy: agents, junie, windsurf, trae, augment, augment-always, lingma, lingma-project\n' +
+      '                                Modern: cursor, copilot, cline, claude, claude-root, claude-memories, gemini, gemini-root, gemini-memories, roo, kiro, codebuddy, augmentcode\n' +
+      '                                Legacy: agents, junie, windsurf, trae, lingma, lingma-project\n' +
       '                                Example: --target cursor,windsurf,claude')
     .action((name, options) => {
       // Validate targets if provided

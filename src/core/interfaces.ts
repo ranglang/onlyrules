@@ -131,6 +131,26 @@ export abstract class BaseRuleFormatter {
   }
 
   /**
+   * Append content to file (for multiple rules support)
+   */
+  protected async appendToFile(filePath: string, content: string): Promise<void> {
+    const { existsSync } = await import('node:fs');
+    const { readFile, writeFile } = await import('node:fs/promises');
+    
+    let existingContent = '';
+    if (existsSync(filePath)) {
+      existingContent = await readFile(filePath, 'utf-8');
+    }
+    
+    // Combine existing content with new content
+    const combinedContent = existingContent 
+      ? `${existingContent}\n\n${content}` 
+      : content;
+    
+    await writeFile(filePath, combinedContent);
+  }
+
+  /**
    * Sanitize rule name for file naming (convert to snake_case)
    */
   protected sanitizeFileName(name: string): string {

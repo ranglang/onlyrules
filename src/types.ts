@@ -33,8 +33,7 @@ export enum RuleFormat {
   JUNIE = '.junie/guidelines.md',
   WINDSURF = '.windsurfrules',
   TRAE = '.trae/rules.md',
-  AUGMENT = '.augment-guidelines',
-  AUGMENT_ALWAYS = '.augment/rules/always.md',
+
   LINGMA_PROJECT = '.lingma/rules'
 }
 

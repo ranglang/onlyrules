@@ -17,8 +17,7 @@ import { AgentsFormatter } from '../formatters/legacy/agents';
 import { JunieFormatter } from '../formatters/legacy/junie';
 import { WindsurfFormatter } from '../formatters/legacy/windsurf';
 import { TraeFormatter } from '../formatters/legacy/trae';
-import { AugmentFormatter } from '../formatters/legacy/augment';
-import { AugmentAlwaysFormatter } from '../formatters/legacy/augment-always';
+import { AugmentcodeFormatter } from '../formatters/augmentcode';
 import { LingmaProjectFormatter } from '../formatters/legacy/lingma-project';
 
 /**
@@ -97,8 +96,7 @@ export class DefaultRuleFormatterFactory implements RuleFormatterFactory {
     this.registerFormatter(new JunieFormatter());
     this.registerFormatter(new WindsurfFormatter());
     this.registerFormatter(new TraeFormatter());
-    this.registerFormatter(new AugmentFormatter());
-    this.registerFormatter(new AugmentAlwaysFormatter());
+    this.registerFormatter(new AugmentcodeFormatter());
     this.registerFormatter(new LingmaProjectFormatter());
   }
 

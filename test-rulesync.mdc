@@ -1,0 +1,32 @@
+---
+name: general-guidelines
+---
+
+# General Coding Guidelines
+
+- Write clean, readable code
+- Use meaningful variable names
+- Add comments for complex logic
+- Follow consistent formatting
+
+---
+name: react-best-practices
+---
+
+# React Best Practices
+
+- Use functional components with hooks
+- Implement proper error boundaries
+- Optimize re-renders with useMemo and useCallback
+- Keep components small and focused
+
+---
+name: typescript-conventions
+---
+
+# TypeScript Conventions
+
+- Enable strict mode in tsconfig.json
+- Use proper type annotations
+- Avoid 'any' type when possible
+- Prefer interfaces over types for object shapes

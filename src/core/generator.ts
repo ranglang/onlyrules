@@ -82,8 +82,7 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
     RuleFormat.JUNIE,
     RuleFormat.WINDSURF,
     RuleFormat.TRAE,
-    RuleFormat.AUGMENT,
-    RuleFormat.AUGMENT_ALWAYS,
+
     RuleFormat.LINGMA_PROJECT
   ];
 
