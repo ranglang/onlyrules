@@ -38,7 +38,15 @@ describe('appendRulesToFile', () => {
     await appendRulesToFile(testSourceFile, testTargetFile);
 
     const targetContent = await readFile(testTargetFile, 'utf-8');
-    expect(targetContent).toBe('Existing rule content\n\n---\nname: test-source-2025-07-27\n---\n\nNew rule content\n');
+    const today = new Date().toISOString().slice(0, 10);
+    expect(targetContent).toBe(`Existing rule content
+
+---
+name: test-source-${today}
+---
+
+New rule content
+`);
   });
 
   it('should handle empty target file correctly', async () => {
@@ -75,7 +83,15 @@ describe('appendRulesToFile', () => {
     await appendRulesToFile(testSourceFile, testTargetFile);
 
     const targetContent = await readFile(testTargetFile, 'utf-8');
-    expect(targetContent).toBe('Existing rule\n\n---\nname: test-source-2025-07-27\n---\n\nNew rule content\n');
+    const today = new Date().toISOString().slice(0, 10);
+    expect(targetContent).toBe(`Existing rule
+
+---
+name: test-source-${today}
+---
+
+New rule content
+`);
   });
 
   it('should throw error for empty source file', async () => {
@@ -110,6 +126,20 @@ describe('appendRulesToFile', () => {
     await appendRulesToFile(testSourceFile, testTargetFile);
 
     const targetContent = await readFile(testTargetFile, 'utf-8');
-    expect(targetContent).toBe('First rule\n\n---\nname: test-source-2025-07-27\n---\n\nSecond rule\n\n---\nname: test-source-2025-07-27\n---\n\nThird rule\n');
+    const today = new Date().toISOString().slice(0, 10);
+    expect(targetContent).toBe(`First rule
+
+---
+name: test-source-${today}
+---
+
+Second rule
+
+---
+name: test-source-${today}
+---
+
+Third rule
+`);
   });
 });
