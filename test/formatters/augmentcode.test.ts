@@ -114,22 +114,25 @@ name: typescript-conventions
 
     // Verify file contents
     const generalGuidelinesContent = readFileSync(join(rulesDir, 'general-guidelines.md'), 'utf-8');
-    expect(generalGuidelinesContent).toContain('<!-- Rule Type: Always -->');
+    expect(generalGuidelinesContent).toContain('type: "always"');
+    expect(generalGuidelinesContent).toContain('description:');
     expect(generalGuidelinesContent).toContain('# General Coding Guidelines');
     expect(generalGuidelinesContent).toContain('Write clean, readable code');
-    expect(generalGuidelinesContent).not.toContain('---'); // Frontmatter should be removed
+    expect(generalGuidelinesContent).toContain('---'); // Should contain new frontmatter
 
     const reactContent = readFileSync(join(rulesDir, 'react-best-practices.md'), 'utf-8');
-    expect(reactContent).toContain('<!-- Rule Type: Auto -->');
+    expect(reactContent).toContain('type: "auto"');
+    expect(reactContent).toContain('description:');
     expect(reactContent).toContain('# React Best Practices');
     expect(reactContent).toContain('Use functional components with hooks');
-    expect(reactContent).not.toContain('---'); // Frontmatter should be removed
+    expect(reactContent).toContain('---'); // Should contain new frontmatter
 
     const typescriptContent = readFileSync(join(rulesDir, 'typescript-conventions.md'), 'utf-8');
-    expect(typescriptContent).toContain('<!-- Rule Type: Auto -->'); // TypeScript is detected as framework
+    expect(typescriptContent).toContain('type: "auto"'); // TypeScript is detected as framework
+    expect(typescriptContent).toContain('description:');
     expect(typescriptContent).toContain('# TypeScript Conventions');
     expect(typescriptContent).toContain('Enable strict mode in tsconfig.json');
-    expect(typescriptContent).not.toContain('---'); // Frontmatter should be removed
+    expect(typescriptContent).toContain('---'); // Should contain new frontmatter
   });
 
   it('should sanitize file names correctly', async () => {
@@ -183,7 +186,7 @@ name: typescript-conventions
       isRoot: false
     };
 
-    const manualRule: ParsedRule = {
+    const agentRequestedRule: ParsedRule = {
       name: 'specific-task',
       content: '---\nname: specific-task\n---\n\nSpecific task guidelines for particular scenarios.',
       metadata: { name: 'specific-task' },
@@ -193,19 +196,22 @@ name: typescript-conventions
     // Generate rules
     await formatter.generateRule(alwaysRule, context);
     await formatter.generateRule(autoRule, context);
-    await formatter.generateRule(manualRule, context);
+    await formatter.generateRule(agentRequestedRule, context);
 
-    // Verify rule type comments
+    // Verify rule type metadata
     const rulesDir = join(testDir, '.augment/rules');
     
     const alwaysContent = readFileSync(join(rulesDir, 'always-included.md'), 'utf-8');
-    expect(alwaysContent).toContain('<!-- Rule Type: Always -->');
+    expect(alwaysContent).toContain('type: "always"');
+    expect(alwaysContent).toContain('description:');
 
     const autoContent = readFileSync(join(rulesDir, 'react-framework.md'), 'utf-8');
-    expect(autoContent).toContain('<!-- Rule Type: Auto -->');
+    expect(autoContent).toContain('type: "auto"');
+    expect(autoContent).toContain('description:');
 
-    const manualContent = readFileSync(join(rulesDir, 'specific-task.md'), 'utf-8');
-    expect(manualContent).toContain('<!-- Rule Type: Manual -->');
+    const agentRequestedContent = readFileSync(join(rulesDir, 'specific-task.md'), 'utf-8');
+    expect(agentRequestedContent).toContain('type: "agent_requested"');
+    expect(agentRequestedContent).toContain('description:');
   });
 
   it('should handle empty rules gracefully', async () => {
@@ -224,8 +230,9 @@ name: typescript-conventions
     expect(existsSync(filePath)).toBe(true);
 
     const fileContent = readFileSync(filePath, 'utf-8');
-    expect(fileContent).toContain('<!-- Rule Type: Manual -->');
-    expect(fileContent.trim()).toBe('<!-- Rule Type: Manual -->'); // Should only contain the rule type comment
+    expect(fileContent).toContain('type: "agent_requested"');
+    expect(fileContent).toContain('description:');
+    expect(fileContent).toContain('---'); // Should contain frontmatter
   });
 
   it('should overwrite existing files when force is true', async () => {
