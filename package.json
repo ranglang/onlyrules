@@ -1,6 +1,6 @@
 {
   "name": "onlyrules",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "type": "module",
   "main": "dist/esm/esm.js",
   "module": "dist/esm/esm.js",
