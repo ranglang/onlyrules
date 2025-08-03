@@ -11,11 +11,9 @@
     "noEmit": false
   },
   "include": [
-    "src/index.ts",
-    "src/core/**/*",
+    "src/consts.ts",
     "src/types.ts",
-    "src/utils/**/*",
-    "src/formatters/**/*"
+    "src/esm.ts",
   ],
   "exclude": ["src/cli.ts", "src/cli/**/*", "**/*.test.ts", "**/*.spec.ts", "test/**/*"]
 }
