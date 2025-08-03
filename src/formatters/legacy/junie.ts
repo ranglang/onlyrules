@@ -24,6 +24,13 @@ export class JunieFormatter extends BaseRuleFormatter {
   };
 
   /**
+   * Configure the frontmatter pipeline for Junie format
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Junie doesn't use frontmatter, so no pipeline steps needed
+  }
+
+  /**
    * Generate file for Junie
    */
   async generateRule(

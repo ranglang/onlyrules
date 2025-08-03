@@ -252,4 +252,73 @@ export class DefaultRuleParser implements RuleParser {
 
     return 'AI Rules';
   }
+
+  /**
+   * Extract description from content
+   */
+  private extractDescriptionFromContent(content: string): string {
+    // Try to extract from first heading
+    const titleMatch = content.match(/^#\s+(.+)$/m);
+    if (titleMatch?.[1]) {
+      return titleMatch[1].trim();
+    }
+
+    // Try to extract from first paragraph
+    const lines = content.split('\n').filter((line) => line.trim().length > 0);
+    if (lines.length > 0) {
+      // Skip markdown headings and get first meaningful content
+      const firstContentLine = lines.find(
+        (line) => !line.trim().startsWith('#') && !line.trim().startsWith('---')
+      );
+      if (firstContentLine) {
+        return firstContentLine.trim().substring(0, 100); // Limit length
+      }
+    }
+
+    return 'AI coding rules';
+  }
+
+  /**
+   * Extract glob pattern from content
+   */
+  private extractGlobFromContent(content: string): string {
+    // Look for common file patterns in content
+    const globPatterns = [
+      '**/*.ts',
+      '**/*.js',
+      '**/*.tsx',
+      '**/*.jsx',
+      '**/*.py',
+      '**/*.java',
+      '**/*.go',
+      '**/*.rs',
+      '**/*.cpp',
+      '**/*.c',
+    ];
+
+    // Check if content mentions specific file types
+    const lowerContent = content.toLowerCase();
+
+    if (lowerContent.includes('typescript') || lowerContent.includes('.ts')) {
+      return '**/*.{ts,tsx}';
+    }
+    if (lowerContent.includes('javascript') || lowerContent.includes('.js')) {
+      return '**/*.{js,jsx}';
+    }
+    if (lowerContent.includes('python') || lowerContent.includes('.py')) {
+      return '**/*.py';
+    }
+    if (lowerContent.includes('java') && !lowerContent.includes('javascript')) {
+      return '**/*.java';
+    }
+    if (lowerContent.includes('react') || lowerContent.includes('jsx')) {
+      return '**/*.{js,jsx,ts,tsx}';
+    }
+    if (lowerContent.includes('vue')) {
+      return '**/*.vue';
+    }
+
+    // Default to common web development files
+    return '**/*.{js,ts,jsx,tsx}';
+  }
 }

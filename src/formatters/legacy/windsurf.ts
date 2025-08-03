@@ -19,6 +19,13 @@ export class WindsurfFormatter extends BaseRuleFormatter {
     defaultPath: '.windsurfrules',
   };
 
+  /**
+   * Configure the frontmatter pipeline for Windsurf format
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Windsurf doesn't use frontmatter, so no pipeline steps needed
+  }
+
   async generateRule(
     rule: ParsedRule,
     context: RuleGenerationContext

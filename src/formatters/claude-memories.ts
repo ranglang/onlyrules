@@ -15,13 +15,20 @@ import {
 export class ClaudeMemoriesFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: 'claude-memories',
-    name: 'Claude Memories',
-    category: RuleFormatCategory.MEMORY_BASED,
+    name: 'Claude (Memories)',
+    category: RuleFormatCategory.DIRECTORY_BASED,
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: false,
     defaultPath: '.claude/memories',
   };
+
+  /**
+   * Configure the frontmatter pipeline for Claude memories format
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Claude memories doesn't use frontmatter, so no pipeline steps needed
+  }
 
   /**
    * Generate memory file for Claude

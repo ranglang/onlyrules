@@ -24,6 +24,13 @@ export class GeminiMemoriesFormatter extends BaseRuleFormatter {
   };
 
   /**
+   * Configure the frontmatter pipeline for Gemini memories format
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Gemini memories doesn't use frontmatter, so no pipeline steps needed
+  }
+
+  /**
    * Generate memory file for Gemini
    */
   async generateRule(

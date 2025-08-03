@@ -24,6 +24,14 @@ export class ClineFormatter extends BaseRuleFormatter {
   };
 
   /**
+   * Configure the frontmatter pipeline for Cline format
+   * Cline doesn't use frontmatter, so this is minimal
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Cline doesn't use frontmatter, so no pipeline steps needed
+  }
+
+  /**
    * Generate rule file for Cline
    */
   async generateRule(

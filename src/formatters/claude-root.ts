@@ -24,6 +24,13 @@ export class ClaudeRootFormatter extends BaseRuleFormatter {
   };
 
   /**
+   * Configure the frontmatter pipeline for Claude root format
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Claude root doesn't use frontmatter, so no pipeline steps needed
+  }
+
+  /**
    * Generate root file for Claude
    */
   async generateRule(

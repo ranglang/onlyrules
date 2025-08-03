@@ -17,11 +17,19 @@ export class CopilotFormatter extends BaseRuleFormatter {
     id: 'copilot',
     name: 'GitHub Copilot',
     category: RuleFormatCategory.DIRECTORY_BASED,
-    extension: '.instructions.md',
+    extension: '.md',
     supportsMultipleRules: true,
-    requiresMetadata: true,
-    defaultPath: '.github/instructions',
+    requiresMetadata: false,
+    defaultPath: '.github/copilot',
   };
+
+  /**
+   * Configure the frontmatter pipeline for Copilot format
+   * Copilot doesn't use frontmatter, so this is minimal
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Copilot doesn't use frontmatter, so no pipeline steps needed
+  }
 
   /**
    * Generate rule file for GitHub Copilot

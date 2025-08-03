@@ -19,6 +19,13 @@ export class LingmaProjectFormatter extends BaseRuleFormatter {
     defaultPath: '.lingma/rules',
   };
 
+  /**
+   * Configure the frontmatter pipeline for Lingma Project format
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Lingma Project doesn't use frontmatter, so no pipeline steps needed
+  }
+
   async generateRule(
     rule: ParsedRule,
     context: RuleGenerationContext

@@ -24,6 +24,13 @@ export class AgentsFormatter extends BaseRuleFormatter {
   };
 
   /**
+   * Configure the frontmatter pipeline for Agents format
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Agents doesn't use frontmatter, so no pipeline steps needed
+  }
+
+  /**
    * Generate file for Agents
    */
   async generateRule(

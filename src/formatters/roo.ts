@@ -24,6 +24,13 @@ export class RooFormatter extends BaseRuleFormatter {
   };
 
   /**
+   * Configure the frontmatter pipeline for Roo format
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Roo doesn't use frontmatter, so no pipeline steps needed
+  }
+
+  /**
    * Generate rule file for Roo
    */
   async generateRule(

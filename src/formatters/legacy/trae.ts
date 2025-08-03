@@ -19,6 +19,13 @@ export class TraeFormatter extends BaseRuleFormatter {
     defaultPath: '.trae/rules.md',
   };
 
+  /**
+   * Configure the frontmatter pipeline for Trae format
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Trae doesn't use frontmatter, so no pipeline steps needed
+  }
+
   async generateRule(
     rule: ParsedRule,
     context: RuleGenerationContext

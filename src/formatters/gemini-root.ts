@@ -24,6 +24,13 @@ export class GeminiRootFormatter extends BaseRuleFormatter {
   };
 
   /**
+   * Configure the frontmatter pipeline for Gemini root format
+   */
+  protected configureFrontmatterPipeline(): void {
+    // Gemini root doesn't use frontmatter, so no pipeline steps needed
+  }
+
+  /**
    * Generate root file for Gemini
    */
   async generateRule(
