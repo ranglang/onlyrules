@@ -127,18 +127,18 @@ function toSnakeCaseFileName(str: string): string {
 export function extractTitleFromMarkdown(content: string): string {
   // First, try to extract title from frontmatter metadata
   const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
-  if (frontmatterMatch && frontmatterMatch[1]) {
+  if (frontmatterMatch?.[1]) {
     const frontmatter = frontmatterMatch[1];
     // Look for title field in frontmatter (supports both quoted and unquoted values)
     const titleMatch = frontmatter.match(/^\s*title:\s*["']?([^"'\n]+)["']?\s*$/m);
-    if (titleMatch && titleMatch[1]) {
+    if (titleMatch?.[1]) {
       return titleMatch[1].trim();
     }
   }
 
   // Fallback: Try to find the first heading
   const headingMatch = content.match(/^#\s+(.+)$/m);
-  if (headingMatch && headingMatch[1]) {
+  if (headingMatch?.[1]) {
     return headingMatch[1].trim();
   }
 

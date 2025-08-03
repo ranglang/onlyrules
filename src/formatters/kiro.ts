@@ -36,8 +36,7 @@ export class KiroFormatter extends BaseRuleFormatter {
    * Configure the frontmatter pipeline for Kiro format
    */
   protected configureFrontmatterPipeline(): void {
-    this.frontmatterPipeline
-      .addStep(this.createInclusionStep());
+    this.frontmatterPipeline.addStep(this.createInclusionStep());
   }
 
   /**
@@ -133,11 +132,12 @@ export class KiroFormatter extends BaseRuleFormatter {
 
     // Generate frontmatter using the pipeline
     const frontmatter = this.generateFrontmatter(rule);
-    
+
     // Only add frontmatter if it contains meaningful data (not just 'always' inclusion)
     const metadata = this.frontmatterPipeline.execute(rule);
-    const shouldAddFrontmatter = metadata.inclusion !== 'always' || Object.keys(metadata).length > 1;
-    
+    const shouldAddFrontmatter =
+      metadata.inclusion !== 'always' || Object.keys(metadata).length > 1;
+
     if (frontmatter && shouldAddFrontmatter) {
       content = `${frontmatter}\n${content}`;
     }
@@ -155,9 +155,11 @@ export class KiroFormatter extends BaseRuleFormatter {
     // Map common rule names to Kiro's default files
     if (name.includes('product') || name.includes('overview')) {
       return 'product.md';
-    } else if (name.includes('tech') || name.includes('stack') || name.includes('technology')) {
+    }
+    if (name.includes('tech') || name.includes('stack') || name.includes('technology')) {
       return 'tech.md';
-    } else if (name.includes('structure') || name.includes('architecture')) {
+    }
+    if (name.includes('structure') || name.includes('architecture')) {
       return 'structure.md';
     }
 
@@ -166,8 +168,6 @@ export class KiroFormatter extends BaseRuleFormatter {
 
     return `${filename}${this.spec.extension}`;
   }
-
-
 
   /**
    * Check if this is one of Kiro's default files
@@ -200,7 +200,7 @@ export class KiroFormatter extends BaseRuleFormatter {
       'migration',
     ];
 
-    const lowerContent = (rule.name + ' ' + rule.content).toLowerCase();
+    const lowerContent = `${rule.name} ${rule.content}`.toLowerCase();
     return indicators.some((indicator) => lowerContent.includes(indicator));
   }
 
@@ -214,13 +214,17 @@ export class KiroFormatter extends BaseRuleFormatter {
     // Common patterns based on rule type
     if (name.includes('component') || content.includes('component')) {
       return 'components/**/*.{tsx,jsx,vue}';
-    } else if (name.includes('api') || name.includes('endpoint')) {
+    }
+    if (name.includes('api') || name.includes('endpoint')) {
       return 'app/api/**/*';
-    } else if (name.includes('test')) {
+    }
+    if (name.includes('test')) {
       return '**/*.{test,spec}.{ts,tsx,js,jsx}';
-    } else if (name.includes('style') || name.includes('css')) {
+    }
+    if (name.includes('style') || name.includes('css')) {
       return '**/*.{css,scss,sass,less}';
-    } else if (name.includes('config')) {
+    }
+    if (name.includes('config')) {
       return '*.config.{js,ts,json}';
     }
 

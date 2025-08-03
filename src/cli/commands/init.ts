@@ -109,7 +109,7 @@ export class InitCommand implements Command {
           chalk.green('\nYou can edit ') +
             chalk.bold(outputPath) +
             chalk.green(' and then run ') +
-            chalk.bold('onlyrules generate -f ' + outputPath) +
+            chalk.bold(`onlyrules generate -f ${outputPath}`) +
             chalk.green(' to sync all rules.')
         );
       } catch (genError) {

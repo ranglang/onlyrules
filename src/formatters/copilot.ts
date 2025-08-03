@@ -105,7 +105,7 @@ export class CopilotFormatter extends BaseRuleFormatter {
     };
 
     // Remove title from metadata since it's already in name
-    delete metadata.title;
+    metadata.title = undefined;
 
     const frontmatterLines = Object.entries(metadata).map(([key, value]) => {
       const stringValue = typeof value === 'string' ? value : JSON.stringify(value);

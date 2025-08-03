@@ -43,10 +43,15 @@ export class AugmentcodeFormatter extends BaseRuleFormatter {
       process: (rule: ParsedRule, metadata: Record<string, unknown>) => {
         // Check if content is effectively empty (after removing frontmatter)
         const cleanContent = rule.content?.replace(/^---\n[\s\S]*?\n---\n?/, '').trim() || '';
-        const isEffectivelyEmpty = !rule.content || rule.content.trim().length === 0 || cleanContent.length === 0;
-        
+        const isEffectivelyEmpty =
+          !rule.content || rule.content.trim().length === 0 || cleanContent.length === 0;
+
         // Determine apply type based on rule characteristics
-        if (rule.name?.includes('general') || rule.name?.includes('guidelines') || rule.name?.includes('always-included')) {
+        if (
+          rule.name?.includes('general') ||
+          rule.name?.includes('guidelines') ||
+          rule.name?.includes('always-included')
+        ) {
           metadata.type = 'always_apply';
         } else if (rule.name?.includes('specific-task') || isEffectivelyEmpty) {
           metadata.type = 'manual';
@@ -72,22 +77,22 @@ export class AugmentcodeFormatter extends BaseRuleFormatter {
           metadata.description = rule.description;
         } else if (rule.content) {
           // Extract first line after header as description
-          const lines = rule.content.split('\n').filter(line => line.trim());
-          const headerIndex = lines.findIndex(line => line.startsWith('#'));
+          const lines = rule.content.split('\n').filter((line) => line.trim());
+          const headerIndex = lines.findIndex((line) => line.startsWith('#'));
           if (headerIndex >= 0 && headerIndex < lines.length - 1) {
             const nextLine = lines[headerIndex + 1];
-            if (nextLine && nextLine.startsWith('-')) {
+            if (nextLine?.startsWith('-')) {
               // Use first bullet point as description
               metadata.description = nextLine.replace(/^-\s*/, '');
             }
           }
         }
-        
+
         // Always include description field even if empty
         if (!metadata.description) {
           metadata.description = '';
         }
-        
+
         return metadata;
       },
     };

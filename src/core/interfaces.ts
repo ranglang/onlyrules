@@ -114,11 +114,11 @@ export class FrontmatterPipelineBuilder {
    */
   execute(rule: ParsedRule): Record<string, unknown> {
     let metadata: Record<string, unknown> = {};
-    
+
     for (const step of this.steps) {
       metadata = step.process(rule, metadata);
     }
-    
+
     return metadata;
   }
 
@@ -206,7 +206,10 @@ export abstract class BaseRuleFormatter {
   /**
    * Generate a rule file
    */
-  async generateRule(rule: ParsedRule, context: RuleGenerationContext): Promise<RuleGenerationResult> {
+  async generateRule(
+    rule: ParsedRule,
+    context: RuleGenerationContext
+  ): Promise<RuleGenerationResult> {
     try {
       // Validate rule content
       this.validateRule(rule);
@@ -302,7 +305,7 @@ export abstract class BaseRuleFormatter {
         return `${key}: ${value}`;
       }
       if (Array.isArray(value)) {
-        return `${key}: [${value.map(v => typeof v === 'string' ? `"${v}"` : v).join(', ')}]`;
+        return `${key}: [${value.map((v) => (typeof v === 'string' ? `"${v}"` : v)).join(', ')}]`;
       }
       // For objects, convert to JSON
       return `${key}: ${JSON.stringify(value)}`;
@@ -321,7 +324,7 @@ export abstract class BaseRuleFormatter {
       .addStep(CommonFrontmatterSteps.addType(applyType))
       .addStep(CommonFrontmatterSteps.addDescription())
       .addStep(CommonFrontmatterSteps.addGlob());
-    
+
     const metadata = legacyPipeline.execute(rule);
     return this.convertMetadataToFrontmatter(metadata);
   }

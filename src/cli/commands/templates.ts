@@ -17,7 +17,7 @@ export class TemplatesCommand implements Command {
 
       console.log(chalk.bold('\nAvailable templates:'));
       templates.forEach((template, index) => {
-        console.log(chalk.green(`${index + 1}. ${template.name}`) + ` - ${template.description}`);
+        console.log(`${chalk.green(`${index + 1}. ${template.name}`)} - ${template.description}`);
       });
 
       console.log(chalk.blue('\nTo view a template: onlyrules template <name>'));

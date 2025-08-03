@@ -47,18 +47,21 @@ export function parseArgs(argv: string[]): CliArgs {
         verbose: !!args.verbose,
         force: !!args.force,
       } as GenerateCliArgs;
-    } else if (argv[0] === 'templates') {
+    }
+    if (argv[0] === 'templates') {
       // Templates command test
       return {
         command: 'templates',
       } as TemplatesCliArgs;
-    } else if (argv[0] === 'template') {
+    }
+    if (argv[0] === 'template') {
       // Template command test
       return {
         command: 'template',
         templateName: argv[1],
       } as TemplateCliArgs;
-    } else if (argv[0] === 'init') {
+    }
+    if (argv[0] === 'init') {
       // Init command test
       const args: Record<string, string> = {
         templateName: argv[1],

@@ -37,8 +37,7 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
   protected configureFrontmatterPipeline(): void {
     // CodeBuddy uses custom header format instead of frontmatter
     // Pipeline is configured but not used in transformContent
-    this.frontmatterPipeline
-      .addStep(CommonFrontmatterSteps.addDescription());
+    this.frontmatterPipeline.addStep(CommonFrontmatterSteps.addDescription());
   }
 
   /**
@@ -140,8 +139,8 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
     lines.push(
       `- **Type**: ${rule.isRoot ? 'Global Rule (Always Active)' : 'Project-Specific Rule'}`
     );
-    lines.push(`- **AI Assistant**: Tencent Cloud CodeBuddy`);
-    lines.push(`- **Supported IDEs**: VS Code, JetBrains IDEs`);
+    lines.push('- **AI Assistant**: Tencent Cloud CodeBuddy');
+    lines.push('- **Supported IDEs**: VS Code, JetBrains IDEs');
     lines.push('');
 
     // Add usage instructions
@@ -181,7 +180,7 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
         lines.push('');
       } else if (line.match(/^#+\s/)) {
         // It's a heading, bump it down one level to maintain hierarchy
-        lines.push('#' + line);
+        lines.push(`#${line}`);
       } else {
         // Regular text
         lines.push(line);

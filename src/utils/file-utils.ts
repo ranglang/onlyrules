@@ -74,8 +74,7 @@ export function updateAICoderulesSection(existingContent: string, aiRulesSection
     }
 
     return updatedContent + aiRulesSection;
-  } else {
-    // No existing sections found, just append
-    return existingContent + aiRulesSection;
   }
+  // No existing sections found, just append
+  return existingContent + aiRulesSection;
 }

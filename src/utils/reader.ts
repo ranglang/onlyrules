@@ -26,9 +26,8 @@ export function isUrl(input: string): boolean {
 export async function readRulesFromInput(input: string): Promise<string> {
   if (isUrl(input)) {
     return readRulesFromUrl(input);
-  } else {
-    return readRulesFromFile(input);
   }
+  return readRulesFromFile(input);
 }
 
 /**

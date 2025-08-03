@@ -122,6 +122,4 @@ export class CursorFormatter extends BaseRuleFormatter {
 
     return frontmatter ? `${frontmatter}\n\n${content}` : content;
   }
-
-
 }
