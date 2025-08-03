@@ -3,14 +3,19 @@ import { ONLEYRULES_ALL_TARGETS_TYPE } from '../consts';
 /**
  * Categories of rule formats
  */
-export enum RuleFormatCategory {
+export type RuleFormatCategory = 'directory' | 'root' | 'memory';
+
+/**
+ * Rule format category constants for better type safety and IDE support
+ */
+export const RuleFormatCategory = {
   /** Formats that use directories with individual rule files */
-  DIRECTORY_BASED = 'directory',
+  DIRECTORY_BASED: 'directory' as const,
   /** Formats that use a single root file */
-  ROOT_FILE = 'root',
+  ROOT_FILE: 'root' as const,
   /** Formats that use memory/project-specific files */
-  MEMORY_BASED = 'memory',
-}
+  MEMORY_BASED: 'memory' as const,
+} as const;
 
 /**
  * Apply type for rules across different IDEs

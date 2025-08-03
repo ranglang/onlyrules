@@ -10,10 +10,6 @@
     "emitDeclarationOnly": false,
     "noEmit": false
   },
-  "include": [
-    "src/consts.ts",
-    "src/types.ts",
-    "src/esm.ts",
-  ],
+  "include": ["src/consts.ts", "src/types.ts", "src/esm.ts"],
   "exclude": ["src/cli.ts", "src/cli/**/*", "**/*.test.ts", "**/*.spec.ts", "test/**/*"]
 }
