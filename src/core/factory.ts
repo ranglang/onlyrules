@@ -1,10 +1,10 @@
 import { BaseRuleFormatter, RuleFormatterFactory } from './interfaces';
 
+import { AugmentcodeFormatter } from '../formatters/augmentcode';
 // Only import formatters that are actually used to avoid bundling issues
 import { CodeBuddyFormatter } from '../formatters/codebuddy';
 import { CursorFormatter } from '../formatters/cursor';
 import { KiroFormatter } from '../formatters/kiro';
-import { AugmentcodeFormatter } from '../formatters/augmentcode';
 
 // Comment out unused formatters to avoid bundling issues
 // import { ClaudeMemoriesFormatter } from '../formatters/claude-memories';

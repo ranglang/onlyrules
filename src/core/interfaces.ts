@@ -1,6 +1,5 @@
 import { ONLEYRULES_ALL_TARGETS_TYPE } from '../consts';
 
-
 /**
  * Categories of rule formats
  */
@@ -448,8 +447,6 @@ export interface RuleGenerationPipelineOptions {
 /**
  * Main rule generation pipeline interface
  */
-
-
 
 /**
  * Unified rule format interface for all AI assistants

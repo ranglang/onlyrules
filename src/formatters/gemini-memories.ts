@@ -1,4 +1,5 @@
 import { join } from 'node:path';
+import { ONLEYRULES_ALL_TARGETS } from '../consts';
 import {
   BaseRuleFormatter,
   ParsedRule,
@@ -7,7 +8,6 @@ import {
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
-import { ONLEYRULES_ALL_TARGETS } from '../consts';
 
 /**
  * Gemini memories formatter

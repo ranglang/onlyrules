@@ -23,6 +23,7 @@ export const ONLEYRULES_ALL_TARGETS = {
 } as const;
 
 // Type definition for the const object to maintain enum-like behavior
-export type ONLEYRULES_ALL_TARGETS_TYPE = typeof ONLEYRULES_ALL_TARGETS[keyof typeof ONLEYRULES_ALL_TARGETS];
+export type ONLEYRULES_ALL_TARGETS_TYPE =
+  (typeof ONLEYRULES_ALL_TARGETS)[keyof typeof ONLEYRULES_ALL_TARGETS];
 
-export type ONLEYRULESTYPE = 'cursor' | 'copilot' | 'cline' | 'claude' | 'gemini'
+export type ONLEYRULESTYPE = 'cursor' | 'copilot' | 'cline' | 'claude' | 'gemini';
