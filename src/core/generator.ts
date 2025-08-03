@@ -334,7 +334,7 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
 
     // Log results if verbose
     if (options.verbose) {
-      allResults.forEach((result) => {
+      for (const result of allResults) {
         if (result.status === 'fulfilled') {
           const value = result.value;
           if (value.success) {
@@ -350,7 +350,7 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
           const error = result.reason as Error;
           console.log(chalk.red(`✗ Error: ${error.message}`));
         }
-      });
+      }
     }
 
     // Count successes and failures
@@ -413,7 +413,7 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
 
     // Log results if verbose
     if (options.verbose) {
-      results.forEach((result) => {
+      for (const result of results) {
         if (result.status === 'fulfilled') {
           const value = result.value;
           if (value.success) {
@@ -425,7 +425,7 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
           const error = result.reason as Error;
           console.log(chalk.red(`✗ Error: ${error.message}`));
         }
-      });
+      }
     }
 
     // Count successes and failures

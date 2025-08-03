@@ -166,22 +166,26 @@ function parseMdcContent(
   // Split the content by rule sections using regex
   const pattern = /---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*?)(?=\r?\n---|\s*$)/g;
 
-  let match;
   let index = 0;
-  while ((match = pattern.exec(content)) !== null) {
+  for (;;) {
+    const match = pattern.exec(content);
+    if (match === null) {
+      break;
+    }
+    if (!match) continue;
     const frontmatterText = match[1].trim();
     const contentText = match[2].trim();
 
     // Parse frontmatter into key-value pairs
     const frontmatterObj: Record<string, string> = {};
-    frontmatterText.split('\n').forEach((line: string) => {
+    for (const line of frontmatterText.split('\n')) {
       const colonIndex = line.indexOf(':');
       if (colonIndex > 0) {
         const key = line.substring(0, colonIndex).trim();
         const value = line.substring(colonIndex + 1).trim();
         frontmatterObj[key] = value;
       }
-    });
+    }
 
     // Get rule name with priority: frontmatter > extracted title > fallback
     let name = frontmatterObj.name;

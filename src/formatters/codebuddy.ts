@@ -125,10 +125,10 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
       lines.push('## Metadata');
       lines.push('');
       lines.push('```yaml');
-      Object.entries(rule.metadata).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(rule.metadata)) {
         const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
         lines.push(`${key}: ${stringValue}`);
-      });
+      }
       lines.push('```');
       lines.push('');
     }
@@ -170,7 +170,7 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
 
     // Process the content
     const contentLines = content.split('\n');
-    contentLines.forEach((line) => {
+    for (const line of contentLines) {
       // Ensure proper markdown formatting
       if (line.trim().startsWith('-') || line.trim().startsWith('*')) {
         // It's already a list item
@@ -185,7 +185,7 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
         // Regular text
         lines.push(line);
       }
-    });
+    }
 
     // Add footer with additional CodeBuddy-specific instructions
     lines.push('');

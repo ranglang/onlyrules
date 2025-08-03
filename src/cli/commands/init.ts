@@ -7,9 +7,10 @@ import { generateRules } from '../../core/generator';
 import { configExists, getConfigTargets, updateConfigTargets } from '../../utils/config';
 import { getTemplateByName } from '../../utils/templates';
 import { Command } from './base';
+import { InitArgs } from './types';
 
 export class InitCommand implements Command {
-  async execute(args: any): Promise<void> {
+  async execute(args: InitArgs): Promise<void> {
     // Get templates directory path
     const templatesDir = path.join(__dirname, '..', '..', '..', 'templates');
 

@@ -5,7 +5,7 @@ import { getAvailableTemplates } from '../../utils/templates';
 import { Command } from './base';
 
 export class TemplatesCommand implements Command {
-  async execute(args: any): Promise<void> {
+  async execute(_args: unknown): Promise<void> {
     // Get templates directory path
     const templatesDir = path.join(__dirname, '..', '..', '..', 'templates');
 
@@ -16,9 +16,9 @@ export class TemplatesCommand implements Command {
       spinner.succeed(`Found ${templates.length} templates`);
 
       console.log(chalk.bold('\nAvailable templates:'));
-      templates.forEach((template, index) => {
+      for (const [index, template] of templates.entries()) {
         console.log(`${chalk.green(`${index + 1}. ${template.name}`)} - ${template.description}`);
-      });
+      }
 
       console.log(chalk.blue('\nTo view a template: onlyrules template <name>'));
       console.log(chalk.blue('To create a new rules file from a template: onlyrules init <name>'));

@@ -5,7 +5,7 @@ import { IDE_RULE_PATHS_FOR_REMOVAL } from '../../utils/ide-paths';
 import { Command } from './base';
 
 export class PrungeCommand implements Command {
-  async execute(args: any): Promise<void> {
+  async execute(_args: unknown): Promise<void> {
     const spinner = ora('Removing all IDE rules...').start();
 
     try {
@@ -35,9 +35,9 @@ export class PrungeCommand implements Command {
       if (removedPaths.length > 0) {
         spinner.succeed(`Successfully removed ${removedPaths.length} IDE rule paths`);
         console.log(chalk.green('The following paths were removed:'));
-        removedPaths.forEach((path) => {
+        for (const path of removedPaths) {
           console.log(chalk.green(`- ${path}`));
-        });
+        }
       } else {
         spinner.info('No IDE rules were found to remove');
       }

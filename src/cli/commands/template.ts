@@ -5,7 +5,7 @@ import { getTemplateByName } from '../../utils/templates';
 import { Command } from './base';
 
 export class TemplateCommand implements Command {
-  async execute(args: any): Promise<void> {
+  async execute(args: { templateName: string }): Promise<void> {
     // Get templates directory path
     const templatesDir = path.join(__dirname, '..', '..', '..', 'templates');
 
