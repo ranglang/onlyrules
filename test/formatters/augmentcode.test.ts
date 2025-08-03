@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { AugmentcodeFormatter } from '../../src/formatters/augmentcode';
-import { ParsedRule, RuleGenerationContext } from '../../src/core/interfaces';
-import { existsSync, rmSync, mkdirSync, readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { ParsedRule, RuleGenerationContext, RuleGenerationResult } from '../../src/core/interfaces';
+import { AugmentcodeFormatter } from '../../src/formatters/augmentcode';
 
 describe('AugmentcodeFormatter', () => {
   let testDir: string;
@@ -14,11 +14,11 @@ describe('AugmentcodeFormatter', () => {
     // Create a temporary directory for testing
     testDir = join(tmpdir(), `onlyrules-test-${Date.now()}`);
     mkdirSync(testDir, { recursive: true });
-    
+
     context = {
       outputDir: testDir,
       force: true,
-      verbose: false
+      verbose: false,
     };
 
     formatter = new AugmentcodeFormatter();
@@ -53,7 +53,7 @@ name: general-guidelines
 - Use meaningful variable names
 - Add comments for complex logic`,
         metadata: { name: 'general-guidelines' },
-        isRoot: false
+        isRoot: false,
       },
       {
         name: 'react-best-practices',
@@ -67,7 +67,7 @@ name: react-best-practices
 - Implement proper error boundaries
 - Optimize re-renders with useMemo and useCallback`,
         metadata: { name: 'react-best-practices' },
-        isRoot: false
+        isRoot: false,
       },
       {
         name: 'typescript-conventions',
@@ -81,12 +81,12 @@ name: typescript-conventions
 - Use proper type annotations
 - Avoid 'any' type when possible`,
         metadata: { name: 'typescript-conventions' },
-        isRoot: false
-      }
+        isRoot: false,
+      },
     ];
 
     // Generate rules for each section
-    const results = [];
+    const results: RuleGenerationResult[] = [];
     for (const rule of rules) {
       const result = await formatter.generateRule(rule, context);
       results.push(result);
@@ -94,10 +94,10 @@ name: typescript-conventions
 
     // Verify all generations succeeded
     expect(results).toHaveLength(3);
-    results.forEach(result => {
+    for (const result of results) {
       expect(result.success).toBe(true);
       expect(result.format).toBe('augmentcode');
-    });
+    }
 
     // Verify the directory structure was created
     const augmentDir = join(testDir, '.augment');
@@ -141,20 +141,20 @@ name: typescript-conventions
         name: 'NextJs Prompt',
         content: '---\nname: NextJs Prompt\n---\n\nNext.js guidelines',
         metadata: { name: 'NextJs Prompt' },
-        isRoot: false
+        isRoot: false,
       },
       {
         name: 'React Best Practices!',
         content: '---\nname: React Best Practices!\n---\n\nReact guidelines',
         metadata: { name: 'React Best Practices!' },
-        isRoot: false
+        isRoot: false,
       },
       {
         name: 'TypeScript Rules & Standards',
         content: '---\nname: TypeScript Rules & Standards\n---\n\nTypeScript guidelines',
         metadata: { name: 'TypeScript Rules & Standards' },
-        isRoot: false
-      }
+        isRoot: false,
+      },
     ];
 
     // Generate rules
@@ -174,23 +174,26 @@ name: typescript-conventions
   it('should determine rule types correctly based on content', async () => {
     const alwaysRule: ParsedRule = {
       name: 'always-included',
-      content: '---\nname: always-included\n---\n\nThese are general guidelines that should always be included in every message.',
+      content:
+        '---\nname: always-included\n---\n\nThese are general guidelines that should always be included in every message.',
       metadata: { name: 'always-included' },
-      isRoot: false
+      isRoot: false,
     };
 
     const autoRule: ParsedRule = {
       name: 'react-framework',
-      content: '---\nname: react-framework\n---\n\nReact framework specific rules that should auto-detect when working with React.',
+      content:
+        '---\nname: react-framework\n---\n\nReact framework specific rules that should auto-detect when working with React.',
       metadata: { name: 'react-framework' },
-      isRoot: false
+      isRoot: false,
     };
 
     const agentRequestedRule: ParsedRule = {
       name: 'specific-task',
-      content: '---\nname: specific-task\n---\n\nSpecific task guidelines for particular scenarios.',
+      content:
+        '---\nname: specific-task\n---\n\nSpecific task guidelines for particular scenarios.',
       metadata: { name: 'specific-task' },
-      isRoot: false
+      isRoot: false,
     };
 
     // Generate rules
@@ -200,7 +203,7 @@ name: typescript-conventions
 
     // Verify rule type metadata
     const rulesDir = join(testDir, '.augment/rules');
-    
+
     const alwaysContent = readFileSync(join(rulesDir, 'always-included.md'), 'utf-8');
     expect(alwaysContent).toContain('type: "always_apply"');
     expect(alwaysContent).toContain('description:');
@@ -219,7 +222,7 @@ name: typescript-conventions
       name: 'empty-rule',
       content: '---\nname: empty-rule\n---\n\n',
       metadata: { name: 'empty-rule' },
-      isRoot: false
+      isRoot: false,
     };
 
     const result = await formatter.generateRule(rule, context);
@@ -240,7 +243,7 @@ name: typescript-conventions
       name: 'test-rule',
       content: '---\nname: test-rule\n---\n\nOriginal content',
       metadata: { name: 'test-rule' },
-      isRoot: false
+      isRoot: false,
     };
 
     // Generate rule first time
@@ -266,7 +269,7 @@ name: typescript-conventions
       name: 'test',
       content: 'test content',
       metadata: {},
-      isRoot: false
+      isRoot: false,
     };
 
     expect(formatter.isRuleCompatible(testRule)).toBe(true);

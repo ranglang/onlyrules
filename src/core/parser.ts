@@ -1,5 +1,5 @@
 import { basename } from 'node:path';
-import { ParsedRule, RuleParser } from './interfaces';
+import { ApplyType, ParsedRule, RuleParser } from './interfaces';
 
 /**
  * Default rule parser implementation
@@ -14,12 +14,28 @@ export class DefaultRuleParser implements RuleParser {
 
     // If it's a simple markdown file (not .mdc), treat it as a single rule
     if (fileExt === 'md') {
-      return [{
-        name: fileName,
-        content: content.trim(),
-        metadata: this.extractMetadata(content),
-        isRoot: this.isRootRule(fileName)
-      }];
+      const metadata = this.extractMetadata(content);
+      const applyType = (
+        typeof metadata.applyType === 'string' ? metadata.applyType : 'manual'
+      ) as ApplyType;
+      const description =
+        typeof metadata.description === 'string'
+          ? metadata.description
+          : this.extractDescriptionFromContent(content);
+      const glob =
+        typeof metadata.glob === 'string' ? metadata.glob : this.extractGlobFromContent(content);
+
+      return [
+        {
+          name: fileName,
+          content: content.trim(),
+          metadata,
+          isRoot: this.isRootRule(fileName),
+          applyType,
+          description,
+          glob,
+        },
+      ];
     }
 
     // For .mdc files, parse as concatenated rules
@@ -28,31 +44,46 @@ export class DefaultRuleParser implements RuleParser {
     }
 
     // Default to treating as a single rule if extension is unknown
-    return [{
-      name: fileName,
-      content: content.trim(),
-      metadata: this.extractMetadata(content),
-      isRoot: this.isRootRule(fileName)
-    }];
+    const metadata = this.extractMetadata(content);
+    const applyType = (
+      typeof metadata.applyType === 'string' ? metadata.applyType : 'manual'
+    ) as ApplyType;
+    const description =
+      typeof metadata.description === 'string'
+        ? metadata.description
+        : this.extractDescriptionFromContent(content);
+    const glob =
+      typeof metadata.glob === 'string' ? metadata.glob : this.extractGlobFromContent(content);
+
+    return [
+      {
+        name: fileName,
+        content: content.trim(),
+        metadata,
+        isRoot: this.isRootRule(fileName),
+        applyType,
+        description,
+        glob,
+      },
+    ];
   }
 
   /**
    * Validate rule content
    */
   validateRules(rules: ParsedRule[]): boolean {
-    return rules.every(rule => {
-      return rule.name && 
-             rule.name.trim().length > 0 && 
-             rule.content && 
-             rule.content.trim().length > 0;
+    return rules.every((rule) => {
+      return (
+        rule.name && rule.name.trim().length > 0 && rule.content && rule.content.trim().length > 0
+      );
     });
   }
 
   /**
    * Extract metadata from rule content
    */
-  extractMetadata(content: string): Record<string, any> {
-    const metadata: Record<string, any> = {};
+  extractMetadata(content: string): Record<string, unknown> {
+    const metadata: Record<string, unknown> = {};
 
     // Extract title from first heading
     const titleMatch = content.match(/^#\s+(.+)$/m);
@@ -64,7 +95,7 @@ export class DefaultRuleParser implements RuleParser {
     const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
     if (frontmatterMatch?.[1]) {
       const frontmatter = frontmatterMatch[1];
-      frontmatter.split('\n').forEach(line => {
+      for (const line of frontmatter.split('\n')) {
         const colonIndex = line.indexOf(':');
         if (colonIndex > 0) {
           const key = line.substring(0, colonIndex).trim();
@@ -76,7 +107,7 @@ export class DefaultRuleParser implements RuleParser {
             metadata[key] = value;
           }
         }
-      });
+      }
     }
 
     return metadata;
@@ -116,30 +147,62 @@ export class DefaultRuleParser implements RuleParser {
     for (let i = 0; i < sections.length; i++) {
       const section = sections[i];
       const metadata = this.extractMetadata(section);
-      
+
       // Get rule name from frontmatter using dedicated function, fallback to metadata or generate one
       const nameFromFrontmatter = this.extractNameFromFrontmatter(section);
       const name = nameFromFrontmatter || metadata.name || `${defaultName}-${i + 1}`;
-      
+
       // Remove frontmatter from content
       const contentWithoutFrontmatter = section.replace(/^---\n[\s\S]*?\n---\n?/, '').trim();
 
+      // Extract new properties from metadata
+      const applyType = (
+        typeof metadata.applyType === 'string' ? metadata.applyType : 'manual'
+      ) as ApplyType;
+      const description =
+        typeof metadata.description === 'string'
+          ? metadata.description
+          : this.extractDescriptionFromContent(contentWithoutFrontmatter);
+      const glob =
+        typeof metadata.glob === 'string'
+          ? metadata.glob
+          : this.extractGlobFromContent(contentWithoutFrontmatter);
+
       rules.push({
-        name,
+        name: typeof name === 'string' ? name : `${defaultName}-${i + 1}`,
         content: contentWithoutFrontmatter,
         metadata,
-        isRoot: this.isRootRule(name)
+        isRoot: this.isRootRule(typeof name === 'string' ? name : `${defaultName}-${i + 1}`),
+        applyType,
+        description,
+        glob,
       });
     }
 
     // If no sections found, treat entire content as single rule
     if (rules.length === 0) {
-      return [{
-        name: defaultName,
-        content: content.trim(),
-        metadata: this.extractMetadata(content),
-        isRoot: this.isRootRule(defaultName)
-      }];
+      const metadata = this.extractMetadata(content);
+      const applyType = (
+        typeof metadata.applyType === 'string' ? metadata.applyType : 'manual'
+      ) as ApplyType;
+      const description =
+        typeof metadata.description === 'string'
+          ? metadata.description
+          : this.extractDescriptionFromContent(content);
+      const glob =
+        typeof metadata.glob === 'string' ? metadata.glob : this.extractGlobFromContent(content);
+
+      return [
+        {
+          name: defaultName,
+          content: content.trim(),
+          metadata,
+          isRoot: this.isRootRule(defaultName),
+          applyType,
+          description,
+          glob,
+        },
+      ];
     }
 
     return rules;
@@ -151,7 +214,7 @@ export class DefaultRuleParser implements RuleParser {
   private splitByFrontmatter(content: string): string[] {
     const sections: string[] = [];
     const pattern = /---\n[\s\S]*?\n---\n[\s\S]*?(?=---\n|$)/g;
-    
+
     let match;
     while ((match = pattern.exec(content)) !== null) {
       sections.push(match[0].trim());
@@ -179,7 +242,7 @@ export class DefaultRuleParser implements RuleParser {
     }
 
     // If no heading found, use the first non-empty line
-    const firstLine = content.split('\n').find(line => line.trim().length > 0);
+    const firstLine = content.split('\n').find((line) => line.trim().length > 0);
     if (firstLine) {
       return firstLine.trim();
     }

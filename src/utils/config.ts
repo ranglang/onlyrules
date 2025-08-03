@@ -1,5 +1,5 @@
-import { readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 export interface OnlyRulesConfig {
@@ -28,11 +28,11 @@ export function configExists(): boolean {
  */
 export async function readConfig(): Promise<OnlyRulesConfig> {
   const configPath = getConfigPath();
-  
+
   if (!existsSync(configPath)) {
     return {};
   }
-  
+
   try {
     const content = await readFile(configPath, 'utf-8');
     return JSON.parse(content) as OnlyRulesConfig;
@@ -58,13 +58,13 @@ export async function writeConfig(config: OnlyRulesConfig): Promise<void> {
  */
 export async function updateConfigTargets(targets: string[]): Promise<void> {
   const existingConfig = await readConfig();
-  
+
   // Merge with existing config, updating only the target field
   const updatedConfig: OnlyRulesConfig = {
     ...existingConfig,
-    target: targets
+    target: targets,
   };
-  
+
   await writeConfig(updatedConfig);
 }
 

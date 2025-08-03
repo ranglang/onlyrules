@@ -1,11 +1,11 @@
 import { join } from 'node:path';
 import {
   BaseRuleFormatter,
-  RuleFormatSpec,
-  RuleFormatCategory,
   ParsedRule,
+  RuleFormatCategory,
+  RuleFormatSpec,
   RuleGenerationContext,
-  RuleGenerationResult
+  RuleGenerationResult,
 } from '../core/interfaces';
 
 /**
@@ -20,7 +20,7 @@ export class CopilotFormatter extends BaseRuleFormatter {
     extension: '.instructions.md',
     supportsMultipleRules: true,
     requiresMetadata: true,
-    defaultPath: '.github/instructions'
+    defaultPath: '.github/instructions',
   };
 
   /**
@@ -32,31 +32,31 @@ export class CopilotFormatter extends BaseRuleFormatter {
   ): Promise<RuleGenerationResult> {
     try {
       const filePath = this.getOutputPath(rule, context);
-      
+
       // Check if file exists
       await this.checkFileExists(filePath, context.force);
-      
+
       // Ensure directory exists
       await this.ensureDirectory(filePath);
-      
+
       // Transform content
       const content = this.transformContent(rule);
-      
+
       // Write file
       await this.writeFile(filePath, content);
-      
+
       return {
         format: this.spec.id,
         success: true,
         filePath,
-        ruleName: rule.name
+        ruleName: rule.name,
       };
     } catch (error) {
       return {
         format: this.spec.id,
         success: false,
         error: (error as Error).message,
-        ruleName: rule.name
+        ruleName: rule.name,
       };
     }
   }
@@ -98,20 +98,19 @@ export class CopilotFormatter extends BaseRuleFormatter {
    */
   private createFrontmatter(rule: ParsedRule): string {
     const title = rule.metadata?.title || this.extractTitleFromContent(rule.content) || 'AI Rules';
-    
+
     const metadata: any = {
       name: title,
-      ...rule.metadata
+      ...rule.metadata,
     };
 
     // Remove title from metadata since it's already in name
     delete metadata.title;
 
-    const frontmatterLines = Object.entries(metadata)
-      .map(([key, value]) => {
-        const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
-        return `${key}: ${stringValue}`;
-      });
+    const frontmatterLines = Object.entries(metadata).map(([key, value]) => {
+      const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+      return `${key}: ${stringValue}`;
+    });
 
     return `---\n${frontmatterLines.join('\n')}\n---`;
   }

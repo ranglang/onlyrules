@@ -1,5 +1,7 @@
 ---
 name: general-guidelines
+applyType: auto
+glob: "**.ts,**.tsx"
 ---
 
 # General Coding Guidelines

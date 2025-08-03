@@ -1,5 +1,5 @@
-import { Command } from './base';
 import { appendRulesToFile } from '../../utils/append';
+import { Command } from './base';
 
 export interface AddCliArgs {
   command: 'add';
@@ -14,7 +14,7 @@ export class AddCommand implements Command {
     }
 
     const targetFile = args.output || './rulesync.mdc';
-    
+
     try {
       await appendRulesToFile(args.file, targetFile);
     } catch (error) {

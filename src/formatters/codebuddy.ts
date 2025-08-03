@@ -1,11 +1,13 @@
 import { join } from 'node:path';
 import {
   BaseRuleFormatter,
-  RuleFormatSpec,
-  RuleFormatCategory,
+  CommonFrontmatterSteps,
+  FrontmatterPipelineStep,
   ParsedRule,
+  RuleFormatCategory,
+  RuleFormatSpec,
   RuleGenerationContext,
-  RuleGenerationResult
+  RuleGenerationResult,
 } from '../core/interfaces';
 
 /**
@@ -14,15 +16,30 @@ import {
  * CodeBuddy (腾讯云代码助手) is an AI-powered coding assistant that supports VS Code and JetBrains IDEs
  */
 export class CodeBuddyFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
+  static readonly SPEC: RuleFormatSpec = {
     id: 'codebuddy',
     name: 'Tencent Cloud CodeBuddy',
     category: RuleFormatCategory.DIRECTORY_BASED,
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: true,
-    defaultPath: '.codebuddy/rules'
+    defaultPath: '.codebuddy/rules',
   };
+
+  constructor() {
+    super(CodeBuddyFormatter.SPEC);
+  }
+
+  /**
+   * Configure the frontmatter pipeline for CodeBuddy format
+   * CodeBuddy doesn't use traditional frontmatter, so this is minimal
+   */
+  protected configureFrontmatterPipeline(): void {
+    // CodeBuddy uses custom header format instead of frontmatter
+    // Pipeline is configured but not used in transformContent
+    this.frontmatterPipeline
+      .addStep(CommonFrontmatterSteps.addDescription());
+  }
 
   /**
    * Generate rule file for CodeBuddy
@@ -33,31 +50,31 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
   ): Promise<RuleGenerationResult> {
     try {
       const filePath = this.getOutputPath(rule, context);
-      
+
       // Check if file exists
       await this.checkFileExists(filePath, context.force);
-      
+
       // Ensure directory exists
       await this.ensureDirectory(filePath);
-      
+
       // Transform content
       const content = this.transformContent(rule);
-      
+
       // Write file
       await this.writeFile(filePath, content);
-      
+
       return {
         format: this.spec.id,
         success: true,
         filePath,
-        ruleName: rule.name
+        ruleName: rule.name,
       };
     } catch (error) {
       return {
         format: this.spec.id,
         success: false,
         error: (error as Error).message,
-        ruleName: rule.name
+        ruleName: rule.name,
       };
     }
   }
@@ -83,14 +100,14 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
    * Transform rule content for CodeBuddy format
    */
   protected transformContent(rule: ParsedRule): string {
-    let content = rule.content;
+    const content = rule.content;
 
     // Add header with metadata for CodeBuddy
     const header = this.createHeader(rule);
-    
+
     // Format content with proper markdown structure
     const formattedContent = this.formatContent(content, rule);
-    
+
     return `${header}\n\n${formattedContent}`;
   }
 
@@ -99,11 +116,11 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
    */
   private createHeader(rule: ParsedRule): string {
     const lines: string[] = [];
-    
+
     // Add title
     lines.push(`# ${rule.name || 'CodeBuddy Development Rule'}`);
     lines.push('');
-    
+
     // Add metadata section if metadata exists
     if (rule.metadata && Object.keys(rule.metadata).length > 0) {
       lines.push('## Metadata');
@@ -116,15 +133,17 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
       lines.push('```');
       lines.push('');
     }
-    
+
     // Add rule type indicator
     lines.push('## Rule Type');
     lines.push('');
-    lines.push(`- **Type**: ${rule.isRoot ? 'Global Rule (Always Active)' : 'Project-Specific Rule'}`);
+    lines.push(
+      `- **Type**: ${rule.isRoot ? 'Global Rule (Always Active)' : 'Project-Specific Rule'}`
+    );
     lines.push(`- **AI Assistant**: Tencent Cloud CodeBuddy`);
     lines.push(`- **Supported IDEs**: VS Code, JetBrains IDEs`);
     lines.push('');
-    
+
     // Add usage instructions
     lines.push('## Usage');
     lines.push('');
@@ -136,7 +155,7 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
       lines.push('- CodeBuddy detects the `.codebuddy` configuration');
     }
     lines.push('');
-    
+
     return lines.join('\n');
   }
 
@@ -145,14 +164,14 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
    */
   private formatContent(content: string, rule: ParsedRule): string {
     const lines: string[] = [];
-    
+
     // Add main rule section
     lines.push('## Development Guidelines');
     lines.push('');
-    
+
     // Process the content
     const contentLines = content.split('\n');
-    contentLines.forEach(line => {
+    contentLines.forEach((line) => {
       // Ensure proper markdown formatting
       if (line.trim().startsWith('-') || line.trim().startsWith('*')) {
         // It's already a list item
@@ -168,7 +187,7 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
         lines.push(line);
       }
     });
-    
+
     // Add footer with additional CodeBuddy-specific instructions
     lines.push('');
     lines.push('---');
@@ -177,9 +196,9 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
     lines.push('');
     lines.push('- CodeBuddy will use these guidelines to provide context-aware code suggestions');
     lines.push('- The AI assistant will follow these rules when generating code completions');
-    lines.push('- Use CodeBuddy\'s chat feature to ask questions about these guidelines');
-    lines.push('- These rules work with CodeBuddy\'s MCP (Model Context Protocol) integration');
-    
+    lines.push("- Use CodeBuddy's chat feature to ask questions about these guidelines");
+    lines.push("- These rules work with CodeBuddy's MCP (Model Context Protocol) integration");
+
     return lines.join('\n');
   }
 }

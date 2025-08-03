@@ -1,13 +1,13 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the generator module
 vi.mock('../src/core/generator', () => ({
-  generateRules: vi.fn()
+  generateRules: vi.fn(),
 }));
 
 import { parseArgs } from '../src/cli/args';
 import { generateRules } from '../src/core/generator';
-import { GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs } from '../src/types';
+import { GenerateCliArgs, InitCliArgs, TemplateCliArgs, TemplatesCliArgs } from '../src/types';
 
 // Set test environment
 process.env.VITEST = 'true';
@@ -36,7 +36,11 @@ describe('CLI Arguments Parser', () => {
   });
 
   it('should handle --file long option with URL', () => {
-    const args = parseArgs(['generate', '--file', 'https://example.com/rules.md']) as GenerateCliArgs;
+    const args = parseArgs([
+      'generate',
+      '--file',
+      'https://example.com/rules.md',
+    ]) as GenerateCliArgs;
     expect(args.command).toBe('generate');
     expect(args.file).toBe('https://example.com/rules.md');
   });

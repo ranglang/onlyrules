@@ -1,14 +1,14 @@
 import chalk from 'chalk';
 import { parseArgs } from './args';
 import {
+  AddCommand,
   Command,
   GenerateCommand,
-  InitCommand,
-  TemplatesCommand,
-  TemplateCommand,
-  AddCommand,
   GitignoreCommand,
-  PrungeCommand
+  InitCommand,
+  PrungeCommand,
+  TemplateCommand,
+  TemplatesCommand,
 } from './commands';
 
 export class CLIRunner {
@@ -91,10 +91,10 @@ export class CLIRunner {
       } else if ((rawArgs[i] === '-o' || rawArgs[i] === '--output') && i + 1 < rawArgs.length) {
         output = rawArgs[i + 1];
         i++;
-      } else if ((rawArgs[i] === '--ide-folder') && i + 1 < rawArgs.length) {
+      } else if (rawArgs[i] === '--ide-folder' && i + 1 < rawArgs.length) {
         ideFolder = rawArgs[i + 1];
         i++;
-      } else if ((rawArgs[i] === '--target') && i + 1 < rawArgs.length) {
+      } else if (rawArgs[i] === '--target' && i + 1 < rawArgs.length) {
         target = rawArgs[i + 1];
         i++;
       } else if (rawArgs[i] === '-v' || rawArgs[i] === '--verbose') {
@@ -117,7 +117,7 @@ export class CLIRunner {
       ideStyle,
       ideFolder,
       generateTraditional,
-      target
+      target,
     };
   }
 
@@ -150,7 +150,7 @@ export class CLIRunner {
       templateName,
       output: outputPath,
       force,
-      target
+      target,
     };
   }
 
@@ -172,7 +172,7 @@ export class CLIRunner {
     return {
       command: 'add',
       file,
-      output
+      output,
     };
   }
 }

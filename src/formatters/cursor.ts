@@ -1,11 +1,14 @@
 import { join } from 'node:path';
 import {
+  ApplyType,
   BaseRuleFormatter,
-  RuleFormatSpec,
-  RuleFormatCategory,
+  CommonFrontmatterSteps,
+  FrontmatterPipelineStep,
   ParsedRule,
+  RuleFormatCategory,
+  RuleFormatSpec,
   RuleGenerationContext,
-  RuleGenerationResult
+  RuleGenerationResult,
 } from '../core/interfaces';
 
 /**
@@ -13,15 +16,42 @@ import {
  * Generates .cursor/rules/{name}.mdc files with YAML frontmatter
  */
 export class CursorFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
+  static readonly SPEC: RuleFormatSpec = {
     id: 'cursor',
     name: 'Cursor IDE',
     category: RuleFormatCategory.DIRECTORY_BASED,
     extension: '.mdc',
     supportsMultipleRules: true,
     requiresMetadata: true,
-    defaultPath: '.cursor/rules'
+    defaultPath: '.cursor/rules',
   };
+
+  constructor() {
+    super(CursorFormatter.SPEC);
+  }
+
+  /**
+   * Configure the frontmatter pipeline for Cursor format
+   */
+  protected configureFrontmatterPipeline(): void {
+    this.frontmatterPipeline
+      .addStep(this.createAlwaysApplyStep())
+      .addStep(CommonFrontmatterSteps.addGlob())
+      .addStep(CommonFrontmatterSteps.addDescription());
+  }
+
+  /**
+   * Create Cursor-specific alwaysApply step
+   */
+  private createAlwaysApplyStep(): FrontmatterPipelineStep {
+    return {
+      process: (rule: ParsedRule, metadata: Record<string, unknown>) => {
+        const applyType = this.determineApplyType(rule);
+        metadata.alwaysApply = applyType === 'always';
+        return metadata;
+      },
+    };
+  }
 
   /**
    * Generate rule file for Cursor IDE
@@ -32,31 +62,31 @@ export class CursorFormatter extends BaseRuleFormatter {
   ): Promise<RuleGenerationResult> {
     try {
       const filePath = this.getOutputPath(rule, context);
-      
+
       // Check if file exists
       await this.checkFileExists(filePath, context.force);
-      
+
       // Ensure directory exists
       await this.ensureDirectory(filePath);
-      
+
       // Transform content
       const content = this.transformContent(rule);
-      
+
       // Write file
       await this.writeFile(filePath, content);
-      
+
       return {
         format: this.spec.id,
         success: true,
         filePath,
-        ruleName: rule.name
+        ruleName: rule.name,
       };
     } catch (error) {
       return {
         format: this.spec.id,
         success: false,
         error: (error as Error).message,
-        ruleName: rule.name
+        ruleName: rule.name,
       };
     }
   }
@@ -84,31 +114,14 @@ export class CursorFormatter extends BaseRuleFormatter {
   protected transformContent(rule: ParsedRule): string {
     let content = rule.content;
 
-    // Add YAML frontmatter if not already present
-    if (!content.includes('cursorRuleType:')) {
-      const ruleType = rule.isRoot ? 'always' : 'manual';
-      const frontmatter = this.createFrontmatter(rule, ruleType);
-      content = `${frontmatter}\n\n${content}`;
-    }
+    // Remove existing frontmatter and get clean content
+    content = content.replace(/^---\n[\s\S]*?\n---\n?/, '').trim();
 
-    return content;
+    // Generate frontmatter using the pipeline
+    const frontmatter = this.generateFrontmatter(rule);
+
+    return frontmatter ? `${frontmatter}\n\n${content}` : content;
   }
 
-  /**
-   * Create YAML frontmatter for Cursor
-   */
-  private createFrontmatter(rule: ParsedRule, ruleType: string): string {
-    const metadata = {
-      cursorRuleType: ruleType,
-      ...rule.metadata
-    };
 
-    const frontmatterLines = Object.entries(metadata)
-      .map(([key, value]) => {
-        const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
-        return `${key}: ${stringValue}`;
-      });
-
-    return `---\n${frontmatterLines.join('\n')}\n---`;
-  }
 }

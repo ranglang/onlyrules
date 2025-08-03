@@ -1,15 +1,15 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readFile, writeFile, unlink } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { readFile, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
-  getConfigPath,
+  type OnlyRulesConfig,
   configExists,
-  readConfig,
-  writeConfig,
-  updateConfigTargets,
+  getConfigPath,
   getConfigTargets,
-  type OnlyRulesConfig
+  readConfig,
+  updateConfigTargets,
+  writeConfig,
 } from '../src/utils/config';
 
 describe('Config Management', () => {
@@ -56,24 +56,24 @@ describe('Config Management', () => {
 
     it('should read valid config file', async () => {
       const testConfig: OnlyRulesConfig = {
-        target: ['cursor', 'windsurf']
+        target: ['cursor', 'windsurf'],
       };
       await writeFile(testConfigPath, JSON.stringify(testConfig), 'utf-8');
-      
+
       const config = await readConfig();
       expect(config).toEqual(testConfig);
     });
 
     it('should return empty config for invalid JSON', async () => {
       await writeFile(testConfigPath, 'invalid json', 'utf-8');
-      
+
       const config = await readConfig();
       expect(config).toEqual({});
     });
 
     it('should handle empty config file', async () => {
       await writeFile(testConfigPath, '{}', 'utf-8');
-      
+
       const config = await readConfig();
       expect(config).toEqual({});
     });
@@ -82,11 +82,11 @@ describe('Config Management', () => {
   describe('writeConfig', () => {
     it('should create new config file', async () => {
       const testConfig: OnlyRulesConfig = {
-        target: ['cursor', 'windsurf']
+        target: ['cursor', 'windsurf'],
       };
-      
+
       await writeConfig(testConfig);
-      
+
       expect(existsSync(testConfigPath)).toBe(true);
       const content = await readFile(testConfigPath, 'utf-8');
       const parsedConfig = JSON.parse(content);
@@ -95,23 +95,23 @@ describe('Config Management', () => {
 
     it('should format JSON with proper indentation', async () => {
       const testConfig: OnlyRulesConfig = {
-        target: ['cursor', 'windsurf']
+        target: ['cursor', 'windsurf'],
       };
-      
+
       await writeConfig(testConfig);
-      
+
       const content = await readFile(testConfigPath, 'utf-8');
       expect(content).toContain('  '); // Should have indentation
-      expect(content).toMatch(/{\n  "target": \[\n    "cursor",\n    "windsurf"\n  \]\n}/);
+      expect(content).toMatch(/{\n {2}"target": \[\n {4}"cursor",\n {4}"windsurf"\n {2}\]\n}/);
     });
   });
 
   describe('updateConfigTargets', () => {
     it('should create new config file with targets', async () => {
       const targets = ['cursor', 'windsurf'];
-      
+
       await updateConfigTargets(targets);
-      
+
       expect(existsSync(testConfigPath)).toBe(true);
       const config = await readConfig();
       expect(config.target).toEqual(targets);
@@ -120,14 +120,14 @@ describe('Config Management', () => {
     it('should update existing config file', async () => {
       // Create initial config with different targets
       const initialConfig: OnlyRulesConfig = {
-        target: ['claude']
+        target: ['claude'],
       };
       await writeConfig(initialConfig);
-      
+
       // Update with new targets
       const newTargets = ['cursor', 'windsurf'];
       await updateConfigTargets(newTargets);
-      
+
       const config = await readConfig();
       expect(config.target).toEqual(newTargets);
     });
@@ -136,14 +136,14 @@ describe('Config Management', () => {
       // Create config with additional fields (future extensibility)
       const initialConfig = {
         target: ['claude'],
-        someOtherField: 'value'
+        someOtherField: 'value',
       };
       await writeFile(testConfigPath, JSON.stringify(initialConfig), 'utf-8');
-      
+
       // Update targets
       const newTargets = ['cursor', 'windsurf'];
       await updateConfigTargets(newTargets);
-      
+
       const config = await readConfig();
       expect(config.target).toEqual(newTargets);
       expect((config as any).someOtherField).toBe('value');
@@ -151,7 +151,7 @@ describe('Config Management', () => {
 
     it('should handle empty targets array', async () => {
       await updateConfigTargets([]);
-      
+
       const config = await readConfig();
       expect(config.target).toEqual([]);
     });
@@ -165,7 +165,7 @@ describe('Config Management', () => {
 
     it('should return empty array when target field is not set', async () => {
       await writeConfig({});
-      
+
       const targets = await getConfigTargets();
       expect(targets).toEqual([]);
     });
@@ -173,7 +173,7 @@ describe('Config Management', () => {
     it('should return targets from config', async () => {
       const expectedTargets = ['cursor', 'windsurf'];
       await updateConfigTargets(expectedTargets);
-      
+
       const targets = await getConfigTargets();
       expect(targets).toEqual(expectedTargets);
     });
@@ -184,16 +184,16 @@ describe('Config Management', () => {
       // Initially no config
       expect(configExists()).toBe(false);
       expect(await getConfigTargets()).toEqual([]);
-      
+
       // Create config with targets
       await updateConfigTargets(['cursor']);
       expect(configExists()).toBe(true);
       expect(await getConfigTargets()).toEqual(['cursor']);
-      
+
       // Update targets
       await updateConfigTargets(['cursor', 'windsurf']);
       expect(await getConfigTargets()).toEqual(['cursor', 'windsurf']);
-      
+
       // Update to different targets
       await updateConfigTargets(['claude', 'gemini']);
       expect(await getConfigTargets()).toEqual(['claude', 'gemini']);

@@ -1,6 +1,6 @@
+import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { existsSync } from 'node:fs';
 import { RuleFormat } from '../types';
 import { extractTitleFromMarkdown } from './templates';
 
@@ -17,7 +17,7 @@ function isDirectoryBasedFormat(format: RuleFormat): boolean {
     RuleFormat.CLAUDE_MEMORIES,
     RuleFormat.ROO,
     RuleFormat.GEMINI_MEMORIES,
-    RuleFormat.LINGMA_PROJECT
+    RuleFormat.LINGMA_PROJECT,
   ].includes(format);
 }
 
@@ -63,14 +63,14 @@ export async function writeRulesToFile(
     if (isDirectoryBasedFormat(format)) {
       // Handle directory-based formats
       const outputPath = join(outputDir, format);
-      
+
       // Create the directory if it doesn't exist
       await mkdir(outputPath, { recursive: true });
-      
+
       // Generate filename based on format and rule name
       let filename: string;
       let fileContent = content;
-      
+
       // Format-specific handling
       switch (format) {
         case RuleFormat.COPILOT:
@@ -86,7 +86,7 @@ name: ${title}
 ${content}`;
           }
           break;
-          
+
         case RuleFormat.CURSOR:
           // Cursor uses .mdc extension with YAML header
           filename = `${ruleName || 'default'}${getFileExtension(format)}`;
@@ -101,62 +101,62 @@ cursorRuleType: ${ruleType}
 ${content}`;
           }
           break;
-          
+
         case RuleFormat.CLAUDE_MEMORIES:
         case RuleFormat.GEMINI_MEMORIES:
           // Claude and Gemini memory files
           filename = `${ruleName || 'default'}${getFileExtension(format)}`;
           break;
-          
+
         default:
           // Default handling for other directory-based formats
           filename = `${ruleName || 'default'}${getFileExtension(format)}`;
       }
-      
+
       const filePath = join(outputPath, filename);
-      
+
       // Check if file exists and force is not enabled
       if (existsSync(filePath) && !force) {
         throw new Error(`File ${filePath} already exists. Use --force to overwrite.`);
       }
-      
+
       // Write content to file
       await writeFile(filePath, fileContent);
     } else if (hasRootFile(format)) {
       // Handle root file formats like CLAUDE.md or GEMINI.md
       const outputPath = join(outputDir, format);
       const outputDirPath = dirname(outputPath);
-      
+
       // Check if file exists and force is not enabled
       if (existsSync(outputPath) && !force) {
         throw new Error(`File ${outputPath} already exists. Use --force to overwrite.`);
       }
-      
+
       // Create directory if it doesn't exist
       await mkdir(outputDirPath, { recursive: true });
-      
+
       // For Claude and Gemini root files, include @filename references if ruleName is provided
       let fileContent = content;
       if (ruleName && (format === RuleFormat.CLAUDE_ROOT || format === RuleFormat.GEMINI_ROOT)) {
         // Add reference to the memory file at the end
         fileContent += `\n\n@${ruleName}`;
       }
-      
+
       // Write content to file
       await writeFile(outputPath, fileContent);
     } else {
       // Handle regular file-based formats
       const outputPath = join(outputDir, format);
       const outputDirPath = dirname(outputPath);
-      
+
       // Check if file exists and force is not enabled
       if (existsSync(outputPath) && !force) {
         throw new Error(`File ${outputPath} already exists. Use --force to overwrite.`);
       }
-      
+
       // Create directory if it doesn't exist
       await mkdir(outputDirPath, { recursive: true });
-      
+
       // Write content to file
       await writeFile(outputPath, content);
     }

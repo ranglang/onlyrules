@@ -1,24 +1,24 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock dependencies
 vi.mock('../src/utils/reader', () => ({
-  readRulesFromInput: vi.fn()
+  readRulesFromInput: vi.fn(),
 }));
 
 vi.mock('../src/utils/writer', () => ({
-  writeRulesToFile: vi.fn()
+  writeRulesToFile: vi.fn(),
 }));
 
 import { generateRules } from '../src/core/generator';
+import { RuleFormat } from '../src/types';
 import { readRulesFromInput } from '../src/utils/reader';
 import { writeRulesToFile } from '../src/utils/writer';
-import { RuleFormat } from '../src/types';
 
 describe('Rules Generator', () => {
   const mockRules = '---\nname: test-rule\n---\n# Test Rule\nThis is a test rule.';
-  
+
   beforeEach(() => {
-        vi.clearAllMocks();
+    vi.clearAllMocks();
     process.env.ONLYRULES_USE_LEGACY = 'true';
   });
 
@@ -27,10 +27,10 @@ describe('Rules Generator', () => {
     const file = 'https://example.com/rules.md';
     const output = './output';
     (readRulesFromInput as any).mockResolvedValue(mockRules);
-    
+
     // Execute
     await generateRules({ file, output });
-    
+
     // Verify
     expect(readRulesFromInput).toHaveBeenCalledWith(file);
     expect(writeRulesToFile).toHaveBeenCalledTimes(Object.keys(RuleFormat).length);
@@ -41,10 +41,10 @@ describe('Rules Generator', () => {
     const file = './rules.md';
     const output = './output';
     (readRulesFromInput as any).mockResolvedValue(mockRules);
-    
+
     // Execute
     await generateRules({ file, output });
-    
+
     // Verify
     expect(readRulesFromInput).toHaveBeenCalledWith(file);
     expect(writeRulesToFile).toHaveBeenCalledTimes(Object.keys(RuleFormat).length);
@@ -54,10 +54,10 @@ describe('Rules Generator', () => {
     // Setup
     const output = './output';
     (readRulesFromInput as any).mockResolvedValue(mockRules);
-    
+
     // Execute
     await generateRules({ output });
-    
+
     // Verify - should use the default file path
     expect(readRulesFromInput).toHaveBeenCalledWith('./rulesync.mdc');
   });
@@ -67,7 +67,7 @@ describe('Rules Generator', () => {
     const file = './empty-rules.md';
     const output = './output';
     (readRulesFromInput as any).mockResolvedValue('');
-    
+
     // Execute & Verify
     await expect(generateRules({ file, output })).rejects.toThrow();
   });

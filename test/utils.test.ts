@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 // Import directly from the file to avoid module resolution issues in tests
 import { updateAICoderulesSection } from '../src/utils/file-utils';
 
@@ -14,9 +14,9 @@ dist/
 *.md
 !rulessync.md
 `;
-      
+
       const result = updateAICoderulesSection(existingContent, aiRulesSection);
-      
+
       expect(result).toBe(`# Project files
 node_modules/
 dist/
@@ -41,9 +41,9 @@ dist/
 *.md
 !rulessync.md
 `;
-      
+
       const result = updateAICoderulesSection(existingContent, aiRulesSection);
-      
+
       // Our function should remove the AI Coderules section and add the new one
       const expected = `# Project files
 node_modules/
@@ -76,9 +76,9 @@ dist/
 *.md
 !rulessync.md
 `;
-      
+
       const result = updateAICoderulesSection(existingContent, aiRulesSection);
-      
+
       // Our function should remove all AI Coderules sections and add the new one
       const expected = `# Project files
 node_modules/

@@ -4,37 +4,37 @@
 export enum RuleFormat {
   // GitHub Copilot - Front Matter + Markdown format
   COPILOT = '.github/instructions',
-  
+
   // Cursor - MDC format (YAML header + Markdown)
   // Different rule types: always, specificFiles, intelligently, manual (default)
   CURSOR = '.cursor/rules',
-  
+
   // Cline - Plain Markdown format
   CLINE = '.clinerules',
-  
+
   // Claude Code - Plain Markdown format
   // Root level goes to CLAUDE.md, non-root to separate memory files
   CLAUDE_ROOT = 'CLAUDE.md',
   CLAUDE_MEMORIES = '.claude/memories',
-  
+
   // Roo Code - Plain Markdown with description header
   ROO = '.roo/rules',
-  
+
   // Kiro AI - Markdown with YAML frontmatter for inclusion modes
   KIRO = '.kiro/steering',
-  
+
   // Gemini CLI - Plain Markdown format
   // Root level goes to GEMINI.md, non-root to separate memory files
   GEMINI_ROOT = 'GEMINI.md',
   GEMINI_MEMORIES = '.gemini/memories',
-  
+
   // Legacy formats (keeping for backward compatibility)
   AGENTS = 'AGENTS.md',
   JUNIE = '.junie/guidelines.md',
   WINDSURF = '.windsurfrules',
   TRAE = '.trae/rules.md',
 
-  LINGMA_PROJECT = '.lingma/rules'
+  LINGMA_PROJECT = '.lingma/rules',
 }
 
 /**
@@ -87,7 +87,6 @@ export interface InitCliArgs extends BaseCliArgs {
   target?: string;
 }
 
-
 /**
  * Gitignore command arguments
  */
@@ -105,7 +104,13 @@ export interface PrungeCliArgs extends BaseCliArgs {
 /**
  * Combined CLI arguments type
  */
-export type CliArgs = GenerateCliArgs | TemplateCliArgs | TemplatesCliArgs | InitCliArgs | GitignoreCliArgs | PrungeCliArgs;
+export type CliArgs =
+  | GenerateCliArgs
+  | TemplateCliArgs
+  | TemplatesCliArgs
+  | InitCliArgs
+  | GitignoreCliArgs
+  | PrungeCliArgs;
 
 /**
  * Rule generation options

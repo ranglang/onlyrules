@@ -11,23 +11,23 @@ import { DefaultRuleFormatterFactory } from '../core/factory';
 function getBaseIdePaths(): string[] {
   const factory = new DefaultRuleFormatterFactory();
   const formatters = factory.getAvailableFormatters();
-  
+
   const paths = new Set<string>();
-  
+
   // Extract defaultPath from each formatter
   for (const formatter of formatters.values()) {
     const defaultPath = formatter.spec.defaultPath;
-    
+
     // Add the default path
     paths.add(defaultPath);
-    
+
     // Add some legacy/alternative paths that might exist in projects
     // Based on actual formatter paths found:
     // .cursor/rules, .github/instructions, .clinerules, .junie/guidelines.md,
     // .trae/rules.md, .augment-guidelines, .lingma/rules, .gemini/memories,
     // .claude/memories, .windsurfrules, .kiro/steering, .roo/rules, .codebuddy/rules,
     // CLAUDE.md, GEMINI.md, AGENTS.md, .augment/rules/always.md
-    
+
     // Add common legacy variations that users might have
     if (defaultPath === '.cursor/rules') {
       paths.add('.cursorrules'); // Legacy cursor format
@@ -55,10 +55,10 @@ function getBaseIdePaths(): string[] {
       paths.add('.roo'); // Legacy roo format (directory)
     }
   }
-  
+
   // Add some additional common paths that might not be covered by formatters
   paths.add('.rules'); // Generic rules directory
-  
+
   return Array.from(paths).sort();
 }
 
@@ -72,7 +72,7 @@ const BASE_IDE_RULE_PATHS = getBaseIdePaths();
  * Common IDE/AI rule paths for removal operations (prunge command)
  * These paths include leading ./ for file operations
  */
-export const IDE_RULE_PATHS_FOR_REMOVAL = BASE_IDE_RULE_PATHS.map(path => `./${path}`);
+export const IDE_RULE_PATHS_FOR_REMOVAL = BASE_IDE_RULE_PATHS.map((path) => `./${path}`);
 
 /**
  * IDE/AI rule paths for gitignore patterns

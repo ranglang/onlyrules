@@ -1,7 +1,7 @@
-import { readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
-import { readRulesFromUrl, isUrl, readRulesFromInput } from './reader';
+import { isUrl, readRulesFromInput, readRulesFromUrl } from './reader';
 
 /**
  * Append new rules to the rulesync.mdc file with proper section separation
@@ -9,25 +9,28 @@ import { readRulesFromUrl, isUrl, readRulesFromInput } from './reader';
  * @param targetFile Path to the target rulesync.mdc file (default: './rulesync.mdc')
  * @returns Promise<void>
  */
-export async function appendRulesToFile(sourceFile: string, targetFile = './rulesync.mdc'): Promise<void> {
+export async function appendRulesToFile(
+  sourceFile: string,
+  targetFile = './rulesync.mdc'
+): Promise<void> {
   try {
     // Read the new rules content from source
     const newRulesContent = await readRulesFromInput(sourceFile);
-    
+
     if (!newRulesContent.trim()) {
       throw new Error('Source file is empty or contains no content');
     }
 
     let finalContent: string;
-    
+
     // Check if target file exists
     if (existsSync(targetFile)) {
       // Read existing content
       const existingContent = await readFile(targetFile, 'utf-8');
-      
+
       if (existingContent.trim()) {
         const cleanExistingContent = existingContent.trimEnd();
-        
+
         // Check if the new content already has frontmatter
         if (hasFrontmatter(newRulesContent)) {
           // Content has frontmatter, append directly with just a separator
@@ -59,7 +62,7 @@ ${newRulesContent.trim()}
 
     // Write the combined content to target file
     await writeFile(targetFile, finalContent);
-    
+
     console.log(`Successfully appended rules from ${sourceFile} to ${targetFile}`);
   } catch (error) {
     throw new Error(`Error appending rules: ${(error as Error).message}`);

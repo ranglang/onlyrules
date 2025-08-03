@@ -1,24 +1,24 @@
-import { BaseRuleFormatter, RuleFormatterFactory, RuleFormatCategory } from './interfaces';
+import { BaseRuleFormatter, RuleFormatCategory, RuleFormatterFactory } from './interfaces';
 
+import { ClaudeMemoriesFormatter } from '../formatters/claude-memories';
+import { ClaudeRootFormatter } from '../formatters/claude-root';
+import { ClineFormatter } from '../formatters/cline';
+import { CodeBuddyFormatter } from '../formatters/codebuddy';
+import { CopilotFormatter } from '../formatters/copilot';
 // Import all formatters
 import { CursorFormatter } from '../formatters/cursor';
-import { CopilotFormatter } from '../formatters/copilot';
-import { ClineFormatter } from '../formatters/cline';
-import { ClaudeRootFormatter } from '../formatters/claude-root';
-import { ClaudeMemoriesFormatter } from '../formatters/claude-memories';
-import { GeminiRootFormatter } from '../formatters/gemini-root';
 import { GeminiMemoriesFormatter } from '../formatters/gemini-memories';
-import { RooFormatter } from '../formatters/roo';
+import { GeminiRootFormatter } from '../formatters/gemini-root';
 import { KiroFormatter } from '../formatters/kiro';
-import { CodeBuddyFormatter } from '../formatters/codebuddy';
+import { RooFormatter } from '../formatters/roo';
 
+import { AugmentcodeFormatter } from '../formatters/augmentcode';
 // Legacy formatters
 import { AgentsFormatter } from '../formatters/legacy/agents';
 import { JunieFormatter } from '../formatters/legacy/junie';
-import { WindsurfFormatter } from '../formatters/legacy/windsurf';
-import { TraeFormatter } from '../formatters/legacy/trae';
-import { AugmentcodeFormatter } from '../formatters/augmentcode';
 import { LingmaProjectFormatter } from '../formatters/legacy/lingma-project';
+import { TraeFormatter } from '../formatters/legacy/trae';
+import { WindsurfFormatter } from '../formatters/legacy/windsurf';
 
 /**
  * Default implementation of the rule formatter factory
@@ -57,7 +57,7 @@ export class DefaultRuleFormatterFactory implements RuleFormatterFactory {
    */
   getFormattersByCategory(category: RuleFormatCategory): BaseRuleFormatter[] {
     return Array.from(this.formatters.values()).filter(
-      formatter => formatter.spec.category === category
+      (formatter) => formatter.spec.category === category
     );
   }
 
@@ -81,23 +81,24 @@ export class DefaultRuleFormatterFactory implements RuleFormatterFactory {
   private registerBuiltInFormatters(): void {
     // Register all formatters
     this.registerFormatter(new CursorFormatter());
-    this.registerFormatter(new CopilotFormatter());
-    this.registerFormatter(new ClineFormatter());
-    this.registerFormatter(new ClaudeRootFormatter());
-    this.registerFormatter(new ClaudeMemoriesFormatter());
-    this.registerFormatter(new GeminiRootFormatter());
-    this.registerFormatter(new GeminiMemoriesFormatter());
-    this.registerFormatter(new RooFormatter());
+    // TODO: Update other formatters to implement pipeline pattern
+    // this.registerFormatter(new CopilotFormatter());
+    // this.registerFormatter(new ClineFormatter());
+    // this.registerFormatter(new ClaudeRootFormatter());
+    // this.registerFormatter(new ClaudeMemoriesFormatter());
+    // this.registerFormatter(new GeminiRootFormatter());
+    // this.registerFormatter(new GeminiMemoriesFormatter());
+    // this.registerFormatter(new RooFormatter());
     this.registerFormatter(new KiroFormatter());
     this.registerFormatter(new CodeBuddyFormatter());
-    
+
     // Legacy formatters
-    this.registerFormatter(new AgentsFormatter());
-    this.registerFormatter(new JunieFormatter());
-    this.registerFormatter(new WindsurfFormatter());
-    this.registerFormatter(new TraeFormatter());
+    // this.registerFormatter(new AgentsFormatter());
+    // this.registerFormatter(new JunieFormatter());
+    // this.registerFormatter(new WindsurfFormatter());
+    // this.registerFormatter(new TraeFormatter());
     this.registerFormatter(new AugmentcodeFormatter());
-    this.registerFormatter(new LingmaProjectFormatter());
+    // this.registerFormatter(new LingmaProjectFormatter());
   }
 
   /**
@@ -109,7 +110,7 @@ export class DefaultRuleFormatterFactory implements RuleFormatterFactory {
       this.getFormatter('copilot'),
       this.getFormatter('cline'),
       this.getFormatter('claude-root'),
-      this.getFormatter('gemini-root')
+      this.getFormatter('gemini-root'),
     ].filter(Boolean) as BaseRuleFormatter[];
   }
 
@@ -118,7 +119,7 @@ export class DefaultRuleFormatterFactory implements RuleFormatterFactory {
    */
   getMultiRuleFormatters(): BaseRuleFormatter[] {
     return Array.from(this.formatters.values()).filter(
-      formatter => formatter.spec.supportsMultipleRules
+      (formatter) => formatter.spec.supportsMultipleRules
     );
   }
 }

@@ -1,5 +1,5 @@
-import { readdir, readFile } from 'node:fs/promises';
-import { join, basename } from 'node:path';
+import { readFile, readdir } from 'node:fs/promises';
+import { basename, join } from 'node:path';
 import { RuleTemplate } from '../types';
 
 /**
@@ -10,24 +10,24 @@ import { RuleTemplate } from '../types';
 export async function getAvailableTemplates(templatesDir: string): Promise<RuleTemplate[]> {
   try {
     const files = await readdir(templatesDir);
-    const templateFiles = files.filter(file => file.endsWith('.md') || file.endsWith('.mdc'));
-    
+    const templateFiles = files.filter((file) => file.endsWith('.md') || file.endsWith('.mdc'));
+
     const templates: RuleTemplate[] = [];
-    
+
     for (const file of templateFiles) {
       const content = await readFile(join(templatesDir, file), 'utf-8');
       const name = file.replace(/\.(md|mdc)$/, '');
-      
+
       // Extract first line as title/description
       const firstLine = content.split('\n')[0].replace('# ', '');
-      
+
       templates.push({
         name,
         description: firstLine,
-        content
+        content,
       });
     }
-    
+
     return templates;
   } catch (error) {
     throw new Error(`Error reading templates: ${(error as Error).message}`);
@@ -40,15 +40,18 @@ export async function getAvailableTemplates(templatesDir: string): Promise<RuleT
  * @param templateName Name of the template to get
  * @returns Template content
  */
-export async function getTemplateByName(templatesDir: string, templateName: string): Promise<RuleTemplate> {
+export async function getTemplateByName(
+  templatesDir: string,
+  templateName: string
+): Promise<RuleTemplate> {
   try {
     const templates = await getAvailableTemplates(templatesDir);
-    const template = templates.find(t => t.name === templateName);
-    
+    const template = templates.find((t) => t.name === templateName);
+
     if (!template) {
       throw new Error(`Template '${templateName}' not found`);
     }
-    
+
     return template;
   } catch (error) {
     throw new Error(`Error getting template: ${(error as Error).message}`);
@@ -62,28 +65,35 @@ export async function getTemplateByName(templatesDir: string, templateName: stri
  * @param {string} filePath - Path to the file (used for naming)
  * @returns {Array<{name: string, content: string}>} - Array of rule objects
  */
-export function parseRuleFile(content: string, filePath: string): Array<{name: string, content: string}> {
+export function parseRuleFile(
+  content: string,
+  filePath: string
+): Array<{ name: string; content: string }> {
   const fileExt = filePath.split('.').pop()?.toLowerCase();
   const fileName = basename(filePath).split('.')[0];
-  
+
   // If it's a simple markdown file (not .mdc), treat it as a single rule
   if (fileExt === 'md') {
-    return [{
-      name: fileName,
-      content: content
-    }];
+    return [
+      {
+        name: fileName,
+        content: content,
+      },
+    ];
   }
-  
+
   // For .mdc files, parse as concatenated rules
   if (fileExt === 'mdc') {
     return parseMdcContent(content, fileName);
   }
-  
+
   // Default to treating as a single rule if extension is unknown
-  return [{
-    name: fileName,
-    content: content
-  }];
+  return [
+    {
+      name: fileName,
+      content: content,
+    },
+  ];
 }
 
 /**
@@ -97,19 +107,21 @@ export function parseRuleFile(content: string, filePath: string): Array<{name: s
  * @returns {string} - Snake-case string safe for file names
  */
 function toSnakeCaseFileName(str: string): string {
-  return str
-    // Remove or replace invalid file name characters
-    .replace(/[<>:"/\\|?*]/g, '')
-    // Replace spaces and other separators with hyphens
-    .replace(/[\s_]+/g, '-')
-    // Convert to lowercase
-    .toLowerCase()
-    // Replace multiple consecutive hyphens with single hyphen
-    .replace(/-+/g, '-')
-    // Remove leading/trailing hyphens
-    .replace(/^-+|-+$/g, '')
+  return (
+    str
+      // Remove or replace invalid file name characters
+      .replace(/[<>:"/\\|?*]/g, '')
+      // Replace spaces and other separators with hyphens
+      .replace(/[\s_]+/g, '-')
+      // Convert to lowercase
+      .toLowerCase()
+      // Replace multiple consecutive hyphens with single hyphen
+      .replace(/-+/g, '-')
+      // Remove leading/trailing hyphens
+      .replace(/^-+|-+$/g, '') ||
     // Ensure it's not empty
-    || 'unnamed-rule';
+    'unnamed-rule'
+  );
 }
 
 export function extractTitleFromMarkdown(content: string): string {
@@ -123,19 +135,19 @@ export function extractTitleFromMarkdown(content: string): string {
       return titleMatch[1].trim();
     }
   }
-  
+
   // Fallback: Try to find the first heading
   const headingMatch = content.match(/^#\s+(.+)$/m);
   if (headingMatch && headingMatch[1]) {
     return headingMatch[1].trim();
   }
-  
+
   // If no heading found, use the first non-empty line
-  const firstLine = content.split('\n').find(line => line.trim().length > 0);
+  const firstLine = content.split('\n').find((line) => line.trim().length > 0);
   if (firstLine) {
     return firstLine.trim();
   }
-  
+
   return 'AI Rules';
 }
 
@@ -145,18 +157,21 @@ export function extractTitleFromMarkdown(content: string): string {
  * @param {string} defaultName - Default name to use if no name is found
  * @returns {Array<{name: string, content: string}>} - Array of rule objects
  */
-function parseMdcContent(content: string, defaultName: string): Array<{name: string, content: string}> {
-  const rules: Array<{name: string, content: string}> = [];
-  
+function parseMdcContent(
+  content: string,
+  defaultName: string
+): Array<{ name: string; content: string }> {
+  const rules: Array<{ name: string; content: string }> = [];
+
   // Split the content by rule sections using regex
-    const pattern = /---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*?)(?=\r?\n---|\s*$)/g;
-  
+  const pattern = /---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*?)(?=\r?\n---|\s*$)/g;
+
   let match;
   let index = 0;
   while ((match = pattern.exec(content)) !== null) {
     const frontmatterText = match[1].trim();
     const contentText = match[2].trim();
-    
+
     // Parse frontmatter into key-value pairs
     const frontmatterObj: Record<string, string> = {};
     frontmatterText.split('\n').forEach((line: string) => {
@@ -167,10 +182,10 @@ function parseMdcContent(content: string, defaultName: string): Array<{name: str
         frontmatterObj[key] = value;
       }
     });
-    
+
     // Get rule name with priority: frontmatter > extracted title > fallback
     let name = frontmatterObj.name;
-    
+
     if (!name) {
       // Try to extract title from markdown content
       const extractedTitle = extractTitleFromMarkdown(contentText);
@@ -178,42 +193,44 @@ function parseMdcContent(content: string, defaultName: string): Array<{name: str
         name = extractedTitle;
       }
     }
-    
+
     // Convert to snake-case and make file-system safe
     if (!name) {
       name = toSnakeCaseFileName(`${defaultName}-${index + 1}`);
     } else {
       name = toSnakeCaseFileName(name);
-      
+
       // Check if this name already exists in our rules
-      const existingNames = rules.map(rule => rule.name);
+      const existingNames = rules.map((rule) => rule.name);
       let uniqueName = name;
       let counter = 1;
-      
+
       while (existingNames.includes(uniqueName)) {
         uniqueName = toSnakeCaseFileName(`${name}-${counter}`);
         counter++;
       }
-      
+
       name = uniqueName;
     }
-    
+
     // Add the rule to our collection
     rules.push({
       name,
-      content: contentText
+      content: contentText,
     });
-    
+
     index++;
   }
-  
+
   // If no rules found, treat the entire content as a single rule
   if (rules.length === 0) {
-    return [{
-      name: defaultName,
-      content: content
-    }];
+    return [
+      {
+        name: defaultName,
+        content: content,
+      },
+    ];
   }
-  
+
   return rules;
 }

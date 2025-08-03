@@ -1,11 +1,11 @@
 import { join } from 'node:path';
 import {
   BaseRuleFormatter,
-  RuleFormatSpec,
-  RuleFormatCategory,
   ParsedRule,
+  RuleFormatCategory,
+  RuleFormatSpec,
   RuleGenerationContext,
-  RuleGenerationResult
+  RuleGenerationResult,
 } from '../core/interfaces';
 
 /**
@@ -20,7 +20,7 @@ export class ClineFormatter extends BaseRuleFormatter {
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: false,
-    defaultPath: '.clinerules'
+    defaultPath: '.clinerules',
   };
 
   /**
@@ -32,31 +32,31 @@ export class ClineFormatter extends BaseRuleFormatter {
   ): Promise<RuleGenerationResult> {
     try {
       const filePath = this.getOutputPath(rule, context);
-      
+
       // Check if file exists
       await this.checkFileExists(filePath, context.force);
-      
+
       // Ensure directory exists
       await this.ensureDirectory(filePath);
-      
+
       // Transform content
       const content = this.transformContent(rule);
-      
+
       // Write file
       await this.writeFile(filePath, content);
-      
+
       return {
         format: this.spec.id,
         success: true,
         filePath,
-        ruleName: rule.name
+        ruleName: rule.name,
       };
     } catch (error) {
       return {
         format: this.spec.id,
         success: false,
         error: (error as Error).message,
-        ruleName: rule.name
+        ruleName: rule.name,
       };
     }
   }
@@ -85,10 +85,10 @@ export class ClineFormatter extends BaseRuleFormatter {
     // Cline uses plain markdown, so just return the content as-is
     // Remove any existing frontmatter since Cline doesn't use it
     let content = rule.content;
-    
+
     // Remove YAML frontmatter if present
     content = content.replace(/^---\n[\s\S]*?\n---\n?/, '').trim();
-    
+
     return content;
   }
 }

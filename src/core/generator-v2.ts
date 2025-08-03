@@ -1,10 +1,7 @@
-import { RuleGenerationOptions } from '../types';
-import {
-  RuleGenerationPipelineOptions,
-  RuleGenerationResult
-} from './interfaces';
-import { DefaultRuleGenerationPipeline } from './pipeline';
 import chalk from 'chalk';
+import { RuleGenerationOptions } from '../types';
+import { RuleGenerationPipelineOptions, RuleGenerationResult } from './interfaces';
+import { DefaultRuleGenerationPipeline } from './pipeline';
 
 /**
  * Enhanced rule generation function using the new plugin-based architecture
@@ -16,13 +13,12 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
   try {
     // Convert legacy options to new pipeline options
     const pipelineOptions = convertLegacyOptions(options);
-    
+
     // Execute the pipeline
     const results = await pipeline.execute(pipelineOptions);
-    
+
     // Log results in the same format as the legacy system
     logLegacyCompatibleResults(results, options.verbose);
-    
   } catch (error) {
     throw new Error(`Failed to generate rules: ${(error as Error).message}`);
   }
@@ -34,12 +30,26 @@ export async function generateRules(options: RuleGenerationOptions): Promise<voi
 function getValidTargets(): string[] {
   return [
     // Modern formatters
-    'cursor', 'copilot', 'cline', 'claude', 'claude-root', 'claude-memories',
-    'gemini', 'gemini-root', 'gemini-memories', 'roo', 'kiro', 'codebuddy',
+    'cursor',
+    'copilot',
+    'cline',
+    'claude',
+    'claude-root',
+    'claude-memories',
+    'gemini',
+    'gemini-root',
+    'gemini-memories',
+    'roo',
+    'kiro',
+    'codebuddy',
     'augmentcode',
     // Legacy formatters
-    'agents', 'junie', 'windsurf', 'trae',
-    'lingma', 'lingma-project'
+    'agents',
+    'junie',
+    'windsurf',
+    'trae',
+    'lingma',
+    'lingma-project',
   ];
 }
 
@@ -49,14 +59,13 @@ function getValidTargets(): string[] {
 function validateTargets(targets: string[]): void {
   const validTargets = getValidTargets();
   const invalidTargets = targets
-    .map(t => t.toLowerCase())
-    .filter(target => !validTargets.includes(target));
-  
+    .map((t) => t.toLowerCase())
+    .filter((target) => !validTargets.includes(target));
+
   if (invalidTargets.length > 0) {
     const availableTargets = validTargets.join(', ');
     throw new Error(
-      `Invalid target(s): ${invalidTargets.join(', ')}\n` +
-      `Available targets: ${availableTargets}`
+      `Invalid target(s): ${invalidTargets.join(', ')}\n` + `Available targets: ${availableTargets}`
     );
   }
 }
@@ -67,35 +76,33 @@ function validateTargets(targets: string[]): void {
 function mapTargetsToFormatterIds(targets: string[]): string[] {
   // First validate all targets
   validateTargets(targets);
-  
+
   const targetMap: Record<string, string> = {
     // Modern formatters
-    'cursor': 'cursor',
-    'copilot': 'copilot', 
-    'cline': 'cline',
-    'claude': 'claude-root',
+    cursor: 'cursor',
+    copilot: 'copilot',
+    cline: 'cline',
+    claude: 'claude-root',
     'claude-root': 'claude-root',
     'claude-memories': 'claude-memories',
-    'gemini': 'gemini-root',
-    'gemini-root': 'gemini-root', 
+    gemini: 'gemini-root',
+    'gemini-root': 'gemini-root',
     'gemini-memories': 'gemini-memories',
-    'roo': 'roo',
-    'kiro': 'kiro',
-    'codebuddy': 'codebuddy',
-    
+    roo: 'roo',
+    kiro: 'kiro',
+    codebuddy: 'codebuddy',
+
     // Legacy formatters
-    'agents': 'agents',
-    'junie': 'junie',
-    'windsurf': 'windsurf',
-    'trae': 'trae',
-    'augmentcode': 'augmentcode',
-    'lingma': 'lingma-project',
-    'lingma-project': 'lingma-project'
+    agents: 'agents',
+    junie: 'junie',
+    windsurf: 'windsurf',
+    trae: 'trae',
+    augmentcode: 'augmentcode',
+    lingma: 'lingma-project',
+    'lingma-project': 'lingma-project',
   };
 
-  return targets
-    .map(target => targetMap[target.toLowerCase()])
-    .filter(Boolean); // This should never filter anything now due to validation
+  return targets.map((target) => targetMap[target.toLowerCase()]).filter(Boolean); // This should never filter anything now due to validation
 }
 
 /**
@@ -104,7 +111,7 @@ function mapTargetsToFormatterIds(targets: string[]): string[] {
 function convertLegacyOptions(options: RuleGenerationOptions): RuleGenerationPipelineOptions {
   // Determine input source
   let input: string | { content: string; filePath?: string };
-  
+
   if (options.rulesContent) {
     // Direct content provided
     input = { content: options.rulesContent };
@@ -122,7 +129,9 @@ function convertLegacyOptions(options: RuleGenerationOptions): RuleGenerationPip
     // Map target names to formatter IDs
     formats = mapTargetsToFormatterIds(options.target);
     if (formats.length === 0) {
-      console.warn(chalk.yellow(`⚠ No valid formatters found for targets: ${options.target.join(', ')}`));
+      console.warn(
+        chalk.yellow(`⚠ No valid formatters found for targets: ${options.target.join(', ')}`)
+      );
     }
   } else if (options.formats) {
     // Convert legacy format names to new format IDs
@@ -136,7 +145,7 @@ function convertLegacyOptions(options: RuleGenerationOptions): RuleGenerationPip
     force: options.force,
     verbose: options.verbose,
     ideStyle: options.ideStyle,
-    ideFolder: options.ideFolder
+    ideFolder: options.ideFolder,
   };
 }
 
@@ -159,7 +168,7 @@ function convertLegacyFormatToId(legacyFormat: any): string {
     '.windsurfrules': 'windsurf',
     '.trae/rules.md': 'trae',
     '.augment/rules': 'augmentcode',
-    '.lingma/rules': 'lingma-project'
+    '.lingma/rules': 'lingma-project',
   };
 
   return formatMapping[legacyFormat] || legacyFormat;
@@ -170,21 +179,23 @@ function convertLegacyFormatToId(legacyFormat: any): string {
  */
 function logLegacyCompatibleResults(results: RuleGenerationResult[], verbose?: boolean): void {
   if (verbose) {
-    results.forEach((result) => {
+    for (const result of results) {
       if (result.success) {
-        console.log(chalk.green(`✓ Generated ${result.format} for rule '${result.ruleName}'`));
+        console.log(`✓ Generated ${result.format} rule: ${result.filePath}`);
       } else {
-        console.log(chalk.red(`✗ Failed to generate ${result.format} for rule '${result.ruleName}': ${result.error}`));
+        console.error(
+          `✗ Failed to generate ${result.format} rule: ${result.error || 'Unknown error'}`
+        );
       }
-    });
+    }
   }
 
   // Count successes and failures
-  const successes = results.filter(r => r.success).length;
+  const successes = results.filter((r) => r.success).length;
   const failures = results.length - successes;
 
   // Extract unique rule names
-  const uniqueRules = new Set(results.map(r => r.ruleName).filter(Boolean));
+  const uniqueRules = new Set(results.map((r) => r.ruleName).filter(Boolean));
   const ruleCount = uniqueRules.size;
 
   // Log summary in legacy format
@@ -205,7 +216,7 @@ export { validateTargets, getValidTargets };
  */
 export function getAvailableFormats(): string[] {
   const pipeline = new DefaultRuleGenerationPipeline();
-  return pipeline.getAvailableFormats().map(spec => spec.id);
+  return pipeline.getAvailableFormats().map((spec) => spec.id);
 }
 
 /**
@@ -214,9 +225,9 @@ export function getAvailableFormats(): string[] {
 export function getFormatsByCategory(): { [category: string]: string[] } {
   const pipeline = new DefaultRuleGenerationPipeline();
   const formats = pipeline.getAvailableFormats();
-  
+
   const grouped: { [category: string]: string[] } = {};
-  
+
   for (const format of formats) {
     const category = format.category;
     if (!grouped[category]) {
@@ -224,7 +235,7 @@ export function getFormatsByCategory(): { [category: string]: string[] } {
     }
     grouped[category].push(format.id);
   }
-  
+
   return grouped;
 }
 
@@ -233,5 +244,5 @@ export function getFormatsByCategory(): { [category: string]: string[] } {
  */
 export function isFormatSupported(formatId: string): boolean {
   const pipeline = new DefaultRuleGenerationPipeline();
-  return pipeline.getAvailableFormats().some(spec => spec.id === formatId);
+  return pipeline.getAvailableFormats().some((spec) => spec.id === formatId);
 }

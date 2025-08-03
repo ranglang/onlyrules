@@ -27,8 +27,13 @@ export enum RuleFormatCategory {
   /** Formats that use a single root file */
   ROOT_FILE = 'root',
   /** Formats that use memory/project-specific files */
-  MEMORY_BASED = 'memory'
+  MEMORY_BASED = 'memory',
 }
+
+/**
+ * Apply type for rules across different IDEs
+ */
+export type ApplyType = 'auto' | 'manual' | 'always';
 
 /**
  * Parsed rule data structure
@@ -42,6 +47,12 @@ export interface ParsedRule {
   metadata?: Record<string, any>;
   /** Whether this is a root/global rule */
   isRoot: boolean;
+  /** Apply type for the rule */
+  applyType?: ApplyType;
+  /** Description for the rule, important for IDE rule application */
+  description?: string;
+  /** Glob patterns for file matching, important for IDE rule application */
+  glob?: string | string[];
 }
 
 /**
@@ -75,18 +86,173 @@ export interface RuleGenerationResult {
 }
 
 /**
+ * Pipeline step for building frontmatter metadata
+ */
+export interface FrontmatterPipelineStep {
+  /**
+   * Process a rule and add/modify frontmatter metadata
+   */
+  process(rule: ParsedRule, metadata: Record<string, unknown>): Record<string, unknown>;
+}
+
+/**
+ * Builder for constructing frontmatter pipelines
+ */
+export class FrontmatterPipelineBuilder {
+  private steps: FrontmatterPipelineStep[] = [];
+
+  /**
+   * Add a pipeline step
+   */
+  addStep(step: FrontmatterPipelineStep): this {
+    this.steps.push(step);
+    return this;
+  }
+
+  /**
+   * Execute the pipeline on a rule
+   */
+  execute(rule: ParsedRule): Record<string, unknown> {
+    let metadata: Record<string, unknown> = {};
+    
+    for (const step of this.steps) {
+      metadata = step.process(rule, metadata);
+    }
+    
+    return metadata;
+  }
+
+  /**
+   * Get the pipeline steps
+   */
+  getSteps(): FrontmatterPipelineStep[] {
+    return [...this.steps];
+  }
+}
+
+/**
+ * Common frontmatter pipeline steps
+ */
+export class CommonFrontmatterSteps {
+  /**
+   * Add type field to frontmatter
+   */
+  static addType(type: string): FrontmatterPipelineStep {
+    return {
+      process: (rule: ParsedRule, metadata: Record<string, unknown>) => {
+        metadata.type = type;
+        return metadata;
+      },
+    };
+  }
+
+  /**
+   * Add description from rule if available
+   */
+  static addDescription(): FrontmatterPipelineStep {
+    return {
+      process: (rule: ParsedRule, metadata: Record<string, unknown>) => {
+        if (rule.description) {
+          metadata.description = rule.description;
+        }
+        return metadata;
+      },
+    };
+  }
+
+  /**
+   * Add glob pattern from rule if available
+   */
+  static addGlob(): FrontmatterPipelineStep {
+    return {
+      process: (rule: ParsedRule, metadata: Record<string, unknown>) => {
+        if (rule.glob) {
+          metadata.glob = rule.glob;
+        }
+        return metadata;
+      },
+    };
+  }
+
+  /**
+   * Add apply type from rule
+   */
+  static addApplyType(): FrontmatterPipelineStep {
+    return {
+      process: (rule: ParsedRule, metadata: Record<string, unknown>) => {
+        metadata.type = rule.applyType || 'manual';
+        return metadata;
+      },
+    };
+  }
+}
+
+/**
  * Abstract base class for rule formatters
  */
 export abstract class BaseRuleFormatter {
-  abstract readonly spec: RuleFormatSpec;
+  protected frontmatterPipeline: FrontmatterPipelineBuilder;
+
+  constructor(public spec: RuleFormatSpec) {
+    this.frontmatterPipeline = new FrontmatterPipelineBuilder();
+    this.configureFrontmatterPipeline();
+  }
 
   /**
-   * Generate rule file(s) for this format
+   * Configure the frontmatter pipeline - to be implemented by subclasses
    */
-  abstract generateRule(
-    rule: ParsedRule,
-    context: RuleGenerationContext
-  ): Promise<RuleGenerationResult>;
+  protected abstract configureFrontmatterPipeline(): void;
+
+  /**
+   * Generate a rule file
+   */
+  async generateRule(rule: ParsedRule, context: RuleGenerationContext): Promise<RuleGenerationResult> {
+    try {
+      // Validate rule content
+      this.validateRule(rule);
+
+      // Transform content
+      const transformedContent = this.transformContent(rule);
+
+      // Generate file path
+      const filePath = this.generateFilePath(rule, context);
+
+      // Ensure directory exists
+      await this.ensureDirectory(filePath);
+
+      // Write file
+      const { writeFile } = await import('node:fs/promises');
+      await writeFile(filePath, transformedContent, 'utf-8');
+
+      return {
+        success: true,
+        filePath,
+        format: this.spec.id,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        format: this.spec.id,
+      };
+    }
+  }
+
+  /**
+   * Validate rule content
+   */
+  protected validateRule(rule: ParsedRule): void {
+    if (!rule.content || rule.content.trim().length === 0) {
+      throw new Error('Rule content cannot be empty');
+    }
+  }
+
+  /**
+   * Generate file path for a rule
+   */
+  protected generateFilePath(rule: ParsedRule, context: RuleGenerationContext): string {
+    return this.getOutputPath(rule, context);
+  }
 
   /**
    * Validate if a rule is compatible with this format
@@ -102,6 +268,63 @@ export abstract class BaseRuleFormatter {
    * Transform rule content for this format
    */
   protected abstract transformContent(rule: ParsedRule): string;
+
+  /**
+   * Get the apply type for this rule from rule metadata
+   */
+  protected determineApplyType(rule: ParsedRule): ApplyType {
+    // Use applyType from rule if provided, otherwise default to manual
+    return rule.applyType || 'auto';
+  }
+
+  /**
+   * Generate frontmatter using the configured pipeline
+   */
+  protected generateFrontmatter(rule: ParsedRule): string {
+    const metadata = this.frontmatterPipeline.execute(rule);
+    return this.convertMetadataToFrontmatter(metadata);
+  }
+
+  /**
+   * Generic function to convert metadata record to frontmatter string
+   */
+  protected convertMetadataToFrontmatter(metadata: Record<string, unknown>): string {
+    if (Object.keys(metadata).length === 0) {
+      return '';
+    }
+
+    const frontmatterLines = Object.entries(metadata).map(([key, value]) => {
+      // Handle different value types
+      if (typeof value === 'string') {
+        return `${key}: "${value}"`;
+      }
+      if (typeof value === 'boolean' || typeof value === 'number') {
+        return `${key}: ${value}`;
+      }
+      if (Array.isArray(value)) {
+        return `${key}: [${value.map(v => typeof v === 'string' ? `"${v}"` : v).join(', ')}]`;
+      }
+      // For objects, convert to JSON
+      return `${key}: ${JSON.stringify(value)}`;
+    });
+
+    return `---\n${frontmatterLines.join('\n')}\n---`;
+  }
+
+  /**
+   * @deprecated Use generateFrontmatter() instead
+   * Create basic frontmatter for rule metadata
+   */
+  protected createBasicFrontmatter(rule: ParsedRule, applyType: ApplyType): string {
+    // Legacy method - use pipeline instead
+    const legacyPipeline = new FrontmatterPipelineBuilder()
+      .addStep(CommonFrontmatterSteps.addType(applyType))
+      .addStep(CommonFrontmatterSteps.addDescription())
+      .addStep(CommonFrontmatterSteps.addGlob());
+    
+    const metadata = legacyPipeline.execute(rule);
+    return this.convertMetadataToFrontmatter(metadata);
+  }
 
   /**
    * Create directory structure if needed
@@ -136,17 +359,15 @@ export abstract class BaseRuleFormatter {
   protected async appendToFile(filePath: string, content: string): Promise<void> {
     const { existsSync } = await import('node:fs');
     const { readFile, writeFile } = await import('node:fs/promises');
-    
+
     let existingContent = '';
     if (existsSync(filePath)) {
       existingContent = await readFile(filePath, 'utf-8');
     }
-    
+
     // Combine existing content with new content
-    const combinedContent = existingContent 
-      ? `${existingContent}\n\n${content}` 
-      : content;
-    
+    const combinedContent = existingContent ? `${existingContent}\n\n${content}` : content;
+
     await writeFile(filePath, combinedContent);
   }
 
@@ -154,20 +375,22 @@ export abstract class BaseRuleFormatter {
    * Sanitize rule name for file naming (convert to snake_case)
    */
   protected sanitizeFileName(name: string): string {
-    return name
-      .trim()
-      // Replace spaces, hyphens, and underscores with a single hyphen
-      .replace(/[\s_]+/g, '-')
-      // Convert camelCase to kebab-case
-      .replace(/([a-z])([A-Z])/g, '$1-$2')
-      // Convert to lowercase
-      .toLowerCase()
-      // Remove any non-alphanumeric characters except hyphens
-      .replace(/[^a-z0-9-]/g, '')
-      // Remove leading/trailing hyphens
-      .replace(/^-+|-+$/g, '')
-      // Replace multiple consecutive hyphens with single hyphen
-      .replace(/-+/g, '-');
+    return (
+      name
+        .trim()
+        // Replace spaces, hyphens, and underscores with a single hyphen
+        .replace(/[\s_]+/g, '-')
+        // Convert camelCase to kebab-case
+        .replace(/([a-z])([A-Z])/g, '$1-$2')
+        // Convert to lowercase
+        .toLowerCase()
+        // Remove any non-alphanumeric characters except hyphens
+        .replace(/[^a-z0-9-]/g, '')
+        // Remove leading/trailing hyphens
+        .replace(/^-+|-+$/g, '')
+        // Replace multiple consecutive hyphens with single hyphen
+        .replace(/-+/g, '-')
+    );
   }
 }
 

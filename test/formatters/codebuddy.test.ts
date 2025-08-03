@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { CodeBuddyFormatter } from '../../src/formatters/codebuddy';
-import { ParsedRule, RuleGenerationContext } from '../../src/core/interfaces';
 import { promises as fs } from 'node:fs';
-import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { ParsedRule, RuleGenerationContext } from '../../src/core/interfaces';
+import { CodeBuddyFormatter } from '../../src/formatters/codebuddy';
 
 describe('CodeBuddyFormatter', () => {
   let formatter: CodeBuddyFormatter;
@@ -16,7 +16,7 @@ describe('CodeBuddyFormatter', () => {
     context = {
       outputDir: tempDir,
       force: false,
-      verbose: false
+      verbose: false,
     };
   });
 
@@ -33,7 +33,7 @@ describe('CodeBuddyFormatter', () => {
         extension: '.md',
         supportsMultipleRules: true,
         requiresMetadata: true,
-        defaultPath: '.codebuddy/rules'
+        defaultPath: '.codebuddy/rules',
       });
     });
   });
@@ -44,7 +44,7 @@ describe('CodeBuddyFormatter', () => {
         name: 'test-rule',
         content: '- Use TypeScript\n- Follow ESLint rules\n- Write tests',
         metadata: { version: '1.0', author: 'test' },
-        isRoot: false
+        isRoot: false,
       };
 
       const result = await formatter.generateRule(rule, context);
@@ -52,7 +52,8 @@ describe('CodeBuddyFormatter', () => {
       expect(result.success).toBe(true);
       expect(result.filePath).toBe(join(tempDir, '.codebuddy/rules/test-rule.md'));
 
-      const content = await fs.readFile(result.filePath!, 'utf-8');
+      if (!result.filePath) throw new Error('Expected filePath to be defined');
+      const content = await fs.readFile(result.filePath, 'utf-8');
       expect(content).toContain('# test-rule');
       expect(content).toContain('## Metadata');
       expect(content).toContain('version: 1.0');
@@ -68,13 +69,14 @@ describe('CodeBuddyFormatter', () => {
       const rule: ParsedRule = {
         name: 'global-rule',
         content: '# Global Standards\n\nAlways use best practices',
-        isRoot: true
+        isRoot: true,
       };
 
       const result = await formatter.generateRule(rule, context);
 
       expect(result.success).toBe(true);
-      const content = await fs.readFile(result.filePath!, 'utf-8');
+      if (!result.filePath) throw new Error('Expected filePath to be defined');
+      const content = await fs.readFile(result.filePath, 'utf-8');
       expect(content).toContain('Global Rule (Always Active)');
       expect(content).toContain('CodeBuddy is active in your IDE (always applied)');
     });
@@ -83,13 +85,14 @@ describe('CodeBuddyFormatter', () => {
       const rule: ParsedRule = {
         name: 'simple-rule',
         content: 'Simple content',
-        isRoot: false
+        isRoot: false,
       };
 
       const result = await formatter.generateRule(rule, context);
 
       expect(result.success).toBe(true);
-      const content = await fs.readFile(result.filePath!, 'utf-8');
+      if (!result.filePath) throw new Error('Expected filePath to be defined');
+      const content = await fs.readFile(result.filePath, 'utf-8');
       expect(content).not.toContain('## Metadata');
       expect(content).toContain('Simple content');
     });
@@ -98,13 +101,14 @@ describe('CodeBuddyFormatter', () => {
       const rule: ParsedRule = {
         name: 'markdown-rule',
         content: '# Main Section\n## Subsection\n### Details\nContent here',
-        isRoot: false
+        isRoot: false,
       };
 
       const result = await formatter.generateRule(rule, context);
 
       expect(result.success).toBe(true);
-      const content = await fs.readFile(result.filePath!, 'utf-8');
+      if (!result.filePath) throw new Error('Expected filePath to be defined');
+      const content = await fs.readFile(result.filePath, 'utf-8');
       expect(content).toContain('## Main Section');
       expect(content).toContain('### Subsection');
       expect(content).toContain('#### Details');
@@ -114,7 +118,7 @@ describe('CodeBuddyFormatter', () => {
       const rule: ParsedRule = {
         name: 'existing-rule',
         content: 'content',
-        isRoot: false
+        isRoot: false,
       };
 
       // Create the file first
@@ -132,7 +136,7 @@ describe('CodeBuddyFormatter', () => {
       const rule: ParsedRule = {
         name: 'existing-rule',
         content: 'new content',
-        isRoot: false
+        isRoot: false,
       };
 
       // Create the file first
@@ -155,7 +159,7 @@ describe('CodeBuddyFormatter', () => {
       const rule: ParsedRule = {
         name: 'any-rule',
         content: 'any content',
-        isRoot: false
+        isRoot: false,
       };
 
       expect(formatter.isRuleCompatible(rule)).toBe(true);
@@ -167,7 +171,7 @@ describe('CodeBuddyFormatter', () => {
       const rule: ParsedRule = {
         name: 'my-rule',
         content: 'content',
-        isRoot: false
+        isRoot: false,
       };
 
       const path = formatter.getOutputPath(rule, context);
@@ -178,7 +182,7 @@ describe('CodeBuddyFormatter', () => {
       const rule: ParsedRule = {
         name: '',
         content: 'content',
-        isRoot: false
+        isRoot: false,
       };
 
       const path = formatter.getOutputPath(rule, context);

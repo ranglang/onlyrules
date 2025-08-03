@@ -1,5 +1,13 @@
 import { Command } from 'commander';
-import { CliArgs, GenerateCliArgs, TemplateCliArgs, TemplatesCliArgs, InitCliArgs, GitignoreCliArgs, PrungeCliArgs } from '../types';
+import {
+  CliArgs,
+  GenerateCliArgs,
+  GitignoreCliArgs,
+  InitCliArgs,
+  PrungeCliArgs,
+  TemplateCliArgs,
+  TemplatesCliArgs,
+} from '../types';
 
 /**
  * Parse command line arguments
@@ -35,26 +43,26 @@ export function parseArgs(argv: string[]): CliArgs {
       return {
         command: 'generate',
         file: args.file as string | undefined,
-        output: args.output as string || './',
+        output: (args.output as string) || './',
         verbose: !!args.verbose,
-        force: !!args.force
+        force: !!args.force,
       } as GenerateCliArgs;
     } else if (argv[0] === 'templates') {
       // Templates command test
       return {
-        command: 'templates'
+        command: 'templates',
       } as TemplatesCliArgs;
     } else if (argv[0] === 'template') {
       // Template command test
       return {
         command: 'template',
-        templateName: argv[1]
+        templateName: argv[1],
       } as TemplateCliArgs;
     } else if (argv[0] === 'init') {
       // Init command test
       const args: Record<string, string> = {
         templateName: argv[1],
-        output: './rulesync.mdc' // Default
+        output: './rulesync.mdc', // Default
       };
 
       for (let i = 2; i < argv.length; i++) {
@@ -69,7 +77,7 @@ export function parseArgs(argv: string[]): CliArgs {
       return {
         command: 'init',
         templateName: args.templateName,
-        output: args.output
+        output: args.output,
       } as InitCliArgs;
     }
 
@@ -97,9 +105,9 @@ export function parseArgs(argv: string[]): CliArgs {
     return {
       command: 'generate',
       file: args.file as string | undefined,
-      output: args.output as string || './',
+      output: (args.output as string) || './',
       verbose: !!args.verbose,
-      force: !!args.force
+      force: !!args.force,
     } as GenerateCliArgs;
   }
 
@@ -107,7 +115,7 @@ export function parseArgs(argv: string[]): CliArgs {
   const program = new Command();
   program.exitOverride();
   let parsedCommand: CliArgs | undefined;
-  
+
   program
     .name('onlyrules')
     .description('Generate AI assistant rule files from a single source')
@@ -119,11 +127,14 @@ export function parseArgs(argv: string[]): CliArgs {
     .description('Generate AI assistant rule files')
     .option('-f, --file <path>', 'Local file path or URL to read rules from')
     .option('-o, --output <directory>', 'Output directory for generated rule files', './')
-    .option('-t, --target <targets>', 'Comma-separated list of AI assistants to generate rules for.\n' +
-      '                                Available targets:\n' +
-      '                                Modern: cursor, copilot, cline, claude, gemini, roo, kiro, codebuddy, augmentcode\n' +
-      '                                Legacy: agents, junie, windsurf, trae, lingma\n' +
-      '                                Example: --target cursor,windsurf,claude')
+    .option(
+      '-t, --target <targets>',
+      'Comma-separated list of AI assistants to generate rules for.\n' +
+        '                                Available targets:\n' +
+        '                                Modern: cursor, copilot, cline, claude, gemini, roo, kiro, codebuddy, augmentcode\n' +
+        '                                Legacy: agents, junie, windsurf, trae, lingma\n' +
+        '                                Example: --target cursor,windsurf,claude'
+    )
     .option('-v, --verbose', 'Enable verbose output')
     .option('--force', 'Force overwrite of existing files')
     .action((options) => {
@@ -150,7 +161,7 @@ export function parseArgs(argv: string[]): CliArgs {
         output: options.output || './',
         target: options.target,
         verbose: !!options.verbose,
-        force: !!options.force
+        force: !!options.force,
       } as GenerateCliArgs;
     });
 
@@ -160,7 +171,7 @@ export function parseArgs(argv: string[]): CliArgs {
     .description('List available rule templates')
     .action(() => {
       parsedCommand = {
-        command: 'templates'
+        command: 'templates',
       } as TemplatesCliArgs;
     });
 
@@ -170,7 +181,7 @@ export function parseArgs(argv: string[]): CliArgs {
     .action((name) => {
       parsedCommand = {
         command: 'template',
-        templateName: name
+        templateName: name,
       } as TemplateCliArgs;
     });
 
@@ -179,11 +190,14 @@ export function parseArgs(argv: string[]): CliArgs {
     .description('Initialize a new rules file from a template')
     .option('-o, --output <file>', 'Output file path')
     .option('--force', 'Force overwrite of existing files')
-    .option('-t, --target <targets>', 'Comma-separated list of AI assistants to generate rules for.\n' +
-      '                                Available targets:\n' +
-      '                                Modern: cursor, copilot, cline, claude, claude-root, claude-memories, gemini, gemini-root, gemini-memories, roo, kiro, codebuddy, augmentcode\n' +
-      '                                Legacy: agents, junie, windsurf, trae, lingma, lingma-project\n' +
-      '                                Example: --target cursor,windsurf,claude')
+    .option(
+      '-t, --target <targets>',
+      'Comma-separated list of AI assistants to generate rules for.\n' +
+        '                                Available targets:\n' +
+        '                                Modern: cursor, copilot, cline, claude, claude-root, claude-memories, gemini, gemini-root, gemini-memories, roo, kiro, codebuddy, augmentcode\n' +
+        '                                Legacy: agents, junie, windsurf, trae, lingma, lingma-project\n' +
+        '                                Example: --target cursor,windsurf,claude'
+    )
     .action((name, options) => {
       // Validate targets if provided
       if (options.target) {
@@ -202,31 +216,29 @@ export function parseArgs(argv: string[]): CliArgs {
         templateName: name,
         output: options.output || './rulesync.mdc',
         force: !!options.force,
-        target: options.target
+        target: options.target,
       } as InitCliArgs;
     });
-    
+
   // Gitignore command to ignore all AI Coderules except rulessync.md
   program
     .command('gitignore')
     .description('Create/update .gitignore to ignore all AI Coderules except rulessync.md')
     .action(() => {
       parsedCommand = {
-        command: 'gitignore'
+        command: 'gitignore',
       } as GitignoreCliArgs;
     });
-    
+
   // Prunge command to remove all IDE rules
   program
     .command('prunge')
     .description('Remove all IDE rules from the project')
     .action(() => {
       parsedCommand = {
-        command: 'prunge'
+        command: 'prunge',
       } as PrungeCliArgs;
     });
-
-
 
   // For backward compatibility, support direct options without subcommand
   program
@@ -241,7 +253,7 @@ export function parseArgs(argv: string[]): CliArgs {
     program.help();
     process.exit(1);
   }
-  
+
   // If a subcommand was used, parsedCommand will be set
   if (parsedCommand) {
     return parsedCommand;
@@ -260,7 +272,7 @@ export function parseArgs(argv: string[]): CliArgs {
       file: parsed.file,
       output: parsed.output || './',
       verbose: !!parsed.verbose,
-      force: !!parsed.force
+      force: !!parsed.force,
     } as GenerateCliArgs;
   }
 

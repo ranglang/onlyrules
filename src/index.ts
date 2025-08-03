@@ -8,7 +8,7 @@ export { writeRulesToFile } from './utils/writer';
 export {
   getAvailableFormats,
   getFormatsByCategory,
-  isFormatSupported
+  isFormatSupported,
 } from './core/generator-v2';
 
 export {
@@ -19,7 +19,7 @@ export {
   RuleGenerationContext,
   RuleGenerationResult,
   RuleGenerationPipeline,
-  RuleGenerationPipelineOptions
+  RuleGenerationPipelineOptions,
 } from './core/interfaces';
 
 export { DefaultRuleGenerationPipeline } from './core/pipeline';

@@ -1,11 +1,11 @@
 import { join } from 'node:path';
 import {
   BaseRuleFormatter,
-  RuleFormatSpec,
-  RuleFormatCategory,
   ParsedRule,
+  RuleFormatCategory,
+  RuleFormatSpec,
   RuleGenerationContext,
-  RuleGenerationResult
+  RuleGenerationResult,
 } from '../core/interfaces';
 
 /**
@@ -20,7 +20,7 @@ export class RooFormatter extends BaseRuleFormatter {
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: false,
-    defaultPath: '.roo/rules'
+    defaultPath: '.roo/rules',
   };
 
   /**
@@ -32,31 +32,31 @@ export class RooFormatter extends BaseRuleFormatter {
   ): Promise<RuleGenerationResult> {
     try {
       const filePath = this.getOutputPath(rule, context);
-      
+
       // Check if file exists
       await this.checkFileExists(filePath, context.force);
-      
+
       // Ensure directory exists
       await this.ensureDirectory(filePath);
-      
+
       // Transform content
       const content = this.transformContent(rule);
-      
+
       // Write file
       await this.writeFile(filePath, content);
-      
+
       return {
         format: this.spec.id,
         success: true,
         filePath,
-        ruleName: rule.name
+        ruleName: rule.name,
       };
     } catch (error) {
       return {
         format: this.spec.id,
         success: false,
         error: (error as Error).message,
-        ruleName: rule.name
+        ruleName: rule.name,
       };
     }
   }
@@ -84,15 +84,15 @@ export class RooFormatter extends BaseRuleFormatter {
   protected transformContent(rule: ParsedRule): string {
     // Roo uses plain markdown with description header
     let content = rule.content;
-    
+
     // Remove YAML frontmatter if present
     content = content.replace(/^---\n[\s\S]*?\n---\n?/, '').trim();
-    
+
     // Add description header if not present and we have a title in metadata
     if (rule.metadata?.title && !content.startsWith('#')) {
       content = `# ${rule.metadata.title}\n\n${content}`;
     }
-    
+
     return content;
   }
 }

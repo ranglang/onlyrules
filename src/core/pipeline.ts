@@ -1,21 +1,21 @@
-import { join } from 'node:path';
-import { mkdir, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import chalk from 'chalk';
 
+import { toSnakeCase } from '../utils/file-utils';
+import { readRulesFromFile, readRulesFromUrl } from '../utils/reader';
+import { DefaultRuleFormatterFactory } from './factory';
 import {
+  BaseRuleFormatter,
+  ParsedRule,
+  RuleFormatSpec,
+  RuleGenerationContext,
   RuleGenerationPipeline,
   RuleGenerationPipelineOptions,
   RuleGenerationResult,
-  RuleFormatSpec,
-  BaseRuleFormatter,
-  ParsedRule,
-  RuleGenerationContext
 } from './interfaces';
 import { DefaultRuleParser } from './parser';
-import { DefaultRuleFormatterFactory } from './factory';
-import { readRulesFromUrl, readRulesFromFile } from '../utils/reader';
-import { toSnakeCase } from '../utils/file-utils';
 
 /**
  * Main rule generation pipeline implementation
@@ -33,7 +33,7 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
     try {
       // Parse input content
       const rules = await this.parseInput(options.input);
-      
+
       // Validate rules
       if (!this.parser.validateRules(rules)) {
         throw new Error('Invalid rules content');
@@ -46,7 +46,7 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
       const context: RuleGenerationContext = {
         outputDir: options.outputDir,
         force: options.force ?? false,
-        verbose: options.verbose ?? false
+        verbose: options.verbose ?? false,
       };
 
       // Handle IDE-style organization if requested
@@ -61,7 +61,11 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
           // Check if formatter supports this rule
           if (!formatter.isRuleCompatible(rule)) {
             if (options.verbose) {
-              console.log(chalk.yellow(`⚠ Skipping ${formatter.spec.name} for rule '${rule.name}' (incompatible)`));
+              console.log(
+                chalk.yellow(
+                  `⚠ Skipping ${formatter.spec.name} for rule '${rule.name}' (incompatible)`
+                )
+              );
             }
             continue;
           }
@@ -72,9 +76,15 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
 
             if (options.verbose) {
               if (result.success) {
-                console.log(chalk.green(`✓ Generated ${result.format} for rule '${result.ruleName}'`));
+                console.log(
+                  chalk.green(`✓ Generated ${result.format} for rule '${result.ruleName}'`)
+                );
               } else {
-                console.log(chalk.red(`✗ Failed to generate ${result.format} for rule '${result.ruleName}': ${result.error}`));
+                console.log(
+                  chalk.red(
+                    `✗ Failed to generate ${result.format} for rule '${result.ruleName}': ${result.error}`
+                  )
+                );
               }
             }
           } catch (error) {
@@ -82,12 +92,14 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
               format: formatter.spec.id,
               success: false,
               error: (error as Error).message,
-              ruleName: rule.name
+              ruleName: rule.name,
             };
             results.push(errorResult);
 
             if (options.verbose) {
-              console.log(chalk.red(`✗ Error generating ${formatter.spec.name}: ${errorResult.error}`));
+              console.log(
+                chalk.red(`✗ Error generating ${formatter.spec.name}: ${errorResult.error}`)
+              );
             }
           }
         }
@@ -107,7 +119,7 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
    */
   getAvailableFormats(): RuleFormatSpec[] {
     return Array.from(this.factory.getAvailableFormatters().values()).map(
-      formatter => formatter.spec
+      (formatter) => formatter.spec
     );
   }
 
@@ -121,7 +133,9 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
   /**
    * Parse input content from various sources
    */
-  private async parseInput(input: string | { content: string; filePath?: string }): Promise<ParsedRule[]> {
+  private async parseInput(
+    input: string | { content: string; filePath?: string }
+  ): Promise<ParsedRule[]> {
     let content: string;
     let filePath: string | undefined;
 
@@ -174,7 +188,7 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
     options: RuleGenerationPipelineOptions
   ): Promise<RuleGenerationResult[]> {
     const results: RuleGenerationResult[] = [];
-    
+
     if (rules.length <= 1) {
       return results; // No need for IDE-style with single rule
     }
@@ -202,7 +216,7 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
             success: false,
             error: `File ${ruleFilePath} already exists. Use --force to overwrite.`,
             ruleName: rule.name,
-            filePath: ruleFilePath
+            filePath: ruleFilePath,
           });
           continue;
         }
@@ -211,7 +225,10 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
         let fileContent = rule.content;
         if (rule.metadata && Object.keys(rule.metadata).length > 0) {
           const frontmatter = Object.entries(rule.metadata)
-            .map(([key, value]) => `${key}: ${typeof value === 'string' ? value : JSON.stringify(value)}`)
+            .map(
+              ([key, value]) =>
+                `${key}: ${typeof value === 'string' ? value : JSON.stringify(value)}`
+            )
             .join('\n');
           fileContent = `---\n${frontmatter}\n---\n\n${rule.content}`;
         }
@@ -223,7 +240,7 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
           format: 'ide-style',
           success: true,
           ruleName: rule.name,
-          filePath: ruleFilePath
+          filePath: ruleFilePath,
         });
 
         if (options.verbose) {
@@ -235,11 +252,13 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
           success: false,
           error: (error as Error).message,
           ruleName: rule.name,
-          filePath: ruleFilePath
+          filePath: ruleFilePath,
         });
 
         if (options.verbose) {
-          console.log(chalk.red(`✗ Failed to create IDE-style rule file: ${(error as Error).message}`));
+          console.log(
+            chalk.red(`✗ Failed to create IDE-style rule file: ${(error as Error).message}`)
+          );
         }
       }
     }
@@ -251,7 +270,7 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
    * Log generation summary
    */
   private logSummary(results: RuleGenerationResult[], verbose?: boolean): void {
-    const successes = results.filter(r => r.success).length;
+    const successes = results.filter((r) => r.success).length;
     const failures = results.length - successes;
 
     console.log(
@@ -265,7 +284,7 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
     // Show breakdown by format if verbose
     if (verbose && results.length > 0) {
       const formatCounts = new Map<string, { success: number; failed: number }>();
-      
+
       for (const result of results) {
         const current = formatCounts.get(result.format) || { success: 0, failed: 0 };
         if (result.success) {
@@ -280,7 +299,11 @@ export class DefaultRuleGenerationPipeline implements RuleGenerationPipeline {
       for (const [format, counts] of formatCounts) {
         const total = counts.success + counts.failed;
         const successRate = Math.round((counts.success / total) * 100);
-        console.log(`  ${format}: ${chalk.green(counts.success)} success, ${chalk.red(counts.failed)} failed (${successRate}%)`);
+        console.log(
+          `  ${format}: ${chalk.green(counts.success)} success, ${chalk.red(
+            counts.failed
+          )} failed (${successRate}%)`
+        );
       }
     }
   }

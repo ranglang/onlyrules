@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { writeFile, unlink, readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { readFile, unlink, writeFile } from 'node:fs/promises';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { appendRulesToFile } from '../src/utils/append';
 
 describe('appendRulesToFile', () => {
@@ -31,7 +31,7 @@ describe('appendRulesToFile', () => {
   it('should append to existing target file with section separator', async () => {
     const existingContent = 'Existing rule content';
     const newContent = 'New rule content';
-    
+
     await writeFile(testTargetFile, existingContent);
     await writeFile(testSourceFile, newContent);
 
@@ -51,7 +51,7 @@ New rule content
 
   it('should handle empty target file correctly', async () => {
     const newContent = 'New rule content';
-    
+
     await writeFile(testTargetFile, '');
     await writeFile(testSourceFile, newContent);
 
@@ -63,7 +63,7 @@ New rule content
 
   it('should handle whitespace-only target file correctly', async () => {
     const newContent = 'New rule content';
-    
+
     await writeFile(testTargetFile, '   \n  \n  ');
     await writeFile(testSourceFile, newContent);
 
@@ -76,7 +76,7 @@ New rule content
   it('should trim whitespace from source content', async () => {
     const existingContent = 'Existing rule';
     const newContent = '  \n  New rule content  \n  ';
-    
+
     await writeFile(testTargetFile, existingContent);
     await writeFile(testSourceFile, newContent);
 
@@ -96,31 +96,33 @@ New rule content
 
   it('should throw error for empty source file', async () => {
     await writeFile(testSourceFile, '');
-    
-    await expect(appendRulesToFile(testSourceFile, testTargetFile))
-      .rejects.toThrow('Source file is empty or contains no content');
+
+    await expect(appendRulesToFile(testSourceFile, testTargetFile)).rejects.toThrow(
+      'Source file is empty or contains no content'
+    );
   });
 
   it('should throw error for whitespace-only source file', async () => {
     await writeFile(testSourceFile, '   \n  \n  ');
-    
-    await expect(appendRulesToFile(testSourceFile, testTargetFile))
-      .rejects.toThrow('Source file is empty or contains no content');
+
+    await expect(appendRulesToFile(testSourceFile, testTargetFile)).rejects.toThrow(
+      'Source file is empty or contains no content'
+    );
   });
 
   it('should handle multiple appends correctly', async () => {
     const firstContent = 'First rule';
     const secondContent = 'Second rule';
     const thirdContent = 'Third rule';
-    
+
     // First append - creates file
     await writeFile(testSourceFile, firstContent);
     await appendRulesToFile(testSourceFile, testTargetFile);
-    
+
     // Second append - adds with separator
     await writeFile(testSourceFile, secondContent);
     await appendRulesToFile(testSourceFile, testTargetFile);
-    
+
     // Third append - adds with separator
     await writeFile(testSourceFile, thirdContent);
     await appendRulesToFile(testSourceFile, testTargetFile);
