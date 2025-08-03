@@ -2,14 +2,14 @@
   "name": "onlyrules",
   "version": "0.0.31",
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/esm/index.d.ts",
+  "main": "dist/esm/esm.js",
+  "module": "dist/esm/esm.js",
+  "types": "dist/esm/esm.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/esm/index.d.ts"
+      "import": "./dist/esm/esm.js",
+      "require": "./dist/esm.cjs",
+      "types": "./dist/esm/esm.d.ts"
     },
     "./package.json": "./package.json"
   },
