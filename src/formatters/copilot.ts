@@ -2,11 +2,12 @@ import { join } from 'node:path';
 import {
   BaseRuleFormatter,
   ParsedRule,
-  RuleFormatCategory,
+  // RuleFormatCategory, // Removed to avoid bundling issues
   RuleFormatSpec,
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
+// Removed import to avoid bundling issues
 
 /**
  * GitHub Copilot rule formatter
@@ -16,7 +17,7 @@ export class CopilotFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: 'copilot',
     name: 'GitHub Copilot',
-    category: RuleFormatCategory.DIRECTORY_BASED,
+    category: 'directory',
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: false,

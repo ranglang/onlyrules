@@ -7,6 +7,7 @@ import {
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../../core/interfaces';
+import { ONLEYRULES_ALL_TARGETS } from '../../consts';
 
 /**
  * Legacy Agents formatter
@@ -14,7 +15,7 @@ import {
  */
 export class AgentsFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
-    id: 'agents',
+    id: ONLEYRULES_ALL_TARGETS.AGENTS,
     name: 'Agents (Legacy)',
     category: RuleFormatCategory.ROOT_FILE,
     extension: '.md',

@@ -4,11 +4,12 @@ import {
   CommonFrontmatterSteps,
   FrontmatterPipelineStep,
   ParsedRule,
-  RuleFormatCategory,
+  // RuleFormatCategory, // Removed to avoid bundling issues
   RuleFormatSpec,
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
+// Removed import to avoid bundling issues
 
 /**
  * Tencent Cloud CodeBuddy rule formatter
@@ -19,7 +20,7 @@ export class CodeBuddyFormatter extends BaseRuleFormatter {
   static readonly SPEC: RuleFormatSpec = {
     id: 'codebuddy',
     name: 'Tencent Cloud CodeBuddy',
-    category: RuleFormatCategory.DIRECTORY_BASED,
+    category: 'directory',
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: true,

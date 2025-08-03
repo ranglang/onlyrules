@@ -10,6 +10,7 @@ import {
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
+// Removed ONLEYRULES_ALL_TARGETS import to avoid module loading issues
 
 export class AugmentcodeFormatter extends BaseRuleFormatter {
   static readonly SPEC: RuleFormatSpec = {

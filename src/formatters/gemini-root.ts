@@ -7,6 +7,7 @@ import {
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
+import { ONLEYRULES_ALL_TARGETS } from '../consts';
 
 /**
  * Gemini root file formatter
@@ -14,7 +15,7 @@ import {
  */
 export class GeminiRootFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
-    id: 'gemini-root',
+    id: ONLEYRULES_ALL_TARGETS.GEMINI_ROOT,
     name: 'Gemini Root File',
     category: RuleFormatCategory.ROOT_FILE,
     extension: '.md',

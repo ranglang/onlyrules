@@ -7,6 +7,7 @@ import {
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
+import { ONLEYRULES_ALL_TARGETS } from '../consts';
 
 /**
  * Claude root file formatter
@@ -14,7 +15,7 @@ import {
  */
 export class ClaudeRootFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
-    id: 'claude-root',
+    id: ONLEYRULES_ALL_TARGETS.CLAUDE_ROOT,
     name: 'Claude Root File',
     category: RuleFormatCategory.ROOT_FILE,
     extension: '.md',

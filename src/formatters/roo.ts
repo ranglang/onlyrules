@@ -2,11 +2,11 @@ import { join } from 'node:path';
 import {
   BaseRuleFormatter,
   ParsedRule,
-  RuleFormatCategory,
   RuleFormatSpec,
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
+// Removed imports to avoid bundling issues
 
 /**
  * Roo Code rule formatter
@@ -16,7 +16,7 @@ export class RooFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: 'roo',
     name: 'Roo Code',
-    category: RuleFormatCategory.DIRECTORY_BASED,
+    category: 'directory',
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: false,

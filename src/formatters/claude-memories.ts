@@ -7,6 +7,7 @@ import {
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
+import { ONLEYRULES_ALL_TARGETS } from '../consts';
 
 /**
  * Claude memories formatter
@@ -14,7 +15,7 @@ import {
  */
 export class ClaudeMemoriesFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
-    id: 'claude-memories',
+    id: ONLEYRULES_ALL_TARGETS.CLAUDE_MEMORIES,
     name: 'Claude (Memories)',
     category: RuleFormatCategory.DIRECTORY_BASED,
     extension: '.md',

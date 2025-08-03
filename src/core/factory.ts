@@ -1,24 +1,25 @@
-import { BaseRuleFormatter, RuleFormatCategory, RuleFormatterFactory } from './interfaces';
+import { BaseRuleFormatter, RuleFormatterFactory } from './interfaces';
 
-import { ClaudeMemoriesFormatter } from '../formatters/claude-memories';
-import { ClaudeRootFormatter } from '../formatters/claude-root';
-import { ClineFormatter } from '../formatters/cline';
+// Only import formatters that are actually used to avoid bundling issues
 import { CodeBuddyFormatter } from '../formatters/codebuddy';
-import { CopilotFormatter } from '../formatters/copilot';
-// Import all formatters
 import { CursorFormatter } from '../formatters/cursor';
-import { GeminiMemoriesFormatter } from '../formatters/gemini-memories';
-import { GeminiRootFormatter } from '../formatters/gemini-root';
 import { KiroFormatter } from '../formatters/kiro';
-import { RooFormatter } from '../formatters/roo';
-
 import { AugmentcodeFormatter } from '../formatters/augmentcode';
+
+// Comment out unused formatters to avoid bundling issues
+// import { ClaudeMemoriesFormatter } from '../formatters/claude-memories';
+// import { ClaudeRootFormatter } from '../formatters/claude-root';
+// import { ClineFormatter } from '../formatters/cline';
+// import { CopilotFormatter } from '../formatters/copilot';
+// import { GeminiMemoriesFormatter } from '../formatters/gemini-memories';
+// import { GeminiRootFormatter } from '../formatters/gemini-root';
+// import { RooFormatter } from '../formatters/roo';
 // Legacy formatters
-import { AgentsFormatter } from '../formatters/legacy/agents';
-import { JunieFormatter } from '../formatters/legacy/junie';
-import { LingmaProjectFormatter } from '../formatters/legacy/lingma-project';
-import { TraeFormatter } from '../formatters/legacy/trae';
-import { WindsurfFormatter } from '../formatters/legacy/windsurf';
+// import { AgentsFormatter } from '../formatters/legacy/agents';
+// import { JunieFormatter } from '../formatters/legacy/junie';
+// import { LingmaProjectFormatter } from '../formatters/legacy/lingma-project';
+// import { TraeFormatter } from '../formatters/legacy/trae';
+// import { WindsurfFormatter } from '../formatters/legacy/windsurf';
 
 /**
  * Default implementation of the rule formatter factory
@@ -55,7 +56,7 @@ export class DefaultRuleFormatterFactory implements RuleFormatterFactory {
   /**
    * Get formatters by category
    */
-  getFormattersByCategory(category: RuleFormatCategory): BaseRuleFormatter[] {
+  getFormattersByCategory(category: string): BaseRuleFormatter[] {
     return Array.from(this.formatters.values()).filter(
       (formatter) => formatter.spec.category === category
     );

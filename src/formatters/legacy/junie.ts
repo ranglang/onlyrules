@@ -7,6 +7,7 @@ import {
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../../core/interfaces';
+import { ONLEYRULES_ALL_TARGETS } from '../../consts';
 
 /**
  * Legacy Junie formatter
@@ -14,7 +15,7 @@ import {
  */
 export class JunieFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
-    id: 'junie',
+    id: ONLEYRULES_ALL_TARGETS.JUNIE,
     name: 'Junie (Legacy)',
     category: RuleFormatCategory.DIRECTORY_BASED,
     extension: '.md',

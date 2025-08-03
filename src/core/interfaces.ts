@@ -1,22 +1,5 @@
-/**
- * Unified rule format interface for all AI assistants
- */
-export interface RuleFormatSpec {
-  /** Unique identifier for the format */
-  id: string;
-  /** Human-readable name */
-  name: string;
-  /** Format category */
-  category: RuleFormatCategory;
-  /** File extension to use */
-  extension: string;
-  /** Whether this format supports multiple rules in a single file */
-  supportsMultipleRules: boolean;
-  /** Whether this format requires metadata/frontmatter */
-  requiresMetadata: boolean;
-  /** Default output path for this format */
-  defaultPath: string;
-}
+import { ONLEYRULES_ALL_TARGETS_TYPE } from '../consts';
+
 
 /**
  * Categories of rule formats
@@ -465,6 +448,29 @@ export interface RuleGenerationPipelineOptions {
 /**
  * Main rule generation pipeline interface
  */
+
+
+
+/**
+ * Unified rule format interface for all AI assistants
+ */
+export interface RuleFormatSpec {
+  /** Unique identifier for the format */
+  id: ONLEYRULES_ALL_TARGETS_TYPE;
+  /** Human-readable name */
+  name: string;
+  /** Format category */
+  category: 'directory' | 'root' | 'memory';
+  /** File extension to use */
+  extension: string;
+  /** Whether this format supports multiple rules in a single file */
+  supportsMultipleRules: boolean;
+  /** Whether this format requires metadata/frontmatter */
+  requiresMetadata: boolean;
+  /** Default output path for this format */
+  defaultPath: string;
+}
+
 export interface RuleGenerationPipeline {
   /**
    * Execute the complete rule generation pipeline

@@ -9,6 +9,7 @@ import {
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
+// Removed ONLEYRULES_ALL_TARGETS import to avoid module loading issues
 
 /**
  * Kiro AI assistant rule formatter
@@ -18,7 +19,7 @@ export class KiroFormatter extends BaseRuleFormatter {
   static readonly SPEC: RuleFormatSpec = {
     id: 'kiro',
     name: 'Kiro AI',
-    category: RuleFormatCategory.DIRECTORY_BASED,
+    category: 'directory',
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: true,

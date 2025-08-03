@@ -5,11 +5,12 @@ import {
   CommonFrontmatterSteps,
   FrontmatterPipelineStep,
   ParsedRule,
-  RuleFormatCategory,
+  // RuleFormatCategory, // Removed to avoid bundling issues
   RuleFormatSpec,
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
+// Removed import to avoid bundling issues
 
 /**
  * Cursor IDE rule formatter
@@ -19,7 +20,7 @@ export class CursorFormatter extends BaseRuleFormatter {
   static readonly SPEC: RuleFormatSpec = {
     id: 'cursor',
     name: 'Cursor IDE',
-    category: RuleFormatCategory.DIRECTORY_BASED,
+    category: 'directory',
     extension: '.mdc',
     supportsMultipleRules: true,
     requiresMetadata: true,

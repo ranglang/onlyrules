@@ -7,6 +7,7 @@ import {
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
+import { ONLEYRULES_ALL_TARGETS } from '../consts';
 
 /**
  * Gemini memories formatter
@@ -14,7 +15,7 @@ import {
  */
 export class GeminiMemoriesFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
-    id: 'gemini-memories',
+    id: ONLEYRULES_ALL_TARGETS.GEMINI_MEMORIES,
     name: 'Gemini Memories',
     category: RuleFormatCategory.MEMORY_BASED,
     extension: '.md',

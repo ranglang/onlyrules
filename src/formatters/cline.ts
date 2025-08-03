@@ -7,6 +7,7 @@ import {
   RuleGenerationContext,
   RuleGenerationResult,
 } from '../core/interfaces';
+import { ONLEYRULES_ALL_TARGETS } from '../consts';
 
 /**
  * Cline rule formatter
@@ -14,7 +15,7 @@ import {
  */
 export class ClineFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
-    id: 'cline',
+    id: ONLEYRULES_ALL_TARGETS.CLINE,
     name: 'Cline',
     category: RuleFormatCategory.DIRECTORY_BASED,
     extension: '.md',
