@@ -12,6 +12,10 @@ import {
   writeConfig,
 } from '../src/utils/config';
 
+interface TestConfig extends OnlyRulesConfig {
+  someOtherField?: string;
+}
+
 describe('Config Management', () => {
   const testConfigPath = join(process.cwd(), 'onlyrules.json');
 
@@ -144,9 +148,9 @@ describe('Config Management', () => {
       const newTargets = ['cursor', 'windsurf'];
       await updateConfigTargets(newTargets);
 
-      const config = await readConfig();
+      const config = (await readConfig()) as TestConfig;
       expect(config.target).toEqual(newTargets);
-      expect((config as any).someOtherField).toBe('value');
+      expect(config.someOtherField).toBe('value');
     });
 
     it('should handle empty targets array', async () => {

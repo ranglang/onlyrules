@@ -215,9 +215,11 @@ export class DefaultRuleParser implements RuleParser {
     const sections: string[] = [];
     const pattern = /---\n[\s\S]*?\n---\n[\s\S]*?(?=---\n|$)/g;
 
-    let match;
+    let match: RegExpExecArray | null;
     while ((match = pattern.exec(content)) !== null) {
-      sections.push(match[0].trim());
+      if (match) {
+        sections.push(match[0].trim());
+      }
     }
 
     return sections;

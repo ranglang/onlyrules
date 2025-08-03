@@ -44,7 +44,7 @@ export interface ParsedRule {
   /** Rule content */
   content: string;
   /** Optional metadata */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   /** Whether this is a root/global rule */
   isRoot: boolean;
   /** Apply type for the rule */
@@ -133,11 +133,11 @@ export class FrontmatterPipelineBuilder {
 /**
  * Common frontmatter pipeline steps
  */
-export class CommonFrontmatterSteps {
+export namespace CommonFrontmatterSteps {
   /**
    * Add type field to frontmatter
    */
-  static addType(type: string): FrontmatterPipelineStep {
+  export function addType(type: string): FrontmatterPipelineStep {
     return {
       process: (rule: ParsedRule, metadata: Record<string, unknown>) => {
         metadata.type = type;
@@ -149,7 +149,7 @@ export class CommonFrontmatterSteps {
   /**
    * Add description from rule if available
    */
-  static addDescription(): FrontmatterPipelineStep {
+  export function addDescription(): FrontmatterPipelineStep {
     return {
       process: (rule: ParsedRule, metadata: Record<string, unknown>) => {
         if (rule.description) {
@@ -163,7 +163,7 @@ export class CommonFrontmatterSteps {
   /**
    * Add glob pattern from rule if available
    */
-  static addGlob(): FrontmatterPipelineStep {
+  export function addGlob(): FrontmatterPipelineStep {
     return {
       process: (rule: ParsedRule, metadata: Record<string, unknown>) => {
         if (rule.glob) {
@@ -177,7 +177,7 @@ export class CommonFrontmatterSteps {
   /**
    * Add apply type from rule
    */
-  static addApplyType(): FrontmatterPipelineStep {
+  export function addApplyType(): FrontmatterPipelineStep {
     return {
       process: (rule: ParsedRule, metadata: Record<string, unknown>) => {
         metadata.type = rule.applyType || 'manual';
@@ -439,7 +439,7 @@ export interface RuleParser {
   /**
    * Extract metadata from rule content
    */
-  extractMetadata(content: string): Record<string, any>;
+  extractMetadata(content: string): Record<string, unknown>;
 }
 
 /**

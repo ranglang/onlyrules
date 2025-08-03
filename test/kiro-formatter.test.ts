@@ -107,7 +107,8 @@ describe('KiroFormatter', () => {
       const result = await formatter.generateRule(rule, context);
 
       expect(result.success).toBe(true);
-      const content = readFileSync(result.filePath!, 'utf-8');
+      expect(result.filePath).toBeDefined();
+      const content = readFileSync(result.filePath as string, 'utf-8');
 
       expect(content).toContain('---');
       expect(content).toContain('inclusion: "fileMatch"');
@@ -124,7 +125,8 @@ describe('KiroFormatter', () => {
       const result = await formatter.generateRule(rule, context);
 
       expect(result.success).toBe(true);
-      const content = readFileSync(result.filePath!, 'utf-8');
+      expect(result.filePath).toBeDefined();
+      const content = readFileSync(result.filePath as string, 'utf-8');
 
       expect(content).toContain('---');
       expect(content).toContain('inclusion: "manual"');
@@ -144,7 +146,8 @@ describe('KiroFormatter', () => {
       const result = await formatter.generateRule(rule, context);
 
       expect(result.success).toBe(true);
-      const content = readFileSync(result.filePath!, 'utf-8');
+      expect(result.filePath).toBeDefined();
+      const content = readFileSync(result.filePath as string, 'utf-8');
 
       expect(content).toContain('inclusion: "fileMatch"');
       expect(content).toContain('fileMatchPattern: "app/api/**/*.ts"');

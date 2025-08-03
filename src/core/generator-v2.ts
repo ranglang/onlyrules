@@ -152,7 +152,7 @@ function convertLegacyOptions(options: RuleGenerationOptions): RuleGenerationPip
 /**
  * Convert legacy RuleFormat enum values to new format IDs
  */
-function convertLegacyFormatToId(legacyFormat: any): string {
+function convertLegacyFormatToId(legacyFormat: string): string {
   // Map legacy enum values to new IDs
   const formatMapping: Record<string, string> = {
     '.github/instructions': 'copilot',

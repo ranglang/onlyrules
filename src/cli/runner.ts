@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import { parseArgs } from './args';
 import {
   AddCommand,
   Command,
@@ -10,6 +9,7 @@ import {
   TemplateCommand,
   TemplatesCommand,
 } from './commands';
+import { AddArgs, GenerateArgs, InitArgs } from './commands/types';
 
 export class CLIRunner {
   private commands: Map<string, Command> = new Map();
@@ -53,10 +53,7 @@ export class CLIRunner {
       } else if (commandName === 'init') {
         const args = this.parseInitArgs(rawArgs);
         await command.execute(args);
-      } else if (commandName === 'add') {
-        const args = this.parseAddArgs(rawArgs);
-        await command.execute(args);
-      } else if (commandName === 'append') {
+      } else if (commandName === 'add' || commandName === 'append') {
         const args = this.parseAddArgs(rawArgs);
         await command.execute(args);
       } else if (commandName === 'gitignore' || commandName === 'prunge') {
@@ -64,6 +61,7 @@ export class CLIRunner {
         await command.execute({});
       } else {
         // Use standard argument parsing for other commands
+        const { parseArgs } = await import('./args');
         const args = parseArgs(rawArgs);
         await command.execute(args);
       }
@@ -73,106 +71,98 @@ export class CLIRunner {
     }
   }
 
-  private parseGenerateArgs(rawArgs: string[]): any {
-    let file: string | undefined;
-    let output = './';
-    let verbose = false;
-    let force = false;
-    let ideStyle = true;
-    let ideFolder: string | undefined;
-    let generateTraditional = false;
-    let target: string | undefined;
+  private parseGenerateArgs(rawArgs: string[]): GenerateArgs {
+    const args: GenerateArgs = {
+      command: 'generate',
+      output: './',
+      verbose: false,
+      force: false,
+      ideStyle: true,
+      generateTraditional: false,
+    };
 
     // Parse command line arguments
     for (let i = 1; i < rawArgs.length; i++) {
-      if ((rawArgs[i] === '-f' || rawArgs[i] === '--file') && i + 1 < rawArgs.length) {
-        file = rawArgs[i + 1];
+      const currentArg = rawArgs[i];
+      const nextArg = rawArgs[i + 1];
+
+      if ((currentArg === '-f' || currentArg === '--file') && nextArg) {
+        args.file = nextArg;
         i++;
-      } else if ((rawArgs[i] === '-o' || rawArgs[i] === '--output') && i + 1 < rawArgs.length) {
-        output = rawArgs[i + 1];
+      } else if ((currentArg === '-o' || currentArg === '--output') && nextArg) {
+        args.output = nextArg;
         i++;
-      } else if (rawArgs[i] === '--ide-folder' && i + 1 < rawArgs.length) {
-        ideFolder = rawArgs[i + 1];
+      } else if (currentArg === '--ide-folder' && nextArg) {
+        args.ideFolder = nextArg;
         i++;
-      } else if (rawArgs[i] === '--target' && i + 1 < rawArgs.length) {
-        target = rawArgs[i + 1];
+      } else if (currentArg === '--target' && nextArg) {
+        args.target = nextArg;
         i++;
-      } else if (rawArgs[i] === '-v' || rawArgs[i] === '--verbose') {
-        verbose = true;
-      } else if (rawArgs[i] === '--force') {
-        force = true;
-      } else if (rawArgs[i] === '--no-ide-style') {
-        ideStyle = false;
-      } else if (rawArgs[i] === '--traditional') {
-        generateTraditional = true;
+      } else if (currentArg === '-v' || currentArg === '--verbose') {
+        args.verbose = true;
+      } else if (currentArg === '--force') {
+        args.force = true;
+      } else if (currentArg === '--no-ide-style') {
+        args.ideStyle = false;
+      } else if (currentArg === '--traditional') {
+        args.generateTraditional = true;
       }
     }
 
-    return {
-      command: 'generate',
-      file,
-      output,
-      verbose,
-      force,
-      ideStyle,
-      ideFolder,
-      generateTraditional,
-      target,
-    };
+    return args;
   }
 
-  private parseInitArgs(rawArgs: string[]): any {
-    let templateName = 'basic';
-    let outputPath = './rulesync.mdc';
-    let force = false;
-    let target: string | undefined;
+  private parseInitArgs(rawArgs: string[]): InitArgs {
+    const args: InitArgs = {
+      command: 'init',
+      templateName: 'basic',
+      output: './rulesync.mdc',
+      force: false,
+    };
 
     // If template name is provided, use it instead of the default
     if (rawArgs.length >= 2 && !rawArgs[1].startsWith('-')) {
-      templateName = rawArgs[1];
+      args.templateName = rawArgs[1];
     }
 
     // Parse command line arguments
     for (let i = 2; i < rawArgs.length; i++) {
-      if ((rawArgs[i] === '-o' || rawArgs[i] === '--output') && i + 1 < rawArgs.length) {
-        outputPath = rawArgs[i + 1];
+      const currentArg = rawArgs[i];
+      const nextArg = rawArgs[i + 1];
+
+      if ((currentArg === '-o' || currentArg === '--output') && nextArg) {
+        args.output = nextArg;
         i++;
-      } else if (rawArgs[i] === '--force') {
-        force = true;
-      } else if ((rawArgs[i] === '-t' || rawArgs[i] === '--target') && i + 1 < rawArgs.length) {
-        target = rawArgs[i + 1];
+      } else if (currentArg === '--force') {
+        args.force = true;
+      } else if ((currentArg === '-t' || currentArg === '--target') && nextArg) {
+        args.target = nextArg;
         i++;
       }
     }
 
-    return {
-      command: 'init',
-      templateName,
-      output: outputPath,
-      force,
-      target,
-    };
+    return args;
   }
 
-  private parseAddArgs(rawArgs: string[]): any {
-    let file: string | undefined;
-    let output: string | undefined;
+  private parseAddArgs(rawArgs: string[]): AddArgs {
+    const args: AddArgs = {
+      command: 'add',
+    };
 
     // Parse command line arguments
     for (let i = 1; i < rawArgs.length; i++) {
-      if ((rawArgs[i] === '-f' || rawArgs[i] === '--file') && i + 1 < rawArgs.length) {
-        file = rawArgs[i + 1];
+      const currentArg = rawArgs[i];
+      const nextArg = rawArgs[i + 1];
+
+      if ((currentArg === '-f' || currentArg === '--file') && nextArg) {
+        args.file = nextArg;
         i++;
-      } else if ((rawArgs[i] === '-o' || rawArgs[i] === '--output') && i + 1 < rawArgs.length) {
-        output = rawArgs[i + 1];
+      } else if ((currentArg === '-o' || currentArg === '--output') && nextArg) {
+        args.output = nextArg;
         i++;
       }
     }
 
-    return {
-      command: 'add',
-      file,
-      output,
-    };
+    return args;
   }
 }

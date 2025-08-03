@@ -5,9 +5,10 @@ import ora from 'ora';
 import { generateRules } from '../../core/generator';
 import { configExists, getConfigTargets, updateConfigTargets } from '../../utils/config';
 import { Command } from './base';
+import { GenerateArgs } from './types';
 
 export class GenerateCommand implements Command {
-  async execute(args: any): Promise<void> {
+  async execute(args: GenerateArgs): Promise<void> {
     // Import the URL detection and reading functions
     const { isUrl, readRulesFromUrl } = await import('../../utils/reader');
 

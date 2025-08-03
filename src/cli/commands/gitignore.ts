@@ -6,7 +6,7 @@ import { IDE_RULE_PATHS_FOR_GITIGNORE } from '../../utils/ide-paths';
 import { Command } from './base';
 
 export class GitignoreCommand implements Command {
-  async execute(args: any): Promise<void> {
+  async execute(_args: unknown): Promise<void> {
     const gitignorePath = './.gitignore';
     const spinner = ora('Creating/updating .gitignore file...').start();
 
@@ -30,9 +30,9 @@ export class GitignoreCommand implements Command {
 `;
 
       // Add each path to the section
-      aiRulePaths.forEach((path) => {
+      for (const path of aiRulePaths) {
         aiRulesSection += `${path}${path.endsWith('/') ? '' : '\n'}`;
-      });
+      }
 
       // Remove any existing AI Coderules sections
       // This handles multiple occurrences of the section header

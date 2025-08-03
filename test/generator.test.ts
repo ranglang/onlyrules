@@ -26,7 +26,7 @@ describe('Rules Generator', () => {
     // Setup
     const file = 'https://example.com/rules.md';
     const output = './output';
-    (readRulesFromInput as any).mockResolvedValue(mockRules);
+    vi.mocked(readRulesFromInput).mockResolvedValue(mockRules);
 
     // Execute
     await generateRules({ file, output });
@@ -40,7 +40,7 @@ describe('Rules Generator', () => {
     // Setup
     const file = './rules.md';
     const output = './output';
-    (readRulesFromInput as any).mockResolvedValue(mockRules);
+    vi.mocked(readRulesFromInput).mockResolvedValue(mockRules);
 
     // Execute
     await generateRules({ file, output });
@@ -53,7 +53,7 @@ describe('Rules Generator', () => {
   it('should use default file if file is not provided', async () => {
     // Setup
     const output = './output';
-    (readRulesFromInput as any).mockResolvedValue(mockRules);
+    vi.mocked(readRulesFromInput).mockResolvedValue(mockRules);
 
     // Execute
     await generateRules({ output });
@@ -66,7 +66,7 @@ describe('Rules Generator', () => {
     // Setup
     const file = './empty-rules.md';
     const output = './output';
-    (readRulesFromInput as any).mockResolvedValue('');
+    vi.mocked(readRulesFromInput).mockResolvedValue('');
 
     // Execute & Verify
     await expect(generateRules({ file, output })).rejects.toThrow();
