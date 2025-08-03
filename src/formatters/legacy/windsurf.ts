@@ -12,7 +12,7 @@ export class WindsurfFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: 'windsurf',
     name: 'Windsurf (Legacy)',
-    category: RuleFormatCategory.ROOT_FILE,
+    category: 'root',
     extension: '',
     supportsMultipleRules: false,
     requiresMetadata: false,

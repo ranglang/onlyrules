@@ -17,7 +17,7 @@ export class AgentsFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: ONLEYRULES_ALL_TARGETS.AGENTS,
     name: 'Agents (Legacy)',
-    category: RuleFormatCategory.ROOT_FILE,
+    category: 'root',
     extension: '.md',
     supportsMultipleRules: false,
     requiresMetadata: false,

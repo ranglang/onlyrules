@@ -50,3 +50,44 @@ Always use TypeScript for new projects.
 
 ## Rule 2
 Prefer functional programming patterns when possible.
+
+---
+id: cmdvsbo0t0001ju04wa4afq0a
+name: Directory Conversiono
+description: 
+author: Caedman Ziwen Lan
+updatedAt: "2025-08-03T14:36:45.319Z"
+applyType: always
+tags: []
+---
+
+# Directory Conversiono
+
+
+
+## Rule Content
+
+-# Core System Components
+- The main application logic is in src/core.
+- Shared utilities and helpers are in src/utils.
+- Feature flags and configuration settings are in src/config.
+
+# Cascade
+- Cascade's backend logic is in server/cascade_engine.
+- All API request handlers for Cascade are in server/cascade_api.
+- Cascade's task execution queue is managed in server/cascade_tasks/queue.py.
+
+# Frontend Code Structure
+- The UI components for the assistant are in frontend/components/assistant.
+- The AI command panel logic is handled in frontend/components/command_panel.tsx.
+- Styles for the AI interface are in frontend/styles/assistant.css.
+
+# Data & Storage
+- Vector embeddings are stored in server/data/vector_store.
+- User session history is saved in server/data/sessions.
+- Logs and analytics are collected in server/logs/usage_tracking.log.
+
+# Testing & Debugging
+- End-to-end tests for Cascade are in tests/e2e/cascade_tests.
+- Mock API responses for local testing are in tests/mocks/api_mocks.py.
+- Debugging scripts are located in scripts/debugging_tools.

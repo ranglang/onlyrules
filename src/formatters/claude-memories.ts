@@ -3,7 +3,6 @@ import { ONLEYRULES_ALL_TARGETS } from '../consts';
 import {
   BaseRuleFormatter,
   ParsedRule,
-  RuleFormatCategory,
   RuleFormatSpec,
   RuleGenerationContext,
   RuleGenerationResult,
@@ -17,7 +16,7 @@ export class ClaudeMemoriesFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: ONLEYRULES_ALL_TARGETS.CLAUDE_MEMORIES,
     name: 'Claude (Memories)',
-    category: RuleFormatCategory.DIRECTORY_BASED,
+    category: 'directory',
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: false,

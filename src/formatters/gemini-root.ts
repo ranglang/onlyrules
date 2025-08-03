@@ -3,7 +3,6 @@ import { ONLEYRULES_ALL_TARGETS } from '../consts';
 import {
   BaseRuleFormatter,
   ParsedRule,
-  RuleFormatCategory,
   RuleFormatSpec,
   RuleGenerationContext,
   RuleGenerationResult,
@@ -17,7 +16,7 @@ export class GeminiRootFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: ONLEYRULES_ALL_TARGETS.GEMINI_ROOT,
     name: 'Gemini Root File',
-    category: RuleFormatCategory.ROOT_FILE,
+    category: 'root',
     extension: '.md',
     supportsMultipleRules: false,
     requiresMetadata: false,

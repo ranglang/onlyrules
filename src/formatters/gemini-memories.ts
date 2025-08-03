@@ -17,7 +17,7 @@ export class GeminiMemoriesFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: ONLEYRULES_ALL_TARGETS.GEMINI_MEMORIES,
     name: 'Gemini Memories',
-    category: RuleFormatCategory.MEMORY_BASED,
+    category: 'memory',
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: false,

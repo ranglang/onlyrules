@@ -17,7 +17,7 @@ export class ClineFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: ONLEYRULES_ALL_TARGETS.CLINE,
     name: 'Cline',
-    category: RuleFormatCategory.DIRECTORY_BASED,
+    category: 'directory',
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: false,

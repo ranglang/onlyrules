@@ -12,7 +12,7 @@ export class TraeFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: 'trae',
     name: 'Trae (Legacy)',
-    category: RuleFormatCategory.DIRECTORY_BASED,
+    category: 'directory',
     extension: '.md',
     supportsMultipleRules: false,
     requiresMetadata: false,

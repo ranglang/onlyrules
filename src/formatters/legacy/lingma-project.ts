@@ -12,7 +12,7 @@ export class LingmaProjectFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: 'lingma-project',
     name: 'Lingma Project (Legacy)',
-    category: RuleFormatCategory.DIRECTORY_BASED,
+    category: 'directory',
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: false,

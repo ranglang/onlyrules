@@ -17,7 +17,7 @@ export class ClaudeRootFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: ONLEYRULES_ALL_TARGETS.CLAUDE_ROOT,
     name: 'Claude Root File',
-    category: RuleFormatCategory.ROOT_FILE,
+    category: 'root',
     extension: '.md',
     supportsMultipleRules: false,
     requiresMetadata: false,

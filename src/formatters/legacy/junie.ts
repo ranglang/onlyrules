@@ -17,7 +17,7 @@ export class JunieFormatter extends BaseRuleFormatter {
   readonly spec: RuleFormatSpec = {
     id: ONLEYRULES_ALL_TARGETS.JUNIE,
     name: 'Junie (Legacy)',
-    category: RuleFormatCategory.DIRECTORY_BASED,
+    category: 'directory',
     extension: '.md',
     supportsMultipleRules: false,
     requiresMetadata: false,

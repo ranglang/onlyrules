@@ -16,7 +16,7 @@ export class AugmentcodeFormatter extends BaseRuleFormatter {
   static readonly SPEC: RuleFormatSpec = {
     id: 'augmentcode',
     name: 'Augmentcode',
-    category: RuleFormatCategory.DIRECTORY_BASED,
+    category: 'directory',
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: false,
