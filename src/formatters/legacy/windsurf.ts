@@ -9,7 +9,7 @@ import {
 } from '../../core/interfaces';
 
 export class WindsurfFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
+  static readonly SPEC: RuleFormatSpec = {
     id: 'windsurf',
     name: 'Windsurf (Legacy)',
     category: 'root',
@@ -18,6 +18,10 @@ export class WindsurfFormatter extends BaseRuleFormatter {
     requiresMetadata: false,
     defaultPath: '.windsurfrules',
   };
+
+  constructor() {
+    super(WindsurfFormatter.SPEC);
+  }
 
   /**
    * Configure the frontmatter pipeline for Windsurf format

@@ -9,7 +9,7 @@ import {
 } from '../../core/interfaces';
 
 export class LingmaProjectFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
+  static readonly SPEC: RuleFormatSpec = {
     id: 'lingma-project',
     name: 'Lingma Project (Legacy)',
     category: 'directory',
@@ -18,6 +18,10 @@ export class LingmaProjectFormatter extends BaseRuleFormatter {
     requiresMetadata: false,
     defaultPath: '.lingma/rules',
   };
+
+  constructor() {
+    super(LingmaProjectFormatter.SPEC);
+  }
 
   /**
    * Configure the frontmatter pipeline for Lingma Project format

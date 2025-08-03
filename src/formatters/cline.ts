@@ -14,7 +14,7 @@ import {
  * Generates .clinerules/{name}.md files with plain markdown
  */
 export class ClineFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
+  static readonly SPEC: RuleFormatSpec = {
     id: ONLEYRULES_ALL_TARGETS.CLINE,
     name: 'Cline',
     category: 'directory',
@@ -23,6 +23,10 @@ export class ClineFormatter extends BaseRuleFormatter {
     requiresMetadata: false,
     defaultPath: '.clinerules',
   };
+
+  constructor() {
+    super(ClineFormatter.SPEC);
+  }
 
   /**
    * Configure the frontmatter pipeline for Cline format

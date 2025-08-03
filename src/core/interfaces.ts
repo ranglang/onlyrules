@@ -5,7 +5,6 @@ import { ONLEYRULES_ALL_TARGETS_TYPE } from '../consts';
  */
 export type RuleFormatCategory = 'directory' | 'root' | 'memory';
 
-
 /**
  * Apply type for rules across different IDEs
  */

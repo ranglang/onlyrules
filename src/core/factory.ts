@@ -6,20 +6,20 @@ import { CodeBuddyFormatter } from '../formatters/codebuddy';
 import { CursorFormatter } from '../formatters/cursor';
 import { KiroFormatter } from '../formatters/kiro';
 
-// Comment out unused formatters to avoid bundling issues
-// import { ClaudeMemoriesFormatter } from '../formatters/claude-memories';
-// import { ClaudeRootFormatter } from '../formatters/claude-root';
-// import { ClineFormatter } from '../formatters/cline';
-// import { CopilotFormatter } from '../formatters/copilot';
-// import { GeminiMemoriesFormatter } from '../formatters/gemini-memories';
-// import { GeminiRootFormatter } from '../formatters/gemini-root';
-// import { RooFormatter } from '../formatters/roo';
+// Import all formatters
+import { ClaudeMemoriesFormatter } from '../formatters/claude-memories';
+import { ClaudeRootFormatter } from '../formatters/claude-root';
+import { ClineFormatter } from '../formatters/cline';
+import { CopilotFormatter } from '../formatters/copilot';
+import { GeminiMemoriesFormatter } from '../formatters/gemini-memories';
+import { GeminiRootFormatter } from '../formatters/gemini-root';
 // Legacy formatters
-// import { AgentsFormatter } from '../formatters/legacy/agents';
-// import { JunieFormatter } from '../formatters/legacy/junie';
-// import { LingmaProjectFormatter } from '../formatters/legacy/lingma-project';
-// import { TraeFormatter } from '../formatters/legacy/trae';
-// import { WindsurfFormatter } from '../formatters/legacy/windsurf';
+import { AgentsFormatter } from '../formatters/legacy/agents';
+import { JunieFormatter } from '../formatters/legacy/junie';
+import { LingmaProjectFormatter } from '../formatters/legacy/lingma-project';
+import { TraeFormatter } from '../formatters/legacy/trae';
+import { WindsurfFormatter } from '../formatters/legacy/windsurf';
+import { RooFormatter } from '../formatters/roo';
 
 /**
  * Default implementation of the rule formatter factory
@@ -82,24 +82,23 @@ export class DefaultRuleFormatterFactory implements RuleFormatterFactory {
   private registerBuiltInFormatters(): void {
     // Register all formatters
     this.registerFormatter(new CursorFormatter());
-    // TODO: Update other formatters to implement pipeline pattern
-    // this.registerFormatter(new CopilotFormatter());
-    // this.registerFormatter(new ClineFormatter());
-    // this.registerFormatter(new ClaudeRootFormatter());
-    // this.registerFormatter(new ClaudeMemoriesFormatter());
-    // this.registerFormatter(new GeminiRootFormatter());
-    // this.registerFormatter(new GeminiMemoriesFormatter());
-    // this.registerFormatter(new RooFormatter());
+    this.registerFormatter(new CopilotFormatter());
+    this.registerFormatter(new ClineFormatter());
+    this.registerFormatter(new ClaudeRootFormatter());
+    this.registerFormatter(new ClaudeMemoriesFormatter());
+    this.registerFormatter(new GeminiRootFormatter());
+    this.registerFormatter(new GeminiMemoriesFormatter());
+    this.registerFormatter(new RooFormatter());
     this.registerFormatter(new KiroFormatter());
     this.registerFormatter(new CodeBuddyFormatter());
 
     // Legacy formatters
-    // this.registerFormatter(new AgentsFormatter());
-    // this.registerFormatter(new JunieFormatter());
-    // this.registerFormatter(new WindsurfFormatter());
-    // this.registerFormatter(new TraeFormatter());
+    this.registerFormatter(new AgentsFormatter());
+    this.registerFormatter(new JunieFormatter());
+    this.registerFormatter(new WindsurfFormatter());
+    this.registerFormatter(new TraeFormatter());
     this.registerFormatter(new AugmentcodeFormatter());
-    // this.registerFormatter(new LingmaProjectFormatter());
+    this.registerFormatter(new LingmaProjectFormatter());
   }
 
   /**

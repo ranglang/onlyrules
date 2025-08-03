@@ -14,7 +14,7 @@ import {
  * Generates .github/instructions/{name}.instructions.md files with frontmatter
  */
 export class CopilotFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
+  static readonly SPEC: RuleFormatSpec = {
     id: 'copilot',
     name: 'GitHub Copilot',
     category: 'directory',
@@ -23,6 +23,10 @@ export class CopilotFormatter extends BaseRuleFormatter {
     requiresMetadata: false,
     defaultPath: '.github/copilot',
   };
+
+  constructor() {
+    super(CopilotFormatter.SPEC);
+  }
 
   /**
    * Configure the frontmatter pipeline for Copilot format

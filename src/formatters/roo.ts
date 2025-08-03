@@ -13,7 +13,7 @@ import {
  * Generates .roo/rules/{name}.md files with description header
  */
 export class RooFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
+  static readonly SPEC: RuleFormatSpec = {
     id: 'roo',
     name: 'Roo Code',
     category: 'directory',
@@ -22,6 +22,10 @@ export class RooFormatter extends BaseRuleFormatter {
     requiresMetadata: false,
     defaultPath: '.roo/rules',
   };
+
+  constructor() {
+    super(RooFormatter.SPEC);
+  }
 
   /**
    * Configure the frontmatter pipeline for Roo format

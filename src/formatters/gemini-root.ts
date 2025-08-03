@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { ONLEYRULES_ALL_TARGETS } from '../consts';
+// Removed ONLEYRULES_ALL_TARGETS import to avoid module loading issues
 import {
   BaseRuleFormatter,
   ParsedRule,
@@ -13,8 +13,8 @@ import {
  * Generates GEMINI.md file for root/global rules
  */
 export class GeminiRootFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
-    id: ONLEYRULES_ALL_TARGETS.GEMINI_ROOT,
+  static readonly SPEC: RuleFormatSpec = {
+    id: 'gemini-root',
     name: 'Gemini Root File',
     category: 'root',
     extension: '.md',
@@ -22,6 +22,10 @@ export class GeminiRootFormatter extends BaseRuleFormatter {
     requiresMetadata: false,
     defaultPath: 'GEMINI.md',
   };
+
+  constructor() {
+    super(GeminiRootFormatter.SPEC);
+  }
 
   /**
    * Configure the frontmatter pipeline for Gemini root format

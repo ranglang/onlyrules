@@ -9,7 +9,7 @@ import {
 } from '../../core/interfaces';
 
 export class TraeFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
+  static readonly SPEC: RuleFormatSpec = {
     id: 'trae',
     name: 'Trae (Legacy)',
     category: 'directory',
@@ -18,6 +18,10 @@ export class TraeFormatter extends BaseRuleFormatter {
     requiresMetadata: false,
     defaultPath: '.trae/rules.md',
   };
+
+  constructor() {
+    super(TraeFormatter.SPEC);
+  }
 
   /**
    * Configure the frontmatter pipeline for Trae format

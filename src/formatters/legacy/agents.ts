@@ -14,7 +14,7 @@ import {
  * Generates AGENTS.md file
  */
 export class AgentsFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
+  static readonly SPEC: RuleFormatSpec = {
     id: ONLEYRULES_ALL_TARGETS.AGENTS,
     name: 'Agents (Legacy)',
     category: 'root',
@@ -23,6 +23,10 @@ export class AgentsFormatter extends BaseRuleFormatter {
     requiresMetadata: false,
     defaultPath: 'AGENTS.md',
   };
+
+  constructor() {
+    super(AgentsFormatter.SPEC);
+  }
 
   /**
    * Configure the frontmatter pipeline for Agents format

@@ -14,7 +14,7 @@ import {
  * Generates .junie/guidelines.md file
  */
 export class JunieFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
+  static readonly SPEC: RuleFormatSpec = {
     id: ONLEYRULES_ALL_TARGETS.JUNIE,
     name: 'Junie (Legacy)',
     category: 'directory',
@@ -23,6 +23,10 @@ export class JunieFormatter extends BaseRuleFormatter {
     requiresMetadata: false,
     defaultPath: '.junie/guidelines.md',
   };
+
+  constructor() {
+    super(JunieFormatter.SPEC);
+  }
 
   /**
    * Configure the frontmatter pipeline for Junie format

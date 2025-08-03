@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { ONLEYRULES_ALL_TARGETS } from '../consts';
+// Removed ONLEYRULES_ALL_TARGETS import to avoid module loading issues
 import {
   BaseRuleFormatter,
   ParsedRule,
@@ -14,8 +14,8 @@ import {
  * Generates .gemini/memories/{name}.md files for specific rules
  */
 export class GeminiMemoriesFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
-    id: ONLEYRULES_ALL_TARGETS.GEMINI_MEMORIES,
+  static readonly SPEC: RuleFormatSpec = {
+    id: 'gemini-memories',
     name: 'Gemini Memories',
     category: 'memory',
     extension: '.md',
@@ -23,6 +23,10 @@ export class GeminiMemoriesFormatter extends BaseRuleFormatter {
     requiresMetadata: false,
     defaultPath: '.gemini/memories',
   };
+
+  constructor() {
+    super(GeminiMemoriesFormatter.SPEC);
+  }
 
   /**
    * Configure the frontmatter pipeline for Gemini memories format

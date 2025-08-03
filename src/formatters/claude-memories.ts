@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { ONLEYRULES_ALL_TARGETS } from '../consts';
+// Removed ONLEYRULES_ALL_TARGETS import to avoid module loading issues
 import {
   BaseRuleFormatter,
   ParsedRule,
@@ -13,8 +13,8 @@ import {
  * Generates .claude/memories/{name}.md files for specific rules
  */
 export class ClaudeMemoriesFormatter extends BaseRuleFormatter {
-  readonly spec: RuleFormatSpec = {
-    id: ONLEYRULES_ALL_TARGETS.CLAUDE_MEMORIES,
+  static readonly SPEC: RuleFormatSpec = {
+    id: 'claude-memories',
     name: 'Claude (Memories)',
     category: 'directory',
     extension: '.md',
@@ -22,6 +22,10 @@ export class ClaudeMemoriesFormatter extends BaseRuleFormatter {
     requiresMetadata: false,
     defaultPath: '.claude/memories',
   };
+
+  constructor() {
+    super(ClaudeMemoriesFormatter.SPEC);
+  }
 
   /**
    * Configure the frontmatter pipeline for Claude memories format
