@@ -163,22 +163,29 @@ function parseMdcContent(
 ): Array<{ name: string; content: string }> {
   const rules: Array<{ name: string; content: string }> = [];
 
-  // Split the content by rule sections using regex
-  const pattern = /---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*?)(?=\r?\n---|\s*$)/g;
+  // Split the content by '---' separator on its own line
+  const parts = content.split(/^\s*---\s*$/m).filter((part) => part.trim() !== '');
 
-  let index = 0;
-  for (;;) {
-    const match = pattern.exec(content);
-    if (match === null) {
-      break;
+  if (parts.length < 2) {
+    // If not enough parts for at least one rule, treat as a single rule
+    if (content.trim() !== '') {
+      return [{ name: defaultName, content: content.trim() }];
     }
-    if (!match) continue;
-    const frontmatterText = match[1].trim();
-    const contentText = match[2].trim();
+    return [];
+  }
+
+  // Each rule consists of a frontmatter part and a content part
+  for (let i = 0; i < parts.length; i += 2) {
+    const frontmatterText = parts[i];
+    const contentText = parts[i + 1];
+
+    if (!frontmatterText || !contentText) {
+      continue;
+    }
 
     // Parse frontmatter into key-value pairs
     const frontmatterObj: Record<string, string> = {};
-    for (const line of frontmatterText.split('\n')) {
+    for (const line of frontmatterText.trim().split('\n')) {
       const colonIndex = line.indexOf(':');
       if (colonIndex > 0) {
         const key = line.substring(0, colonIndex).trim();
@@ -200,7 +207,7 @@ function parseMdcContent(
 
     // Convert to snake-case and make file-system safe
     if (!name) {
-      name = toSnakeCaseFileName(`${defaultName}-${index + 1}`);
+      name = toSnakeCaseFileName(`${defaultName}-${rules.length + 1}`);
     } else {
       name = toSnakeCaseFileName(name);
 
@@ -220,14 +227,12 @@ function parseMdcContent(
     // Add the rule to our collection
     rules.push({
       name,
-      content: contentText,
+      content: contentText.trim(),
     });
-
-    index++;
   }
 
   // If no rules found, treat the entire content as a single rule
-  if (rules.length === 0) {
+  if (rules.length === 0 && content.trim() !== '') {
     return [
       {
         name: defaultName,
