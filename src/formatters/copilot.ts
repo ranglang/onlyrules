@@ -11,7 +11,7 @@ import {
 
 /**
  * GitHub Copilot rule formatter
- * Generates .github/instructions/{name}.instructions.md files with frontmatter
+ * Generates .github/instructions/{name}.md files with frontmatter
  */
 export class CopilotFormatter extends BaseRuleFormatter {
   static readonly SPEC: RuleFormatSpec = {
@@ -21,7 +21,7 @@ export class CopilotFormatter extends BaseRuleFormatter {
     extension: '.md',
     supportsMultipleRules: true,
     requiresMetadata: false,
-    defaultPath: '.github/copilot',
+    defaultPath: '.github/instructions',
   };
 
   constructor() {
