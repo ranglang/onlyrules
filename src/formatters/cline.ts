@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { ONLEYRULES_ALL_TARGETS } from '../consts';
+// Removed ONLEYRULES_ALL_TARGETS import to avoid module loading issues
 import {
   BaseRuleFormatter,
   ParsedRule,
@@ -15,7 +15,7 @@ import {
  */
 export class ClineFormatter extends BaseRuleFormatter {
   static readonly SPEC: RuleFormatSpec = {
-    id: ONLEYRULES_ALL_TARGETS.CLINE,
+    id: 'cline',
     name: 'Cline',
     category: 'directory',
     extension: '.md',

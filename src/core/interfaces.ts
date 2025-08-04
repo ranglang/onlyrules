@@ -1,4 +1,4 @@
-import { ONLEYRULES_ALL_TARGETS_TYPE } from '../consts';
+// Removed ONLEYRULES_ALL_TARGETS_TYPE import to avoid module loading issues
 
 /**
  * Categories of rule formats
@@ -446,7 +446,7 @@ export interface RuleGenerationPipelineOptions {
  */
 export interface RuleFormatSpec {
   /** Unique identifier for the format */
-  id: ONLEYRULES_ALL_TARGETS_TYPE;
+  id: string;
   /** Human-readable name */
   name: string;
   /** Format category */
